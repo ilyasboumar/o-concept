@@ -1,0 +1,81 @@
+---
+const tiers = [
+  {
+    name: 'Optimise',
+    price: '£295',
+    tagline: 'For maintaining results and staying ahead.',
+    featured: false,
+    benefits: [
+      'Annual Endo Test diagnostic panel',
+      'Quarterly review consultations',
+      'Two maintenance ESWT sessions per year',
+      '10% member rate on all treatments',
+      'Priority booking line',
+    ],
+  },
+  {
+    name: 'Restore',
+    price: '£595',
+    tagline: 'Our most chosen path. Active treatment, continuously managed.',
+    featured: true,
+    benefits: [
+      'Everything in Optimise',
+      'Monthly treatment session credit',
+      'Biannual full diagnostic panel',
+      'Dedicated care coordinator',
+      '48-hour priority appointments',
+      '15% member rate on all treatments',
+    ],
+  },
+  {
+    name: 'The Inner Circle',
+    price: '£1,250',
+    tagline: 'Complete, personal oversight by Dr Wakil himself.',
+    featured: false,
+    benefits: [
+      'Everything in Restore',
+      'Protocol reviews led personally by Dr Wakil',
+      'Same-day priority access',
+      'At-home phlebotomy for diagnostics',
+      'Partner assessment included',
+      'Discreet direct line, seven days a week',
+    ],
+  },
+];
+---
+
+<div class="grid gap-6 lg:grid-cols-3 lg:items-stretch" data-reveal-child>
+  {
+    tiers.map((tier) => (
+      <div
+        class:list={[
+          'hairline relative flex flex-col bg-ink2 p-9 md:p-10',
+          tier.featured && 'gold-glow lg:-my-5 lg:py-14',
+        ]}
+      >
+        {tier.featured && (
+          <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold px-4 py-1.5 text-[9px] font-bold tracking-[0.3em] text-ink uppercase">
+            Most Chosen
+          </span>
+        )}
+        <h3 class="font-serif text-2xl text-cream">{tier.name}</h3>
+        <p class="mt-2 min-h-10 text-xs leading-relaxed text-cream/50">{tier.tagline}</p>
+        <p class="mt-6 flex items-baseline gap-2">
+          <span class="font-serif text-5xl text-gold">{tier.price}</span>
+          <span class="text-[10px] font-semibold tracking-[0.25em] text-cream/45 uppercase">per month</span>
+        </p>
+        <ul class="hairline-t mt-8 space-y-4 pt-8 text-sm text-cream/70">
+          {tier.benefits.map((benefit) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+              {benefit}
+            </li>
+          ))}
+        </ul>
+        <a href="/membership" class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']}>
+          Enquire About {tier.name}
+        </a>
+      </div>
+    ))
+  }
+</div>

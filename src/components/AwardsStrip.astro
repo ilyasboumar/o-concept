@@ -1,0 +1,22 @@
+---
+const marks = [
+  '2024 Global Excellence Award — World’s Best Sexual Rejuvenation Clinic',
+  'Aesthetics Awards',
+  'CQC Registered',
+  'IAAGSW Founder',
+  'As Seen on Channel 4',
+];
+---
+
+<div class="relative z-50 border-b border-gold/12 bg-[#070708]">
+  <div class="wrap flex items-center justify-center gap-5 overflow-x-auto py-2.5 whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-8">
+    {
+      marks.map((mark, i) => (
+        <>
+          {i > 0 && <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" aria-hidden="true" />}
+          <span class="shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase">{mark}</span>
+        </>
+      ))
+    }
+  </div>
+</div>

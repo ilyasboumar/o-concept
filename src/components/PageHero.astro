@@ -1,0 +1,27 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  theme?: 'gold' | 'rose';
+}
+const { eyebrow, title, sub, theme = 'gold' } = Astro.props;
+
+const glow =
+  theme === 'rose'
+    ? 'radial-gradient(ellipse 75% 65% at 70% 0%, rgba(110,30,43,0.42), transparent 65%), radial-gradient(ellipse 55% 50% at 15% 100%, rgba(217,164,164,0.08), transparent 70%)'
+    : 'radial-gradient(ellipse 75% 65% at 70% 0%, rgba(201,169,110,0.14), transparent 65%), radial-gradient(ellipse 55% 50% at 15% 100%, rgba(201,169,110,0.07), transparent 70%)';
+---
+
+<section class="relative -mt-20 flex min-h-[72vh] items-end overflow-hidden bg-ink2 pt-48 pb-20 md:pb-28">
+  <div class="pointer-events-none absolute inset-0" style={`background:${glow}`} aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
+
+  <div class="wrap relative">
+    <p class:list={['text-[11px] font-semibold uppercase tracking-[0.35em]', theme === 'rose' ? 'text-rose' : 'text-gold']} data-reveal>
+      {eyebrow}
+    </p>
+    <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1" set:html={title} />
+    <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">{sub}</p>
+  </div>
+</section>

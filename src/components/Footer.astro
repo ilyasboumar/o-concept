@@ -1,0 +1,66 @@
+---
+const year = new Date().getFullYear();
+const nav = [
+  { label: 'For Him', href: '/for-him' },
+  { label: 'For Her', href: '/for-her' },
+  { label: 'Membership', href: '/membership' },
+  { label: 'About Dr Wakil', href: '/about-dr-wakil' },
+];
+---
+
+<footer class="hairline-t bg-[#070708]">
+  <div class="wrap grid gap-14 py-20 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <p class="font-serif text-3xl text-cream">The O Concept<sup class="text-[0.5em] text-gold">™</sup></p>
+      <p class="mt-1 text-[9px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by Dr SW Clinics</p>
+      <p class="mt-8 max-w-sm text-sm leading-relaxed text-cream/55">
+        The world&rsquo;s most awarded sexual rejuvenation protocol — regenerative, evidence-led and entirely
+        confidential, delivered from Harley Street.
+      </p>
+      <div class="mt-8 flex gap-4" aria-label="Social media">
+        {
+          ['Instagram', 'LinkedIn', 'YouTube'].map((name) => (
+            <a
+              href="#"
+              aria-label={name}
+              class="hairline flex h-10 w-10 items-center justify-center text-[9px] font-bold tracking-widest text-gold/70 uppercase transition-all duration-400 hover:border-gold hover:text-gold"
+            >
+              {name.slice(0, 2)}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="md:col-span-3">
+      <p class="eyebrow mb-7">Explore</p>
+      <ul class="space-y-4">
+        {
+          nav.map((link) => (
+            <li>
+              <a href={link.href} class="text-sm text-cream/65 transition-colors duration-400 hover:text-gold">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="md:col-span-4">
+      <p class="eyebrow mb-7">The Clinic</p>
+      <address class="space-y-4 text-sm text-cream/65 not-italic">
+        <p>77 Harley Street<br />London W1G 8QN</p>
+        <p><a href="tel:+442030068459" class="transition-colors duration-400 hover:text-gold">+44 (0)20 3006 8459</a></p>
+        <p><a href="mailto:info@drswclinics.com" class="transition-colors duration-400 hover:text-gold">info@drswclinics.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <div class="hairline-t">
+    <div class="wrap flex flex-col gap-3 py-7 text-[10px] tracking-[0.12em] text-cream/35 md:flex-row md:items-center md:justify-between">
+      <p>© {year} Dr SW Clinics. The O Concept™ is a registered trademark of Dr SW Clinics.</p>
+      <p>GMC Registered Physicians · CQC Registered Clinic · Harley Street, London</p>
+    </div>
+  </div>
+</footer>

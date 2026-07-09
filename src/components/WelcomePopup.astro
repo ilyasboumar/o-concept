@@ -1,0 +1,64 @@
+---
+---
+
+<div id="welcome-modal" class="modal" data-modal role="dialog" aria-modal="true" aria-labelledby="welcome-title" aria-hidden="true">
+  <div class="modal-card max-w-lg p-8 md:p-12">
+    <button data-close class="absolute top-5 right-5 cursor-pointer text-xl font-light text-cream/50 transition-colors duration-300 hover:text-gold" aria-label="Close">✕</button>
+
+    <p class="eyebrow">A private welcome</p>
+    <h2 id="welcome-title" class="mt-4 font-serif text-3xl leading-tight text-cream md:text-4xl">
+      Welcome to The&nbsp;O&nbsp;Concept<sup class="text-[0.5em] text-gold">™</sup>
+    </h2>
+    <p class="mt-4 text-sm leading-relaxed text-cream/60">
+      Book this month and receive a complimentary <span class="text-gold">Endo Test</span> — our full hormonal and
+      metabolic diagnostic — with your consultation.
+    </p>
+
+    <form data-demo class="mt-8" novalidate>
+      <div class="form-fields space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="field-label" for="wf-first">First name</label>
+            <input class="field" id="wf-first" name="first_name" type="text" autocomplete="given-name" required />
+          </div>
+          <div>
+            <label class="field-label" for="wf-last">Last name</label>
+            <input class="field" id="wf-last" name="last_name" type="text" autocomplete="family-name" required />
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="wf-email">Email</label>
+          <input class="field" id="wf-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div>
+          <label class="field-label" for="wf-phone">Phone</label>
+          <input class="field" id="wf-phone" name="phone" type="tel" autocomplete="tel" required />
+        </div>
+        <div>
+          <label class="field-label" for="wf-interest">Interested in</label>
+          <select class="field cursor-pointer bg-ink2" id="wf-interest" name="interest" required>
+            <option value="" disabled selected>Please choose…</option>
+            <option>For Him</option>
+            <option>For Her</option>
+            <option>Membership</option>
+            <option>Not sure — help me choose</option>
+          </select>
+        </div>
+        <label class="flex cursor-pointer items-start gap-3 pt-1 text-[11px] leading-relaxed text-cream/50">
+          <input type="checkbox" required class="mt-0.5 h-4 w-4 shrink-0 cursor-pointer appearance-none border border-cream/25 bg-transparent transition-colors duration-300 checked:border-gold checked:bg-gold" />
+          I consent to being contacted about my enquiry. All communication is strictly confidential.
+        </label>
+        <button type="submit" class="btn btn-gold mt-2 w-full">Claim My Complimentary Endo Test</button>
+      </div>
+
+      <div class="form-success py-8 text-center">
+        <div class="hairline mx-auto flex h-14 w-14 items-center justify-center rounded-full text-xl text-gold">✓</div>
+        <h3 class="mt-6 font-serif text-2xl text-cream">Thank you.</h3>
+        <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/60">
+          A member of our patient care team will contact you discreetly within one working day.
+        </p>
+        <button type="button" data-close class="btn btn-ghost mt-8">Continue Exploring</button>
+      </div>
+    </form>
+  </div>
+</div>

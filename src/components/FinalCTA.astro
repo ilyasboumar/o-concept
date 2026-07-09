@@ -1,0 +1,30 @@
+---
+interface Props {
+  heading?: string;
+  sub?: string;
+}
+const {
+  heading = 'Begin, discreetly.',
+  sub = 'A private consultation at 77 Harley Street. No obligation, no assumptions — just answers.',
+} = Astro.props;
+---
+
+<section id="begin" class="hairline-t relative overflow-hidden bg-[#070708] py-28 md:py-40">
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(201,169,110,0.13), transparent 70%);"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="wrap relative text-center">
+    <p class="eyebrow" data-reveal>The O Concept™ — Harley Street</p>
+    <h2 class="mx-auto mt-6 max-w-4xl font-serif text-5xl leading-[1.05] text-cream md:text-7xl" data-reveal data-delay="0.1">
+      {heading}
+    </h2>
+    <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-cream/60" data-reveal data-delay="0.2">{sub}</p>
+    <div class="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row" data-reveal data-delay="0.3">
+      <button data-open-quiz class="btn btn-gold">Take the AI Assessment</button>
+      <a href="tel:+442030068459" class="btn btn-ghost">+44 (0)20 3006 8459</a>
+    </div>
+  </div>
+</section>

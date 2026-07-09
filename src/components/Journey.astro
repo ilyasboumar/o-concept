@@ -1,0 +1,56 @@
+---
+const steps = [
+  {
+    n: '01',
+    title: 'Confidential Consultation',
+    body: 'A private, unhurried conversation at 77 Harley Street. We listen first — no assumptions, no judgement.',
+  },
+  {
+    n: '02',
+    title: 'Diagnostics & Endo Test',
+    body: 'A comprehensive hormonal and metabolic panel. Every protocol begins with evidence, not guesswork.',
+  },
+  {
+    n: '03',
+    title: 'Bespoke Protocol',
+    body: 'A multi-modality plan designed by Dr Wakil — regenerative, energy-based and hormonal therapies in concert.',
+  },
+  {
+    n: '04',
+    title: 'Ongoing Optimisation',
+    body: 'Scheduled reviews, repeat diagnostics and refinement. Results are maintained, not merely achieved.',
+  },
+];
+---
+
+<section class="hairline-t bg-ink py-24 md:py-32">
+  <div class="wrap">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">The patient journey</p>
+      <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">Four steps. One number to call.</h2>
+    </div>
+
+    <div class="relative mt-16 md:mt-20">
+      <div class="absolute top-6 left-0 hidden h-px w-full bg-cream/10 md:block" aria-hidden="true"></div>
+      <div class="absolute top-6 left-0 hidden h-px w-full bg-gold md:block" data-line-draw aria-hidden="true"></div>
+
+      <div class="grid gap-12 md:grid-cols-4 md:gap-8" data-reveal-child>
+        {
+          steps.map((step) => (
+            <div class="relative">
+              <div class="hairline relative z-10 flex h-12 w-12 items-center justify-center bg-ink font-serif text-lg text-gold">
+                {step.n}
+              </div>
+              <h3 class="mt-6 font-serif text-xl text-cream">{step.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-cream/55">{step.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="mt-16 text-[11px] font-semibold tracking-[0.25em] text-gold/70 uppercase" data-reveal>
+      0% finance available on all treatments
+    </p>
+  </div>
+</section>

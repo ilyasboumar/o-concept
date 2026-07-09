@@ -1,0 +1,18 @@
+---
+import QuizUI from './QuizUI.astro';
+---
+
+<div id="quiz-modal" class="modal" data-modal role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title" aria-hidden="true">
+  <div class="modal-card max-w-xl">
+    <div class="hairline-b flex items-center justify-between px-8 py-5">
+      <div>
+        <p class="eyebrow !text-[9px]">AI Treatment Match — Prototype</p>
+        <h2 id="quiz-modal-title" class="mt-1 font-serif text-xl text-cream">Your confidential assessment</h2>
+      </div>
+      <button data-close class="cursor-pointer text-xl font-light text-cream/50 transition-colors duration-300 hover:text-gold" aria-label="Close">✕</button>
+    </div>
+    <div class="p-8">
+      <QuizUI />
+    </div>
+  </div>
+</div>

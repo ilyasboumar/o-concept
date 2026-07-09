@@ -1,0 +1,75 @@
+---
+const links = [
+  { label: 'For Him', href: '/for-him' },
+  { label: 'For Her', href: '/for-her' },
+  { label: 'The Science', href: '/#science' },
+  { label: 'Membership', href: '/membership' },
+  { label: 'About Dr Wakil', href: '/about-dr-wakil' },
+];
+const { pathname } = Astro.url;
+---
+
+<header id="site-header" class="sticky top-0 z-40">
+  <div class="wrap flex h-20 items-center justify-between gap-6">
+    <a href="/" class="group flex flex-col leading-none" aria-label="The O Concept — home">
+      <span class="font-serif text-[1.55rem] font-medium tracking-wide text-cream transition-colors duration-500 group-hover:text-gold">
+        The O Concept<sup class="text-[0.55em] text-gold">™</sup>
+      </span>
+      <span class="mt-1 text-[8.5px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by Dr SW Clinics</span>
+    </a>
+
+    <nav class="hidden items-center gap-9 lg:flex" aria-label="Primary">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+              pathname.replace(/\/$/, '') === link.href ? 'text-gold' : 'text-cream/75',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden items-center gap-7 lg:flex">
+      <a href="tel:+442030068459" class="text-[11px] font-medium tracking-[0.14em] text-cream/70 transition-colors duration-400 hover:text-gold">
+        +44 (0)20 3006 8459
+      </a>
+      <a href="#begin" class="btn btn-ghost !px-6 !py-3">Book a Consultation</a>
+    </div>
+
+    <button
+      id="menu-toggle"
+      class="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[7px] lg:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="block h-px w-6 bg-cream transition-transform duration-400"></span>
+      <span class="block h-px w-6 bg-gold transition-transform duration-400"></span>
+    </button>
+  </div>
+</header>
+
+<div id="mobile-menu" class="fixed inset-0 z-[110] flex flex-col bg-ink/[0.98] backdrop-blur-xl lg:hidden" aria-hidden="true">
+  <div class="wrap flex h-20 items-center justify-between">
+    <span class="font-serif text-2xl text-cream">The O Concept<sup class="text-[0.55em] text-gold">™</sup></span>
+    <button data-menu-close class="flex h-11 w-11 cursor-pointer items-center justify-center text-2xl font-light text-gold" aria-label="Close menu">✕</button>
+  </div>
+  <nav class="wrap mt-10 flex flex-col gap-7" aria-label="Mobile">
+    {
+      links.map((link) => (
+        <a href={link.href} class="hairline-b pb-6 font-serif text-3xl text-cream transition-colors duration-400 hover:text-gold">
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="wrap mt-auto mb-12 flex flex-col gap-5">
+    <a href="tel:+442030068459" class="text-sm tracking-[0.14em] text-cream/70">+44 (0)20 3006 8459</a>
+    <a href="#begin" class="btn btn-gold w-full">Book a Consultation</a>
+  </div>
+</div>

@@ -1,0 +1,143 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+
+const milestones = [
+  { year: '1999', text: 'Qualifies in medicine; begins surgical training in London.' },
+  { year: '2004', text: 'Senior roles at the Royal London Hospital NHS Trust, building two decades of clinical foundations.' },
+  { year: '2011', text: 'Founds Dr SW Clinics at 77 Harley Street, London.' },
+  { year: '2014', text: 'Becomes the first physician to introduce the O-Shot® and P-Shot® to the United Kingdom.' },
+  { year: '2016', text: 'Pioneers the concept of “soft surgery” in the UK — surgical-grade outcomes without the scalpel.' },
+  { year: '2018', text: 'Founds the IAAGSW — the International Academy of Aesthetic Gynaecology & Sexual Wellbeing — training physicians worldwide.' },
+  { year: '2021', text: 'The O Concept™ is codified: one holistic, multi-modality protocol for sexual rejuvenation.' },
+  { year: '2024', text: 'Global Excellence Award — World’s Best Sexual Rejuvenation Clinic. Over 19,000 procedures performed.' },
+];
+
+const awards = [
+  { title: 'Global Excellence Award', detail: 'World’s Best Sexual Rejuvenation Clinic', year: '2024' },
+  { title: 'Aesthetics Awards', detail: 'Finalist — Clinical Innovation', year: '2023' },
+  { title: 'Safety in Beauty', detail: 'Diamond Award — Patient Safety', year: '2022' },
+  { title: 'MyFaceMyBody', detail: 'Best Clinic — Intimate Health', year: '2021' },
+  { title: 'IAAGSW', detail: 'Founder & President', year: '2018' },
+  { title: 'CQC Registered', detail: 'Care Quality Commission', year: 'Ongoing' },
+];
+---
+
+<Base
+  title="About Dr Sherif Wakil — Founder, The O Concept™ | Dr SW Clinics"
+  description="Dr Sherif Wakil: founder of Dr SW Clinics, pioneer of soft surgery in the UK, first to introduce the O-Shot® and P-Shot® to Britain, and founder of the IAAGSW academy."
+>
+  <PageHero
+    eyebrow="About Dr Wakil"
+    title="The physician who <em class='text-gold'>named the field.</em>"
+    sub="Founder and Medical Director of Dr SW Clinics. Pioneer of soft surgery in the UK. More than 19,000 procedures — and a discipline that now trains doctors worldwide."
+  />
+
+  <!-- Editorial bio -->
+  <section class="bg-ink py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-5" data-reveal>
+        <div class="overflow-hidden">
+          <img
+            src="https://placehold.co/800x1040/101014/C9A96E?text=Dr+Sherif+Wakil+—+Portrait&font=playfair-display"
+            alt="Portrait of Dr Sherif Wakil"
+            class="w-full object-cover"
+            width="800"
+            height="1040"
+            loading="lazy"
+            data-parallax="-4"
+          />
+        </div>
+        <p class="mt-5 text-[10px] tracking-[0.25em] text-cream/40 uppercase">Dr Sherif Wakil · 77 Harley Street</p>
+      </div>
+
+      <div class="lg:col-span-7" data-reveal data-delay="0.15">
+        <p class="eyebrow">Founder & Medical Director</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">Twenty years spent taking one subject seriously.</h2>
+        <div class="mt-8 space-y-6 text-[15px] leading-[1.9] text-cream/65">
+          <p>
+            Dr Sherif Wakil built his clinical foundations within the Royal London Hospital NHS Trust before devoting
+            his career to a field of medicine most of his peers preferred not to discuss: sexual health and intimate
+            wellbeing, treated with the rigour of hospital medicine and the discretion of Harley Street.
+          </p>
+          <p>
+            He was the first physician to introduce the O-Shot® and P-Shot® to the United Kingdom, and went on to
+            pioneer what he termed <em class="text-cream/85">“soft surgery”</em> — achieving surgical-grade outcomes
+            through regenerative and energy-based medicine, without the scalpel, without general anaesthesia and
+            without downtime.
+          </p>
+          <p>
+            The O Concept™ is the culmination of that work: a single, holistic protocol uniting platelet-rich plasma,
+            shockwave therapy, hormonal optimisation and advanced devices — refined across more than 19,000
+            procedures. Through the IAAGSW, the academy he founded, his methods now train physicians on every
+            continent. His work is regularly featured across mainstream press and television, from Channel 4 to The
+            Times.
+          </p>
+        </div>
+        <blockquote class="hairline mt-10 border-l-2 border-l-gold bg-ink2 p-8">
+          <p class="font-serif text-2xl leading-snug text-cream italic">
+            “Sexual health is health. The moment we treat it that way, everything else — function, confidence,
+            intimacy — begins to return.”
+          </p>
+          <footer class="mt-4 text-[10px] font-semibold tracking-[0.3em] text-gold uppercase">Dr Sherif Wakil</footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="hairline-t bg-ink2 py-24 md:py-32">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">Milestones</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">A career in first times.</h2>
+      </div>
+
+      <div class="relative mt-16 pl-8 md:pl-12">
+        <div class="absolute top-1 left-[5px] h-full w-px bg-cream/10 md:left-[7px]" aria-hidden="true"></div>
+        <div class="absolute top-1 left-[5px] h-full w-px bg-gold md:left-[7px]" data-line-draw-y aria-hidden="true"></div>
+        <ol class="space-y-12" data-reveal-child>
+          {
+            milestones.map((m) => (
+              <li class="relative">
+                <span class="absolute top-1.5 -left-8 block h-[11px] w-[11px] rounded-full border border-gold bg-ink md:-left-12 md:h-[15px] md:w-[15px]" aria-hidden="true" />
+                <p class="font-serif text-3xl text-gold">{m.year}</p>
+                <p class="mt-2 max-w-2xl text-[15px] leading-relaxed text-cream/65">{m.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Award wall -->
+  <section class="hairline-t bg-ink py-24 md:py-32">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">Recognition</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">The award wall.</h2>
+      </div>
+      <div class="mt-14 grid grid-cols-2 gap-5 lg:grid-cols-3" data-reveal-child>
+        {
+          awards.map((award) => (
+            <div class="hairline flex min-h-44 flex-col justify-between bg-ink2 p-7 transition-colors duration-500 hover:border-gold/50">
+              <svg viewBox="0 0 24 24" class="h-7 w-7 text-gold/80" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+                <circle cx="12" cy="9" r="6" />
+                <path d="M8.5 14 7 21l5-2.5L17 21l-1.5-7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div>
+                <p class="font-serif text-xl leading-snug text-cream">{award.title}</p>
+                <p class="mt-1.5 text-xs text-cream/50">{award.detail}</p>
+                <p class="mt-3 text-[10px] font-semibold tracking-[0.3em] text-gold/70 uppercase">{award.year}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA heading="Meet him, privately." sub="Consultations with Dr Wakil and his clinical team are available at 77 Harley Street and by video." />
+</Base>

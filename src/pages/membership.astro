@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipTiers from '../components/MembershipTiers.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+
+const comparison = [
+  { feature: 'Endo Test diagnostic panel', optimise: 'Annual', restore: 'Biannual', inner: 'Quarterly' },
+  { feature: 'Review consultations', optimise: 'Quarterly', restore: 'Monthly', inner: 'On demand' },
+  { feature: 'Treatment session credits', optimise: '—', restore: '1 per month', inner: '2 per month' },
+  { feature: 'Maintenance ESWT sessions', optimise: '2 per year', restore: '4 per year', inner: 'As prescribed' },
+  { feature: 'Member rate on treatments', optimise: '10%', restore: '15%', inner: '20%' },
+  { feature: 'Priority appointments', optimise: 'Priority line', restore: '48 hours', inner: 'Same day' },
+  { feature: 'Dedicated care coordinator', optimise: '—', restore: '✓', inner: '✓' },
+  { feature: 'Reviews led personally by Dr Wakil', optimise: '—', restore: '—', inner: '✓' },
+  { feature: 'At-home phlebotomy', optimise: '—', restore: '—', inner: '✓' },
+  { feature: 'Partner assessment included', optimise: '—', restore: '—', inner: '✓' },
+  { feature: 'Discreet direct line, 7 days', optimise: '—', restore: '—', inner: '✓' },
+];
+
+const faqs = [
+  {
+    q: 'Is my membership — and everything discussed — confidential?',
+    a: 'Entirely. Your records are held under strict medical confidentiality, correspondence is unmarked, invoices are discreetly worded, and private entrance appointments are available on request. Nothing is ever shared without your explicit written consent.',
+  },
+  {
+    q: 'What exactly is included in my monthly fee?',
+    a: 'Your diagnostics, review consultations, included session credits and member rates, as set out in your tier. There are no joining fees and no hidden charges — any treatment beyond your plan is quoted transparently, at your member rate, before anything is booked.',
+  },
+  {
+    q: 'Do you offer finance?',
+    a: 'Yes. 0% finance is available on all treatment plans, subject to status, and memberships are billed monthly with no long-term lock-in. Our patient care team will structure whatever arrangement suits you best.',
+  },
+  {
+    q: 'Can I pause or cancel my membership?',
+    a: 'Of course. Memberships run month to month after an initial three-month term. You may pause for up to three months a year — travel, work, life — and cancellation requires only 30 days’ notice, in writing or by phone.',
+  },
+  {
+    q: 'Which membership is right for me?',
+    a: 'That depends on your diagnostics, not your budget. Begin with a consultation and Endo Test; Dr Wakil’s team will recommend the tier that genuinely fits your protocol — and will say so plainly if membership is not yet appropriate for you.',
+  },
+];
+---
+
+<Base
+  title="Membership — The O Concept™ | Continuity of Care, Harley Street"
+  description="Optimise, Restore and The Inner Circle — three memberships offering continuity of care, priority access and preferential rates at Dr SW Clinics."
+>
+  <PageHero
+    eyebrow="Membership"
+    title="Care that <em class='text-gold'>continues.</em>"
+    sub="Continuity of care. Priority access. One number to call. Three memberships, each built around scheduled diagnostics and quiet, ongoing optimisation."
+  />
+
+  <section class="bg-ink py-24 md:py-32">
+    <div class="wrap">
+      <MembershipTiers />
+      <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+        Illustrative pricing for prototype purposes · 0% finance available · No joining fees
+      </p>
+    </div>
+  </section>
+
+  <!-- Comparison table -->
+  <section class="hairline-t bg-ink2 py-24 md:py-32">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">Compare in detail</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">Every benefit, side by side.</h2>
+      </div>
+
+      <div class="hairline mt-14 overflow-x-auto bg-ink" data-reveal>
+        <table class="w-full min-w-[720px] text-left text-sm">
+          <thead>
+            <tr class="hairline-b">
+              <th class="px-6 py-5 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Benefit</th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Optimise <span class="ml-2 text-xs text-cream/40">£295 pm</span></th>
+              <th class="bg-gold/[0.06] px-6 py-5 font-serif text-lg font-medium text-gold">Restore <span class="ml-2 text-xs text-gold/60">£595 pm</span></th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">The Inner Circle <span class="ml-2 text-xs text-cream/40">£1,250 pm</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              comparison.map((row) => (
+                <tr class="border-b border-cream/[0.06] last:border-0">
+                  <td class="px-6 py-4 text-cream/70">{row.feature}</td>
+                  <td class="px-6 py-4 text-cream/55">{row.optimise}</td>
+                  <td class="bg-gold/[0.06] px-6 py-4 text-cream/85">{row.restore}</td>
+                  <td class="px-6 py-4 text-cream/55">{row.inner}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline-t bg-ink py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <p class="eyebrow">Questions, answered</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Asked quietly, often.</h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+          Anything we haven&rsquo;t covered, our patient care team will answer in complete confidence on
+          <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
+        </p>
+      </div>
+      <div class="space-y-4 lg:col-span-8" data-reveal-child>
+        {
+          faqs.map((faq) => (
+            <details class="faq hairline bg-ink2 px-7">
+              <summary class="flex items-center justify-between gap-6 py-6">
+                <span class="font-serif text-xl text-cream">{faq.q}</span>
+                <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">＋</span>
+              </summary>
+              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA heading="Join, quietly." sub="Begin with a consultation and Endo Test — the right tier will make itself obvious." />
+</Base>

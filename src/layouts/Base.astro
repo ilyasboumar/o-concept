@@ -1,0 +1,59 @@
+---
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/400-italic.css';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
+import '../styles/global.css';
+
+import AwardsStrip from '../components/AwardsStrip.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WelcomePopup from '../components/WelcomePopup.astro';
+import QuizModal from '../components/QuizModal.astro';
+import Concierge from '../components/Concierge.astro';
+import SideTab from '../components/SideTab.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB" class="grain">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0A0A0B" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body class="min-h-screen">
+    <AwardsStrip />
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <SideTab />
+    <Concierge />
+    <QuizModal />
+    <WelcomePopup />
+
+    <script>
+      import '../scripts/main.js';
+    </script>
+  </body>
+</html>
