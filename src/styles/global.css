@@ -187,6 +187,19 @@ html.js .hw {
 .hero-pan {
   animation: heroPan 28s ease-in-out infinite alternate;
 }
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 2.4s ease;
+}
+.hero-slide.active {
+  opacity: 1;
+}
 @keyframes heroPan {
   from {
     transform: scale(1.05) translate3d(-1.5%, -1%, 0);

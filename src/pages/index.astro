@@ -11,7 +11,7 @@ const team = [
   {
     name: 'Dr Sherif Wakil',
     role: 'Founder & Medical Director',
-    img: 'https://placehold.co/640x800/101014/C9A96E?text=Dr+Sherif+Wakil&font=playfair-display',
+    img: 'https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg',
   },
   {
     name: 'Dr Amira Hassan',
@@ -55,18 +55,49 @@ const testimonials = [
 >
   <!-- ============ HERO ============ -->
   <section class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink">
-    <!-- slow-panning gradient field -->
+    <!-- rotating clinic photography, slow-panning, under a dark editorial overlay -->
     <div class="absolute inset-0" aria-hidden="true">
-      <div
-        class="hero-pan absolute -inset-[8%]"
-        style="background:
-          radial-gradient(ellipse 60% 55% at 72% 30%, rgba(201,169,110,0.13), transparent 65%),
-          radial-gradient(ellipse 50% 60% at 18% 75%, rgba(110,30,43,0.16), transparent 65%),
-          radial-gradient(ellipse 90% 80% at 50% 50%, #101014, #0a0a0b 80%);"
-      >
+      <div class="hero-pan absolute -inset-[6%]">
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2025/02/image00026-1.jpg"
+          alt="Dr SW Clinics — the clinic at 77 Harley Street, London"
+          class="hero-slide active"
+          fetchpriority="high"
+        />
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-10.jpg"
+          alt="Treatment suite at Dr SW Clinics"
+          class="hero-slide"
+          loading="lazy"
+        />
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-5.jpg"
+          alt="Consultation room at Dr SW Clinics"
+          class="hero-slide"
+          loading="lazy"
+        />
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-8.jpg"
+          alt="Clinic interior at Dr SW Clinics, Harley Street"
+          class="hero-slide"
+          loading="lazy"
+        />
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-9-e1733484520778.jpg"
+          alt="Clinical technology at Dr SW Clinics"
+          class="hero-slide"
+          loading="lazy"
+        />
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2022/09/Homepage-2.jpg"
+          alt="Dr SW Clinics reception, Harley Street"
+          class="hero-slide"
+          loading="lazy"
+        />
       </div>
+      <div class="absolute inset-0" style="background: linear-gradient(rgba(10,10,11,0.4), rgba(10,10,11,0.85));"></div>
       <!-- faint rotating gold line-work -->
-      <svg class="hero-ring absolute top-1/2 left-1/2 h-[130vmin] w-[130vmin] -translate-x-1/2 -translate-y-1/2 opacity-[0.16]" viewBox="0 0 800 800" fill="none">
+      <svg class="hero-ring absolute top-1/2 left-1/2 h-[130vmin] w-[130vmin] -translate-x-1/2 -translate-y-1/2 opacity-[0.1]" viewBox="0 0 800 800" fill="none">
         <circle cx="400" cy="400" r="330" stroke="#C9A96E" stroke-width="0.6" stroke-dasharray="2 14" />
         <circle cx="400" cy="400" r="255" stroke="#C9A96E" stroke-width="0.5" opacity="0.6" />
         <circle cx="400" cy="400" r="180" stroke="#C9A96E" stroke-width="0.4" stroke-dasharray="1 10" opacity="0.5" />
@@ -120,6 +151,22 @@ const testimonials = [
         ))}
       </div>
     </div>
+
+    <!-- press proof point -->
+    <div class="wrap mt-12 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10" data-reveal>
+      <div class="hairline shrink-0 rounded-md bg-cream/95 p-3">
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2023/07/E4-photo-e1688490158998.png"
+          alt="Dr Sherif Wakil featured on Channel 4"
+          class="h-24 w-auto object-contain md:h-28"
+          loading="lazy"
+        />
+      </div>
+      <p class="max-w-xs text-center text-xs leading-relaxed text-cream/50 md:text-left">
+        Dr Wakil&rsquo;s pioneering work is regularly featured on <span class="text-gold">Channel 4</span> and across
+        the national press.
+      </p>
+    </div>
   </section>
 
   <!-- ============ INTRO / POSITIONING ============ -->
@@ -131,6 +178,20 @@ const testimonials = [
             More than <span class="text-gold">19,000 procedures.</span> The doctor who brought the O&#8209;Shot<sup class="text-[0.45em]">®</sup>
             and P&#8209;Shot<sup class="text-[0.45em]">®</sup> to the UK.
           </blockquote>
+          <figure class="hairline mt-12 max-w-sm p-2">
+            <div class="overflow-hidden">
+              <img
+                src="https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg"
+                alt="Dr Sherif Wakil at Dr SW Clinics, Harley Street"
+                class="aspect-[4/5] w-full scale-[1.08] object-cover"
+                loading="lazy"
+                data-parallax="-4"
+              />
+            </div>
+            <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/40 uppercase">
+              Dr Sherif Wakil · Founder &amp; Medical Director
+            </figcaption>
+          </figure>
         </div>
         <div class="lg:col-span-6" data-reveal data-delay="0.15">
           <p class="eyebrow mb-7">A protocol, not a procedure</p>

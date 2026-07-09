@@ -172,6 +172,20 @@ if (!reduced) {
 }
 
 /* ============================================================
+   Hero photography rotation — slow crossfade
+   ============================================================ */
+
+const heroSlides = document.querySelectorAll('.hero-slide');
+if (heroSlides.length > 1 && !reduced) {
+  let slideIdx = 0;
+  setInterval(() => {
+    heroSlides[slideIdx].classList.remove('active');
+    slideIdx = (slideIdx + 1) % heroSlides.length;
+    heroSlides[slideIdx].classList.add('active');
+  }, 6500);
+}
+
+/* ============================================================
    Testimonials carousel
    ============================================================ */
 
