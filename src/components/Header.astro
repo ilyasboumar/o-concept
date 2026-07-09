@@ -1,17 +1,20 @@
 ---
+import { withBase } from '../lib/url';
+
 const links = [
-  { label: 'For Him', href: '/for-him' },
-  { label: 'For Her', href: '/for-her' },
-  { label: 'The Science', href: '/#science' },
-  { label: 'Membership', href: '/membership' },
-  { label: 'About Dr Wakil', href: '/about-dr-wakil' },
+  { label: 'For Him', slug: 'for-him' },
+  { label: 'For Her', slug: 'for-her' },
+  { label: 'The Science', slug: '#science' },
+  { label: 'Membership', slug: 'membership' },
+  { label: 'About Dr Wakil', slug: 'about-dr-wakil' },
 ];
-const { pathname } = Astro.url;
+const current = Astro.url.pathname.replace(/\/$/, '');
+const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug);
 ---
 
 <header id="site-header" class="sticky top-0 z-40">
   <div class="wrap flex h-20 items-center justify-between gap-6">
-    <a href="/" class="group flex flex-col leading-none" aria-label="The O Concept — home">
+    <a href={withBase()} class="group flex flex-col leading-none" aria-label="The O Concept — home">
       <span class="font-serif text-[1.55rem] font-medium tracking-wide text-cream transition-colors duration-500 group-hover:text-gold">
         The O Concept<sup class="text-[0.55em] text-gold">™</sup>
       </span>
@@ -22,10 +25,10 @@ const { pathname } = Astro.url;
       {
         links.map((link) => (
           <a
-            href={link.href}
+            href={withBase(link.slug)}
             class:list={[
               'text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
-              pathname.replace(/\/$/, '') === link.href ? 'text-gold' : 'text-cream/75',
+              isActive(link.slug) ? 'text-gold' : 'text-cream/75',
             ]}
           >
             {link.label}
@@ -62,7 +65,7 @@ const { pathname } = Astro.url;
   <nav class="wrap mt-10 flex flex-col gap-7" aria-label="Mobile">
     {
       links.map((link) => (
-        <a href={link.href} class="hairline-b pb-6 font-serif text-3xl text-cream transition-colors duration-400 hover:text-gold">
+        <a href={withBase(link.slug)} class="hairline-b pb-6 font-serif text-3xl text-cream transition-colors duration-400 hover:text-gold">
           {link.label}
         </a>
       ))

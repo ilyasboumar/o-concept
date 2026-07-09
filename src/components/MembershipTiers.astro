@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../lib/url';
+
 const tiers = [
   {
     name: 'Optimise',
@@ -72,7 +74,7 @@ const tiers = [
             </li>
           ))}
         </ul>
-        <a href="/membership" class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']}>
+        <a href={withBase('membership')} class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']}>
           Enquire About {tier.name}
         </a>
       </div>

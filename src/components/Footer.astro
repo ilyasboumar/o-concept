@@ -1,10 +1,12 @@
 ---
+import { withBase } from '../lib/url';
+
 const year = new Date().getFullYear();
 const nav = [
-  { label: 'For Him', href: '/for-him' },
-  { label: 'For Her', href: '/for-her' },
-  { label: 'Membership', href: '/membership' },
-  { label: 'About Dr Wakil', href: '/about-dr-wakil' },
+  { label: 'For Him', href: withBase('for-him') },
+  { label: 'For Her', href: withBase('for-her') },
+  { label: 'Membership', href: withBase('membership') },
+  { label: 'About Dr Wakil', href: withBase('about-dr-wakil') },
 ];
 ---
 

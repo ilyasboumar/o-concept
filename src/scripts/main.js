@@ -317,30 +317,35 @@ const QUIZ_STEPS = [
   },
 ];
 
+/* Base-aware URL prefix — resolves to the GitHub Pages subpath in production. */
+const BASE = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : import.meta.env.BASE_URL + '/';
+
 const QUIZ_RESULTS = [
   {
     title: 'The O Concept™ for Him — Regenerative Pathway',
     body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then typically combine regenerative and energy-based therapies in a protocol built around your diagnostics.',
     items: ['P-Shot® — platelet-rich plasma therapy', 'O Concept™ ESWT — low-intensity shockwave', 'Endo Test — full hormonal diagnostics'],
-    href: '/for-him',
+    href: `${BASE}for-him`,
   },
   {
     title: 'The O Concept™ for Her — Restorative Pathway',
     body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then design a gentle, multi-modality protocol focused on comfort, sensation and confidence.',
     items: ['O-Shot® — platelet-rich plasma therapy', 'Ultra Femme 360 — radiofrequency rejuvenation', 'Endo Test — full hormonal diagnostics'],
-    href: '/for-her',
+    href: `${BASE}for-her`,
   },
   {
     title: 'The O Concept™ — Couples Programme',
     body: 'Based on your answers, we would recommend parallel consultations with aligned protocols, so both partners progress together under one clinical team — with complete discretion for each of you.',
     items: ['Paired confidential consultations', 'Individual Endo Test diagnostics', 'Membership — continuity of care for two'],
-    href: '/membership',
+    href: `${BASE}membership`,
   },
   {
     title: 'A Confidential Starting Point',
     body: 'That is entirely understandable. We suggest beginning with a private consultation and Endo Test — a clear, clinical picture of where you are, with no obligation and no assumptions.',
     items: ['Confidential consultation at 77 Harley Street', 'Endo Test — full hormonal diagnostics', 'A written protocol, only if appropriate'],
-    href: '/#begin',
+    href: `${BASE}#begin`,
   },
 ];
 

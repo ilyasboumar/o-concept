@@ -1,10 +1,11 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
-// Static output — deployable to Cloudflare Pages (NODE_VERSION=22.16.0)
+// Static output — deployed to GitHub Pages from the /o-concept/ subpath
 export default defineConfig({
   output: 'static',
-  site: 'https://theoconcept.pages.dev',
+  site: 'https://ilyasboumar.github.io',
+  base: '/o-concept',
   vite: {
     plugins: [tailwindcss()],
   },
