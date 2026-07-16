@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+
+const fellowship = [
+  {
+    n: '01',
+    title: 'Masterclasses',
+    body: 'Intensive, small-group teaching in the theory and evidence behind The O Concept™ — vascular, hormonal and regenerative medicine as one integrated discipline.',
+  },
+  {
+    n: '02',
+    title: 'Hands-on Harley Street Training',
+    body: 'Supervised clinical training at 77 Harley Street, working alongside Dr Wakil and his team on the exact techniques he introduced to the UK — O-Shot®, P-Shot®, energy-based devices and combination protocols.',
+  },
+  {
+    n: '03',
+    title: 'Certification',
+    body: 'Assessed certification in The O Concept™ protocol, with ongoing mentorship, case review and access to the IAAGSW professional community after graduation.',
+  },
+];
+
+const audience = [
+  'Doctors & surgeons entering sexual-wellbeing medicine',
+  'Aesthetic physicians extending into intimate health',
+  'Gynaecologists & urologists adding regenerative protocols',
+  'International clinics licensing The O Concept™ approach',
+];
+---
+
+<Base
+  title="Training & IAAGSW — Learn The O Concept™ from its Creator | Dr Sherif Wakil"
+  description="The O Concept™ Training Fellowship: masterclasses, hands-on Harley Street training and certification for medical professionals — taught by Dr Sherif Wakil, creator of the protocol and President & Founder of the IAAGSW."
+>
+  <PageHero
+    eyebrow="Training & IAAGSW"
+    title="Training the world in <em class='text-gold'>The O Concept™.</em>"
+    sub="Doctors don't learn this field from a textbook. They learn it from the physician who built it — the creator of the protocol, teaching the medicine he pioneered."
+  />
+
+  <!-- positioning -->
+  <section class="relative bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative grid gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-7" data-reveal>
+        <p class="eyebrow">From the source</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          The originator, <span class="text-gold italic">not an instructor.</span>
+        </h2>
+        <div class="mt-8 space-y-6 text-[15px] leading-[1.9] text-cream/65">
+          <p>
+            Every field has its teachers, and then it has its source. Dr Sherif Wakil created The O Concept™, brought
+            the O-Shot® and P-Shot® to the United Kingdom, and has performed more than 19,000 procedures. When
+            physicians train with him, they are not learning a version of the protocol — they are learning the
+            protocol, from the person who wrote it.
+          </p>
+          <p>
+            As an international trainer and speaker, Dr Wakil has taught these techniques to doctors across Europe,
+            the Middle East and beyond. The training fellowship formalises that teaching into a structured pathway for
+            medical professionals.
+          </p>
+        </div>
+        <ul class="mt-9 space-y-3" data-reveal-child>
+          {
+            audience.map((a) => (
+              <li class="flex items-center gap-3 text-sm text-cream/70">
+                <span class="h-px w-6 shrink-0 bg-gold" aria-hidden="true" />
+                {a}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="lg:col-span-5" data-reveal data-delay="0.15">
+        <figure class="hairline p-2">
+          <div class="overflow-hidden">
+            <img
+              src="https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg"
+              alt="Dr Sherif Wakil teaching in clinic at Harley Street"
+              class="aspect-[4/5] w-full scale-[1.06] object-cover"
+              loading="lazy"
+              data-parallax="-4"
+            />
+          </div>
+          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/40 uppercase">
+            Dr Sherif Wakil · International trainer &amp; speaker
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- fellowship -->
+  <section class="hairline-t relative bg-ink2 py-24 md:py-32">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">For medical professionals</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          The O Concept<sup class="text-[0.45em] text-gold">™</sup> Training Fellowship
+        </h2>
+        <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+          A structured pathway from foundation to certification, for clinicians who intend to practise this medicine
+          at the standard it deserves.
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-6 lg:grid-cols-3" data-reveal-child>
+        {
+          fellowship.map((f) => (
+            <div class="hairline flex flex-col bg-ink p-9" data-tilt>
+              <span class="font-serif text-4xl text-gold">{f.n}</span>
+              <h3 class="mt-5 font-serif text-2xl text-cream">{f.title}</h3>
+              <p class="mt-4 text-sm leading-[1.85] text-cream/60">{f.body}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-10 text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+        Cohort sizes are deliberately small · Applications reviewed personally by Dr Wakil
+      </p>
+    </div>
+  </section>
+
+  <!-- IAAGSW -->
+  <section class="hairline-teal-t relative overflow-hidden bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <div class="wrap relative grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-6" data-reveal>
+        <p class="eyebrow-teal">The professional body</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">IAAGSW</h2>
+        <p class="mt-4 font-serif text-2xl leading-snug text-cream/85 italic">
+          The International Association of Aesthetic Gynaecology and Sexual Well-being.
+        </p>
+        <div class="mt-7 space-y-6 text-[15px] leading-[1.9] text-cream/65">
+          <p>
+            Founded and presided over by Dr Wakil, the IAAGSW is the global professional body for aesthetic gynaecology
+            and sexual-wellbeing medicine — setting standards, connecting practitioners across continents, and giving a
+            young field the scientific rigour and ethical framework it needs to mature.
+          </p>
+          <p>
+            Fellowship graduates join a worldwide community of IAAGSW practitioners: shared case forums, annual
+            scientific meetings, and a professional standard patients can trust wherever they are treated.
+          </p>
+        </div>
+      </div>
+      <div class="flex flex-col justify-center lg:col-span-6" data-reveal data-delay="0.15">
+        <div class="hairline-teal grid grid-cols-2 gap-px bg-teal/15">
+          {
+            [
+              { k: 'Founded & presided over by', v: 'Dr Sherif Wakil' },
+              { k: 'Scope', v: 'Global' },
+              { k: 'Field', v: 'Aesthetic gynaecology & sexual well-being' },
+              { k: 'Role', v: 'Standards · community · science' },
+            ].map((cell) => (
+              <div class="bg-ink p-8">
+                <p class="text-[9px] font-semibold tracking-[0.28em] text-teal/80 uppercase">{cell.k}</p>
+                <p class="mt-3 font-serif text-xl leading-snug text-cream">{cell.v}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- practitioner CTA -->
+  <section class="hairline-t relative overflow-hidden bg-[#070708] py-28 md:py-36">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(201,169,110,0.13), transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="wrap relative text-center">
+      <p class="eyebrow" data-reveal>For practitioners</p>
+      <h2 class="mx-auto mt-6 max-w-3xl font-serif text-5xl leading-[1.05] text-cream md:text-6xl" data-reveal data-delay="0.1">
+        Learn it from the man who <span class="text-gold italic">made it.</span>
+      </h2>
+      <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-cream/60" data-reveal data-delay="0.2">
+        Applications for the next fellowship cohort are open to registered medical professionals.
+      </p>
+      <div class="mt-12" data-reveal data-delay="0.3">
+        <a href="mailto:info@drswclinics.com?subject=Training%20Fellowship%20Application" class="btn btn-gold" data-magnetic>
+          Apply to train with Dr Wakil
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA heading="Patients welcome too." sub="Looking for treatment rather than training? Begin with a confidential consultation at 77 Harley Street." />
+</Base>

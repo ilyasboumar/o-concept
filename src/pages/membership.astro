@@ -2,20 +2,25 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipTiers from '../components/MembershipTiers.astro';
+import TreatmentPackages from '../components/TreatmentPackages.astro';
+import ConciergeSection from '../components/ConciergeSection.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 
+/* Membership pricing is by application — table shows structure, numbers drop in later */
 const comparison = [
-  { feature: 'Endo Test diagnostic panel', optimise: 'Annual', restore: 'Biannual', inner: 'Quarterly' },
-  { feature: 'Review consultations', optimise: 'Quarterly', restore: 'Monthly', inner: 'On demand' },
-  { feature: 'Treatment session credits', optimise: '—', restore: '1 per month', inner: '2 per month' },
-  { feature: 'Maintenance ESWT sessions', optimise: '2 per year', restore: '4 per year', inner: 'As prescribed' },
-  { feature: 'Member rate on treatments', optimise: '10%', restore: '15%', inner: '20%' },
-  { feature: 'Priority appointments', optimise: 'Priority line', restore: '48 hours', inner: 'Same day' },
-  { feature: 'Dedicated care coordinator', optimise: '—', restore: '✓', inner: '✓' },
-  { feature: 'Reviews led personally by Dr Wakil', optimise: '—', restore: '—', inner: '✓' },
-  { feature: 'At-home phlebotomy', optimise: '—', restore: '—', inner: '✓' },
-  { feature: 'Partner assessment included', optimise: '—', restore: '—', inner: '✓' },
-  { feature: 'Discreet direct line, 7 days', optimise: '—', restore: '—', inner: '✓' },
+  { feature: 'Endo Test diagnostic panel', silver: 'Annual', gold: 'Biannual', platinum: 'Quarterly' },
+  { feature: 'Review consultations', silver: 'Quarterly', gold: 'Monthly', platinum: 'On demand' },
+  { feature: 'Treatment session credits', silver: '—', gold: '1 per month', platinum: '2 per month' },
+  { feature: 'Maintenance ESWT sessions', silver: '2 per year', gold: '4 per year', platinum: 'As prescribed' },
+  { feature: 'Hormone & nutrition optimisation reviews', silver: '—', gold: '✓', platinum: '✓' },
+  { feature: 'Member rate on treatments', silver: '✓', gold: '✓✓', platinum: '✓✓✓' },
+  { feature: 'Priority appointments', silver: 'Priority line', gold: '48 hours', platinum: 'Same day' },
+  { feature: 'Dedicated care coordinator', silver: '—', gold: '✓', platinum: '✓' },
+  { feature: 'Reviews led personally by Dr Wakil', silver: '—', gold: '—', platinum: '✓' },
+  { feature: 'The O Concept™ Concierge — door-to-door', silver: '—', gold: '—', platinum: '✓' },
+  { feature: 'At-home phlebotomy', silver: '—', gold: '—', platinum: '✓' },
+  { feature: 'Partner assessment included', silver: '—', gold: '—', platinum: '✓' },
+  { feature: 'Discreet direct line, 7 days', silver: '—', gold: '—', platinum: '✓' },
 ];
 
 const faqs = [
@@ -24,8 +29,12 @@ const faqs = [
     a: 'Entirely. Your records are held under strict medical confidentiality, correspondence is unmarked, invoices are discreetly worded, and private entrance appointments are available on request. Nothing is ever shared without your explicit written consent.',
   },
   {
-    q: 'What exactly is included in my monthly fee?',
-    a: 'Your diagnostics, review consultations, included session credits and member rates, as set out in your tier. There are no joining fees and no hidden charges — any treatment beyond your plan is quoted transparently, at your member rate, before anything is booked.',
+    q: 'What does "by application" mean?',
+    a: 'Membership places are limited so the clinical team can genuinely know every member. You apply, we hold a brief confidential conversation about your goals and diagnostics, and Dr Wakil’s team confirms the tier that fits. Pricing is confirmed at application.',
+  },
+  {
+    q: 'Do I need a membership to be treated?',
+    a: 'No. The O Concept™ is open to everyone — single treatments and bundled packages are available to all patients, with 0% finance, and the standard of care is identical. Membership adds continuity: scheduled diagnostics, priority access and ongoing optimisation.',
   },
   {
     q: 'Do you offer finance?',
@@ -35,29 +44,42 @@ const faqs = [
     q: 'Can I pause or cancel my membership?',
     a: 'Of course. Memberships run month to month after an initial three-month term. You may pause for up to three months a year — travel, work, life — and cancellation requires only 30 days’ notice, in writing or by phone.',
   },
-  {
-    q: 'Which membership is right for me?',
-    a: 'That depends on your diagnostics, not your budget. Begin with a consultation and Endo Test; Dr Wakil’s team will recommend the tier that genuinely fits your protocol — and will say so plainly if membership is not yet appropriate for you.',
-  },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
 
 <Base
-  title="Membership — The O Concept™ | Continuity of Care, Harley Street"
-  description="Optimise, Restore and The Inner Circle — three memberships offering continuity of care, priority access and preferential rates at Dr SW Clinics."
+  title="Membership — Silver, Gold & Platinum | The O Concept™, Harley Street"
+  description="Silver, Gold and Platinum: head-to-toe health memberships with comprehensive diagnostics, priority access and ongoing optimisation — plus open-to-everyone treatment packages with 0% finance. Dr SW Clinics, 77 Harley Street."
+  schema={[faqSchema]}
 >
   <PageHero
     eyebrow="Membership"
     title="Care that <em class='text-gold'>continues.</em>"
-    sub="Continuity of care. Priority access. One number to call. Three memberships, each built around scheduled diagnostics and quiet, ongoing optimisation."
+    sub="Silver, Gold and Platinum — three tiers of head-to-toe health investment: comprehensive diagnostics, priority access, and optimisation that never stands still. Each by application."
   />
 
-  <section class="bg-ink py-24 md:py-32">
-    <div class="wrap">
+  <section class="relative bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative">
       <MembershipTiers />
       <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
-        Illustrative pricing for prototype purposes · 0% finance available · No joining fees
+        Pricing confirmed at application · No joining fees · Prototype placeholders shown
       </p>
+
+      <!-- open-to-everyone packages -->
+      <div class="mt-20">
+        <TreatmentPackages />
+      </div>
     </div>
   </section>
 
@@ -74,9 +96,9 @@ const faqs = [
           <thead>
             <tr class="hairline-b">
               <th class="px-6 py-5 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Benefit</th>
-              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Optimise <span class="ml-2 text-xs text-cream/40">£295 pm</span></th>
-              <th class="bg-gold/[0.06] px-6 py-5 font-serif text-lg font-medium text-gold">Restore <span class="ml-2 text-xs text-gold/60">£595 pm</span></th>
-              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">The Inner Circle <span class="ml-2 text-xs text-cream/40">£1,250 pm</span></th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Silver <span class="ml-2 text-xs text-cream/40">From £— pm</span></th>
+              <th class="bg-gold/[0.06] px-6 py-5 font-serif text-lg font-medium text-gold">Gold <span class="ml-2 text-xs text-gold/60">From £— pm</span></th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Platinum <span class="ml-2 text-xs text-cream/40">From £— pm</span></th>
             </tr>
           </thead>
           <tbody>
@@ -84,17 +106,23 @@ const faqs = [
               comparison.map((row) => (
                 <tr class="border-b border-cream/[0.06] last:border-0">
                   <td class="px-6 py-4 text-cream/70">{row.feature}</td>
-                  <td class="px-6 py-4 text-cream/55">{row.optimise}</td>
-                  <td class="bg-gold/[0.06] px-6 py-4 text-cream/85">{row.restore}</td>
-                  <td class="px-6 py-4 text-cream/55">{row.inner}</td>
+                  <td class="px-6 py-4 text-cream/55">{row.silver}</td>
+                  <td class="bg-gold/[0.06] px-6 py-4 text-cream/85">{row.gold}</td>
+                  <td class="px-6 py-4 text-cream/55">{row.platinum}</td>
                 </tr>
               ))
             }
           </tbody>
         </table>
       </div>
+      <p class="mt-8 text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+        All membership pricing by application — placeholder structure shown
+      </p>
     </div>
   </section>
+
+  <!-- The Platinum experience — concierge -->
+  <ConciergeSection variant="full" />
 
   <!-- FAQ -->
   <section class="hairline-t bg-ink py-24 md:py-32">
@@ -123,5 +151,5 @@ const faqs = [
     </div>
   </section>
 
-  <FinalCTA heading="Join, quietly." sub="Begin with a consultation and Endo Test — the right tier will make itself obvious." />
+  <FinalCTA heading="Apply, quietly." sub="Begin with a consultation and Endo Test — the right tier will make itself obvious." />
 </Base>

@@ -1,42 +1,52 @@
 ---
+/**
+ * Membership tiers — Silver · Gold · Platinum.
+ * Pricing is deliberately structured as "From £—/month · By application"
+ * placeholders: when the client finalises numbers, replace each tier's
+ * `price` string and nothing else needs to move.
+ */
 import { withBase } from '../lib/url';
 
 const tiers = [
   {
-    name: 'Optimise',
-    price: '£295',
-    tagline: 'For maintaining results and staying ahead.',
+    name: 'Silver',
+    price: 'From £—',
+    priceNote: 'per month · by application',
+    tagline: 'The foundation: annual head-to-toe diagnostics, expertly maintained.',
     featured: false,
     benefits: [
       'Annual Endo Test diagnostic panel',
       'Quarterly review consultations',
       'Two maintenance ESWT sessions per year',
-      '10% member rate on all treatments',
+      'Member rate on all treatments',
       'Priority booking line',
     ],
   },
   {
-    name: 'Restore',
-    price: '£595',
-    tagline: 'Our most chosen path. Active treatment, continuously managed.',
+    name: 'Gold',
+    price: 'From £—',
+    priceNote: 'per month · by application',
+    tagline: 'Our most chosen path. Active treatment and optimisation, continuously managed.',
     featured: true,
     benefits: [
-      'Everything in Optimise',
-      'Monthly treatment session credit',
+      'Everything in Silver',
       'Biannual full diagnostic panel',
+      'Monthly treatment session credit',
+      'Hormone & nutrition optimisation reviews',
       'Dedicated care coordinator',
       '48-hour priority appointments',
-      '15% member rate on all treatments',
     ],
   },
   {
-    name: 'The Inner Circle',
-    price: '£1,250',
-    tagline: 'Complete, personal oversight by Dr Wakil himself.',
+    name: 'Platinum',
+    price: 'From £—',
+    priceNote: 'per month · by application',
+    tagline: 'Complete, personal oversight by Dr Wakil — with the Concierge experience.',
     featured: false,
     benefits: [
-      'Everything in Restore',
+      'Everything in Gold',
       'Protocol reviews led personally by Dr Wakil',
+      'The O Concept™ Concierge — door-to-door',
       'Same-day priority access',
       'At-home phlebotomy for diagnostics',
       'Partner assessment included',
@@ -60,13 +70,13 @@ const tiers = [
             Most Chosen
           </span>
         )}
-        <h3 class="font-serif text-2xl text-cream">{tier.name}</h3>
+        <h3 class="font-serif text-3xl text-gold">{tier.name}</h3>
         <p class="mt-2 min-h-10 text-xs leading-relaxed text-cream/50">{tier.tagline}</p>
-        <p class="mt-6 flex items-baseline gap-2">
-          <span class="font-serif text-5xl text-gold">{tier.price}</span>
-          <span class="text-[10px] font-semibold tracking-[0.25em] text-cream/45 uppercase">per month</span>
+        <p class="mt-6 flex items-baseline gap-3">
+          <span class="font-serif text-4xl text-cream">{tier.price}</span>
+          <span class="text-[10px] font-semibold tracking-[0.22em] text-cream/45 uppercase">{tier.priceNote}</span>
         </p>
-        <ul class="hairline-t mt-8 space-y-4 pt-8 text-sm text-cream/70">
+        <ul class="hairline-t mt-8 flex-1 space-y-4 pt-8 text-sm text-cream/70">
           {tier.benefits.map((benefit) => (
             <li class="flex items-start gap-3">
               <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" aria-hidden="true" />
@@ -74,8 +84,8 @@ const tiers = [
             </li>
           ))}
         </ul>
-        <a href={withBase('membership')} class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']}>
-          Enquire About {tier.name}
+        <a href={withBase('membership')} class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']} data-magnetic>
+          Apply for {tier.name}
         </a>
       </div>
     ))

@@ -1,0 +1,68 @@
+---
+/**
+ * "Find Your Treatment" — start from the CONDITION, get routed to the
+ * TREATMENT. Chips + free-text search; matching runs client-side in
+ * main.js against src/data/treatments.ts. Instant, nothing stored.
+ */
+import { allConditions } from '../data/treatments';
+
+const conditions = allConditions();
+---
+
+<section id="finder" class="hairline-teal-t relative overflow-hidden bg-ink2 py-24 md:py-32" aria-labelledby="finder-heading">
+  <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 45% 40% at 85% 90%, rgba(201,169,110,0.05), transparent 65%);"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="wrap relative">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="eyebrow-teal">Start from what you feel</p>
+      <h2 id="finder-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+        Find your treatment.
+      </h2>
+      <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+        Describe your concern in your own words — or choose it below. We&rsquo;ll show you the treatments that address
+        it, instantly and privately. Nothing you type is stored or sent.
+      </p>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-3xl" data-reveal data-delay="0.15">
+      <label for="finder-input" class="sr-only">Describe your concern</label>
+      <div class="relative">
+        <input
+          id="finder-input"
+          class="field !border-teal/25 !px-6 !py-5 text-base focus:!border-teal"
+          type="text"
+          placeholder="Try “difficulty keeping an erection”, “dryness”, “low energy”, “leaking”…"
+          autocomplete="off"
+        />
+        <span class="pointer-events-none absolute top-1/2 right-6 -translate-y-1/2 text-teal/60" aria-hidden="true">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
+          </svg>
+        </span>
+      </div>
+
+      <div class="mt-7 flex flex-wrap justify-center gap-2.5" data-finder-chips>
+        {
+          conditions.map((c) => (
+            <button type="button" class="chip" data-condition={c.clinical} title={c.plain}>
+              {c.clinical}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-finder-results aria-live="polite">
+      <!-- matching treatment cards are rendered here by main.js -->
+    </div>
+    <p class="mt-10 hidden text-center text-sm text-cream/50" data-finder-empty>
+      No direct match — but that does not mean no answer. <a href="#begin" class="text-teal underline underline-offset-4">Book a confidential consultation</a> and we&rsquo;ll take it from there.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,156 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Journey from '../components/Journey.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import { treatmentsByPathway } from '../data/treatments';
+
+const programmes = treatmentsByPathway('longevity');
+
+const faqs = [
+  {
+    q: 'What is a longevity programme, in plain terms?',
+    a: 'It is medicine applied before things go wrong rather than after. We measure your hormones, metabolism, nutrition and body composition in detail, then build a physician-led plan — hormone optimisation, IV nutrition, supplementation, dietician support, movement therapy and regenerative treatments — to keep you functioning at your best for as long as possible.',
+  },
+  {
+    q: 'Why do I feel exhausted all the time even though my GP says my bloods are “normal”?',
+    a: 'Standard panels test for disease, not for optimal function. A testosterone or thyroid level can sit within the “normal” laboratory range and still be far below what is optimal for you. The Endo Test measures the full endocrine and metabolic picture and interprets it against optimal — not merely acceptable — ranges.',
+  },
+  {
+    q: 'What is regenerative medicine using stem cells and blood products?',
+    a: 'Treatments that use your body’s own repair machinery — stem cells, growth factors and platelet-rich plasma taken from your own blood — to regenerate tissue rather than mask symptoms. Dr Wakil has used these techniques across more than 19,000 procedures.',
+  },
+  {
+    q: 'Is this only for people with a specific problem?',
+    a: 'No. Many patients come precisely because nothing is “wrong” — they simply refuse to accept gradual decline as inevitable. The programme meets you where you are: resolving a concern, or optimising from a healthy baseline.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const procedureSchema = programmes.map((t) => ({
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: t.name,
+  description: t.desc,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  relevantSpecialty: 'Longevity and regenerative medicine',
+}));
+---
+
+<Base
+  title="Longevity & Life Optimisation — The O Concept™ | Harley Street, London"
+  description="Tired all the time? Weight that won't shift? Dr Wakil's longevity programme treats the cause: hormone optimisation, IV nutrition, stem-cell regenerative medicine, dietician programmes and life coaching — at 77 Harley Street."
+  schema={[faqSchema, ...procedureSchema]}
+>
+  <PageHero
+    theme="teal"
+    eyebrow="The O Concept™ Longevity"
+    title="Ageing is inevitable. <em class='text-teal'>Decline is not.</em>"
+    sub="Dr Wakil's life-optimisation and regenerative programme — energy, hormones, metabolism and strength, measured and managed like the medical outcomes they are."
+  />
+
+  <section class="relative bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <div class="grid gap-12 lg:grid-cols-12" data-reveal>
+        <div class="lg:col-span-5">
+          <p class="eyebrow-teal">Optimise the system</p>
+          <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">You maintain everything you value. Why not yourself?</h2>
+        </div>
+        <div class="space-y-6 text-[15px] leading-[1.9] text-cream/65 lg:col-span-7">
+          <p>
+            Fatigue, brain fog, stubborn weight, fading drive — these are usually not character flaws or simple age.
+            They are measurable shifts in hormones, metabolism and cellular repair. The O Concept™ Longevity programme
+            begins where all of Dr Wakil&rsquo;s medicine begins: with comprehensive diagnostics, so that every
+            intervention is chosen on evidence.
+          </p>
+          <p>
+            The programme then draws on the full breadth of his practice — bio-hacking and supplementation, hormone
+            optimisation, IV nutritional therapies, expert dietician programmes, weight and hormonal-balance
+            management, life coaching, kinetic body-movement therapy, and regenerative medicine using stem cells,
+            growth factors and the body&rsquo;s own blood products. One physician-led plan, quietly compounding.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+        {
+          programmes.map((t) => (
+            <div class="hairline-teal group flex flex-col bg-ink2 p-8 transition-all duration-500 hover:border-teal/60" data-tilt>
+              <span class="text-[9px] font-bold tracking-[0.3em] text-teal/80 uppercase">{t.tag}</span>
+              <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
+              <div class="mt-6 flex flex-wrap gap-1.5">
+                {t.conditions.slice(0, 3).map((c) => (
+                  <span class="condition-chip">{c.clinical}</span>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- image-backed pull section -->
+  <section class="relative overflow-hidden">
+    <img
+      src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-8.jpg"
+      alt="Clinic interior at Dr SW Clinics, Harley Street"
+      class="h-[440px] w-full object-cover md:h-[520px]"
+      loading="lazy"
+      data-parallax="-6"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-ink/20" aria-hidden="true"></div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="wrap">
+        <p class="eyebrow-teal" data-reveal>The compounding effect</p>
+        <p class="mt-5 max-w-xl font-serif text-3xl leading-snug text-cream md:text-5xl" data-reveal data-delay="0.1">
+          Small, measured corrections — <span class="text-teal italic">decades</span> of dividend.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline-teal-t bg-ink py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <p class="eyebrow-teal">Questions, answered</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">What patients ask first.</h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+          Anything else, our patient care team will answer in complete confidence on
+          <a href="tel:+442030068459" class="text-teal">+44 (0)20 3006 8459</a>.
+        </p>
+      </div>
+      <div class="space-y-4 lg:col-span-8" data-reveal-child>
+        {
+          faqs.map((faq) => (
+            <details class="faq hairline-teal bg-ink2 px-7">
+              <summary class="flex items-center justify-between gap-6 py-6">
+                <span class="font-serif text-xl text-cream">{faq.q}</span>
+                <span class="faq-icon shrink-0 text-xl font-light text-teal" aria-hidden="true">＋</span>
+              </summary>
+              <p class="hairline-teal-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Journey />
+  <FinalCTA
+    heading="Start with the data."
+    sub="A confidential consultation and Endo Test — the full picture of where you are, and a physician-led plan for where you could be."
+  />
+</Base>

@@ -21,9 +21,68 @@ import SideTab from '../components/SideTab.astro';
 interface Props {
   title: string;
   description: string;
+  /** Optional extra JSON-LD objects (FAQPage, MedicalProcedure, …) injected per page */
+  schema?: object[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, schema = [] } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+/* Global structured data — Dr Wakil (Physician) + the clinic (MedicalClinic).
+   Emitted on every page so search engines and LLM answer engines associate
+   the practice, the address and the awards with every treatment query. */
+const globalSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalClinic',
+    name: 'Dr SW Clinics — The O Concept™',
+    description:
+      'The world’s most awarded sexual rejuvenation and regenerative clinic. Home of The O Concept™, created by Dr Sherif Wakil.',
+    url: Astro.site ? new URL(withBase(), Astro.site).href : undefined,
+    telephone: '+44 20 3006 8459',
+    email: 'info@drswclinics.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '77 Harley Street',
+      addressLocality: 'London',
+      postalCode: 'W1G 8QN',
+      addressCountry: 'GB',
+    },
+    medicalSpecialty: ['Sexual rejuvenation medicine', 'Regenerative medicine', 'Longevity medicine'],
+    award: '2024 Global Excellence Award — World’s Best Sexual Rejuvenation Clinic',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: 'Dr Sherif Wakil',
+    honorificPrefix: 'Dr',
+    jobTitle: 'Founder & Medical Director, Dr SW Clinics',
+    description:
+      'Creator of The O Concept™ — the world’s most awarded sexual rejuvenation and regenerative protocol. The first physician to bring the O-Shot® and P-Shot® to the UK. President & Founder of the IAAGSW. Founder of Andropause Recognition Day (1st June).',
+    workLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '77 Harley Street',
+        addressLocality: 'London',
+        postalCode: 'W1G 8QN',
+        addressCountry: 'GB',
+      },
+    },
+    award: [
+      '2024 Global Excellence Award — World’s Best Sexual Rejuvenation Clinic',
+      'President & Founder, International Association of Aesthetic Gynaecology and Sexual Well-being (IAAGSW)',
+    ],
+    knowsAbout: [
+      'Sexual rejuvenation',
+      'Andropause',
+      'Regenerative medicine',
+      'Hormone optimisation',
+      'Aesthetic gynaecology',
+    ],
+  },
+];
 ---
 
 <!doctype html>
@@ -33,11 +92,19 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <meta name="theme-color" content="#0A0A0B" />
     <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <link rel="sitemap" href={withBase('sitemap-index.xml')} />
+    {
+      [...globalSchema, ...schema].map((obj) => (
+        <script type="application/ld+json" set:html={JSON.stringify(obj)} />
+      ))
+    }
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body class="min-h-screen">

@@ -1,0 +1,133 @@
+---
+/**
+ * SHOP — link-out e-commerce gallery. INTEGRATION NOTE (for the client
+ * conversation): this page deliberately carries NO cart and NO checkout.
+ * Products live in an external Shopify storefront — inventory, pricing,
+ * payment, tax and fulfilment are all managed there — and every card here
+ * simply links out to the corresponding product page. To go live:
+ *   1. Replace EXTERNAL_SHOP_URL with the storefront domain
+ *      (e.g. https://shop.drswclinics.com).
+ *   2. Point each product's `url` at its storefront product page.
+ *   3. Swap the placeholder art for product photography.
+ * This keeps the medical site and the store cleanly separated — no PCI
+ * scope, no stock management here, and the storefront can evolve
+ * independently.
+ */
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+
+const EXTERNAL_SHOP_URL = 'EXTERNAL_SHOP_URL'; // ← replace with the live storefront URL
+
+const products = [
+  {
+    name: 'SW Cellular Renewal Serum',
+    desc: 'Clinical-grade growth-factor serum for skin renewal, developed from Dr Wakil’s regenerative practice.',
+    tag: 'Skincare',
+  },
+  {
+    name: 'SW Daily Longevity Complex',
+    desc: 'Foundational supplementation — NAD+ precursors, omega-3 and micronutrients in physician-chosen doses.',
+    tag: 'Supplement',
+  },
+  {
+    name: 'SW Testosterone Support Formula',
+    desc: 'Nutritional support for men’s hormonal health — zinc, magnesium, D3 and adaptogens, evidence-selected.',
+    tag: 'Supplement',
+  },
+  {
+    name: 'SW Intimate Comfort Balm',
+    desc: 'A gentle, pH-balanced daily balm for intimate skin comfort — fragrance-free and clinically formulated.',
+    tag: 'Intimate care',
+  },
+  {
+    name: 'SW Collagen Regeneration Peptides',
+    desc: 'Marine collagen peptides with vitamin C co-factors, supporting skin, joint and tissue repair.',
+    tag: 'Supplement',
+  },
+  {
+    name: 'SW Recovery IV-at-Home Kit',
+    desc: 'The clinic’s recovery micronutrient protocol in oral form — for the weeks between IV therapies.',
+    tag: 'Wellness',
+  },
+  {
+    name: 'SW Sleep & Cortisol Balance',
+    desc: 'Magnesium glycinate, L-theanine and botanical support for the sleep that hormonal health is built on.',
+    tag: 'Supplement',
+  },
+  {
+    name: 'SW Barrier Repair Moisturiser',
+    desc: 'Ceramide-rich daily moisturiser for skin recovering from energy-based treatments — and skin that isn’t.',
+    tag: 'Skincare',
+  },
+];
+---
+
+<Base
+  title="Shop — Dr Wakil's Curated Formulations | The O Concept™"
+  description="Clinical skincare and supplements curated and formulated by Dr Sherif Wakil — the products his Harley Street patients use between treatments. Available from the official Dr SW store."
+>
+  <PageHero
+    eyebrow="The Shop"
+    title="His formulations. <em class='text-gold'>Your shelf.</em>"
+    sub="The skincare and supplementation Dr Wakil's patients use between treatments — curated, dosed and quality-controlled to clinical standards."
+  />
+
+  <section class="relative bg-ink py-20 md:py-28">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <!-- curated-by note -->
+      <div class="hairline mx-auto max-w-3xl bg-ink2 p-8 text-center md:p-10" data-reveal>
+        <p class="eyebrow !text-[10px]">Curated by Dr Wakil</p>
+        <p class="mt-4 font-serif text-2xl leading-snug text-cream md:text-3xl">
+          Every product here is one Dr Wakil formulates, prescribes or personally recommends in clinic.
+        </p>
+        <p class="mt-4 text-sm leading-relaxed text-cream/55">
+          Orders are fulfilled by our official store — each product below opens in the store in a new tab.
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-child>
+        {
+          products.map((p, i) => (
+            <article class="treatment-box him group flex flex-col overflow-hidden bg-ink2" data-tilt>
+              <!-- placeholder product artwork — swap for photography -->
+              <div
+                class="relative flex h-52 items-center justify-center"
+                style={`background:
+                  radial-gradient(ellipse 70% 60% at 50% 20%, rgba(${i % 2 ? '45,212,191' : '201,169,110'},0.14), transparent 60%),
+                  linear-gradient(180deg, #16161c, #0d0d10 80%);`}
+              >
+                <div class="hairline flex h-28 w-16 items-end justify-center bg-gradient-to-b from-white/[0.06] to-transparent pb-2">
+                  <span class="text-[7px] font-bold tracking-[0.25em] text-gold/70 uppercase">SW</span>
+                </div>
+                <span class="absolute top-4 left-5 text-[8.5px] font-bold tracking-[0.3em] text-cream/45 uppercase">{p.tag}</span>
+              </div>
+              <div class="flex flex-1 flex-col p-6">
+                <h2 class="font-serif text-xl leading-snug text-cream">{p.name}</h2>
+                <p class="mt-3 flex-1 text-[13px] leading-relaxed text-cream/55">{p.desc}</p>
+                <a
+                  href={EXTERNAL_SHOP_URL}
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-ghost mt-6 !px-5 !py-3 !text-[10px]"
+                >
+                  View in store ↗
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+        Fulfilled by the official Dr SW store · Links open in a new tab
+      </p>
+    </div>
+  </section>
+
+  <FinalCTA
+    heading="Products support. Protocols transform."
+    sub="For the results the shelf can't deliver, begin with a confidential consultation at 77 Harley Street."
+  />
+</Base>

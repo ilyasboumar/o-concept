@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import { treatments, PATHWAY_LABELS } from '../data/treatments';
+
+/* Abstract clinical artwork per pathway — tasteful gradient treatments
+   until dedicated treatment photography is supplied. */
+const art: Record<string, string> = {
+  him: 'radial-gradient(ellipse 80% 65% at 75% 15%, rgba(201,169,110,0.22), transparent 60%), radial-gradient(ellipse 50% 40% at 15% 90%, rgba(201,169,110,0.08), transparent 65%), linear-gradient(165deg, #16161c, #0a0a0b 75%)',
+  her: 'radial-gradient(ellipse 80% 65% at 25% 15%, rgba(110,30,43,0.42), transparent 62%), radial-gradient(ellipse 50% 40% at 85% 90%, rgba(217,164,164,0.1), transparent 65%), linear-gradient(195deg, #16161c, #0a0a0b 75%)',
+  longevity: 'radial-gradient(ellipse 80% 65% at 50% 10%, rgba(45,212,191,0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 80% 95%, rgba(14,165,233,0.1), transparent 65%), linear-gradient(180deg, #16161c, #0a0a0b 75%)',
+};
+
+const procedureSchema = treatments.map((t) => ({
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: t.name,
+  description: t.desc,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  bodyLocation: t.pathway === 'her' ? 'Female intimate health' : t.pathway === 'him' ? 'Male sexual health' : 'Whole body',
+}));
+
+const faqs = [
+  {
+    q: 'How do I know which treatment I need?',
+    a: 'You don’t need to — that is our job. Start from your concern using the condition finder, take the confidential self-assessment, or simply book a consultation. Every protocol begins with the Endo Test diagnostic panel, so the treatment plan is chosen from evidence, not guesswork.',
+  },
+  {
+    q: 'Are these treatments surgical? Is there downtime?',
+    a: 'The O Concept™ is built on non-surgical, minimally invasive medicine — injectables using your own blood products, energy-based devices, and electromagnetic therapies. Most treatments involve little or no downtime; many patients return to their day immediately.',
+  },
+  {
+    q: 'Can I combine treatments, or pay for a package?',
+    a: 'Yes — in fact, the protocol is designed to combine modalities, because causes are rarely singular. Single treatments and bundled packages are both available, with 0% finance, and no membership is required.',
+  },
+  {
+    q: 'Who performs the treatments?',
+    a: 'Dr Sherif Wakil and his dedicated clinical team at 77 Harley Street. Dr Wakil created The O Concept™, brought the O-Shot® and P-Shot® to the UK, and has performed more than 19,000 procedures — doctors from around the world train with him in these exact techniques.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Base
+  title="Treatments A–Z — P-Shot®, O-Shot®, ESWT, Longevity | The O Concept™, Harley Street"
+  description="Every treatment in The O Concept™ and the conditions each one addresses — erectile dysfunction, vaginal laxity, incontinence, low libido, menopause and andropause symptoms. Non-surgical, evidence-led, confidential. 77 Harley Street, London."
+  schema={[faqSchema, ...procedureSchema]}
+>
+  <PageHero
+    eyebrow="Treatments"
+    title="Every treatment. <em class='text-teal'>Every condition it answers.</em>"
+    sub="The complete O Concept™ toolkit — regenerative, energy-based, hormonal and longevity medicine. Start from the treatment, or start from what you feel; both roads lead to the same door."
+  />
+
+  <section class="relative bg-ink py-20 md:py-28">
+    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <!-- filter tabs -->
+      <div class="flex flex-wrap gap-3" data-treatment-filters data-reveal>
+        <button type="button" class="filter-tab active" data-filter="all">All</button>
+        <button type="button" class="filter-tab" data-filter="him">For Him</button>
+        <button type="button" class="filter-tab" data-filter="her">For Her</button>
+        <button type="button" class="filter-tab" data-filter="longevity">Longevity</button>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-treatment-grid data-reveal-child>
+        {
+          treatments.map((t) => (
+            <article class:list={['treatment-box group flex flex-col overflow-hidden bg-ink2', t.pathway]} data-pathway={t.pathway} id={t.slug} data-tilt>
+              <!-- abstract clinical artwork -->
+              <div class="relative h-44 shrink-0" style={`background:${art[t.pathway]}`}>
+                <svg class="absolute inset-0 h-full w-full opacity-40" viewBox="0 0 400 176" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                  <circle cx="330" cy="40" r="60" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.5" opacity="0.5" />
+                  <circle cx="330" cy="40" r="34" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.4" stroke-dasharray="2 8" opacity="0.6" />
+                  <path d="M0 140 Q100 100 200 130 T400 110" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.6" opacity="0.45" />
+                </svg>
+                <span class:list={['pathway-tag absolute top-5 left-6', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
+                <span class="absolute bottom-5 left-6 text-[9px] font-bold tracking-[0.3em] text-cream/50 uppercase">{t.tag}</span>
+              </div>
+
+              <div class="flex flex-1 flex-col p-7">
+                <h2 class="font-serif text-2xl text-cream">{t.name}</h2>
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
+                <div class="mt-6">
+                  <p class="mb-2.5 text-[8.5px] font-bold tracking-[0.3em] text-cream/35 uppercase">Addresses</p>
+                  <div class="flex flex-wrap gap-1.5">
+                    {t.conditions.map((c) => (
+                      <span class="condition-chip" title={c.plain}>{c.clinical}</span>
+                    ))}
+                  </div>
+                </div>
+                <a href="#begin" class="mt-7 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-gold uppercase">
+                  Enquire confidentially <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-10 hidden text-center text-sm text-cream/50" data-treatment-empty>No treatments in this pathway yet.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline-t bg-ink2 py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <p class="eyebrow">Before you ask</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions everyone has.</h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+          Anything else, in complete confidence:
+          <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
+        </p>
+      </div>
+      <div class="space-y-4 lg:col-span-8" data-reveal-child>
+        {
+          faqs.map((faq) => (
+            <details class="faq hairline bg-ink px-7">
+              <summary class="flex items-center justify-between gap-6 py-6">
+                <span class="font-serif text-xl text-cream">{faq.q}</span>
+                <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">＋</span>
+              </summary>
+              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA
+    heading="Not sure where to start?"
+    sub="Start with the condition, not the brochure. The self-assessment takes two minutes — and a consultation answers everything else."
+  />
+</Base>

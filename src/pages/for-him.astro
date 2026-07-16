@@ -3,44 +3,57 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import AndropauseSection from '../components/AndropauseSection.astro';
+import { treatments } from '../data/treatments';
 
-const treatments = [
+const himTreatments = [
+  ...treatments.filter((t) => t.pathway === 'him'),
+  ...treatments.filter((t) => t.slug === 'endo-test'),
+];
+
+const faqs = [
   {
-    name: 'P-Shot®',
-    tag: 'Regenerative',
-    desc: 'Autologous platelet-rich plasma to regenerate vascular and erectile tissue — introduced to the UK by Dr Wakil.',
+    q: 'Why can’t I get or keep an erection like I used to?',
+    a: 'Most erectile dysfunction is vascular, hormonal or neurological — a physical change that can be measured. Blood flow declines, testosterone falls, tissue quality changes. These are treatable causes: The O Concept™ for Him combines diagnostics (Endo Test), regenerative medicine (P-Shot®), shockwave therapy (ESWT) and hormonal optimisation to treat them at source, without surgery.',
   },
   {
-    name: 'O Concept™ ESWT',
-    tag: 'Energy-based',
-    desc: 'Low-intensity extracorporeal shockwave therapy, stimulating new blood-vessel growth at the root cause.',
+    q: 'Is treatment for erectile dysfunction painful, and is there downtime?',
+    a: 'The protocol is non-surgical and minimally invasive. The P-Shot® uses numbing cream and a fine needle; ESWT shockwave feels like light tapping; the O Concept™ Chair is done fully clothed. Most men return to their normal day immediately after each session.',
   },
   {
-    name: 'Bocox™',
-    tag: 'Injectable',
-    desc: 'A targeted botulinum protocol improving blood flow and spontaneous function, with results lasting months.',
+    q: 'What is andropause — and could it explain my low energy and weight gain?',
+    a: 'Andropause (the "male menopause") is the gradual decline in testosterone from around age 40, causing fatigue, low mood, weight gain around the middle, low drive and brain fog. It is diagnosed with a full hormonal panel and treated with physician-led optimisation. Dr Wakil founded Andropause Recognition Day (1st June) to bring this condition into the open.',
   },
   {
-    name: 'Scrotox',
-    tag: 'Refinement',
-    desc: 'A discreet refinement treatment for comfort, appearance and confidence — brief, and virtually painless.',
-  },
-  {
-    name: 'Endo Test',
-    tag: 'Diagnostics',
-    desc: 'Our comprehensive hormonal and metabolic panel — the evidence base on which every protocol is built.',
-  },
-  {
-    name: 'O Concept™ Chair',
-    tag: 'Non-invasive',
-    desc: 'High-intensity electromagnetic pelvic-floor strengthening. Fully clothed, in a course of short sessions.',
+    q: 'Will anyone know I’m being treated?',
+    a: 'No. Consultations are private and unhurried, correspondence is unmarked, invoices are discreetly worded, and private appointment times are available on request. Discretion is not a courtesy here; it is policy.',
   },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const procedureSchema = himTreatments.map((t) => ({
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: t.name,
+  description: t.desc,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  relevantSpecialty: 'Male sexual rejuvenation medicine',
+}));
 ---
 
 <Base
-  title="The O Concept™ for Him — Male Sexual Rejuvenation | Harley Street"
-  description="Regenerative treatment for the concerns men rarely discuss — P-Shot®, ESWT, Bocox™ and hormonal optimisation, delivered confidentially on Harley Street."
+  title="Erectile Dysfunction & Male Sexual Rejuvenation Treatment — The O Concept™ for Him | Harley Street"
+  description="Difficulty getting or keeping an erection? Low drive, low energy after 40? Non-surgical treatment for erectile dysfunction, Peyronie's and andropause — P-Shot®, ESWT shockwave, Bocox™ and hormone optimisation by Dr Sherif Wakil, 77 Harley Street."
+  schema={[faqSchema, ...procedureSchema]}
 >
   <PageHero
     eyebrow="The O Concept™ for Him"
@@ -48,8 +61,9 @@ const treatments = [
     sub="Erectile function, performance, drive. These are medical matters with medical answers — and addressing them early is the strongest move a man can make."
   />
 
-  <section class="bg-ink py-24 md:py-32">
-    <div class="wrap">
+  <section class="relative bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative">
       <div class="grid gap-12 lg:grid-cols-12" data-reveal>
         <div class="lg:col-span-5">
           <p class="eyebrow">Cause, not symptom</p>
@@ -70,14 +84,16 @@ const treatments = [
 
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
-          treatments.map((t) => (
-            <div class="hairline group flex flex-col bg-ink2 p-8 transition-colors duration-500 hover:border-gold/50">
+          himTreatments.map((t) => (
+            <div class="hairline group flex flex-col bg-ink2 p-8 transition-colors duration-500 hover:border-gold/50" data-tilt>
               <span class="text-[9px] font-bold tracking-[0.3em] text-gold/70 uppercase">{t.tag}</span>
               <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
               <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-              <a href="#" class="mt-7 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-gold uppercase">
-                Learn more <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
-              </a>
+              <div class="mt-6 flex flex-wrap gap-1.5">
+                {t.conditions.slice(0, 3).map((c) => (
+                  <span class="condition-chip" title={c.plain}>{c.clinical}</span>
+                ))}
+              </div>
             </div>
           ))
         }
@@ -85,6 +101,36 @@ const treatments = [
     </div>
   </section>
 
+  <!-- Andropause — folded in, as the client requested -->
+  <AndropauseSection />
+
+  <!-- FAQ -->
+  <section class="hairline-t bg-ink py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <p class="eyebrow">Asked quietly, often</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions men actually search.</h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+          Anything else, in complete confidence:
+          <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
+        </p>
+      </div>
+      <div class="space-y-4 lg:col-span-8" data-reveal-child>
+        {
+          faqs.map((faq) => (
+            <details class="faq hairline bg-ink2 px-7">
+              <summary class="flex items-center justify-between gap-6 py-6">
+                <span class="font-serif text-xl text-cream">{faq.q}</span>
+                <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">＋</span>
+              </summary>
+              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <Journey />
-  <FinalCTA heading="One call. Complete discretion." sub="Speak to our team confidentially, or begin with the two-minute AI assessment." />
+  <FinalCTA heading="One call. Complete discretion." sub="Speak to our team confidentially, or begin with the two-minute confidential self-assessment." />
 </Base>

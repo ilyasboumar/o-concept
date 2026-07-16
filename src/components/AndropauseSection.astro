@@ -1,0 +1,96 @@
+---
+/**
+ * Andropause leadership — Dr Wakil as THE voice on the "male menopause",
+ * and founder of Andropause Recognition Day (1st June).
+ * Used on the homepage and folded into /for-him.
+ */
+import { withBase } from '../lib/url';
+
+const symptoms = [
+  'Fatigue that sleep doesn’t fix',
+  'Low mood & shorter fuse',
+  'Weight gain around the middle',
+  'Low drive & desire',
+  'Brain fog & poor focus',
+  'Loss of strength & stamina',
+];
+---
+
+<section class="hairline-t relative overflow-hidden bg-ink2 py-24 md:py-32" aria-labelledby="andropause-heading">
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background:
+      radial-gradient(ellipse 55% 50% at 15% 0%, rgba(201,169,110,0.07), transparent 65%),
+      radial-gradient(ellipse 45% 40% at 90% 100%, rgba(45,212,191,0.05), transparent 65%);"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="wrap relative grid items-center gap-14 lg:grid-cols-12 lg:gap-20">
+    <div class="lg:col-span-5" data-reveal>
+      <figure class="hairline relative p-2">
+        <div class="overflow-hidden">
+          <img
+            src="https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg"
+            alt="Dr Sherif Wakil — the leading voice on andropause awareness"
+            class="aspect-[4/5] w-full scale-[1.06] object-cover"
+            loading="lazy"
+            data-parallax="-4"
+          />
+        </div>
+        <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/40 uppercase">
+          Dr Sherif Wakil — leading the andropause conversation
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="lg:col-span-7">
+      <p class="eyebrow" data-reveal>Andropause — the change men aren&rsquo;t told about</p>
+      <h2 id="andropause-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl" data-reveal data-delay="0.1">
+        Menopause has a waiting room.<br />Andropause has <span class="text-gold italic">Dr Wakil.</span>
+      </h2>
+      <div class="mt-7 space-y-5 text-[15px] leading-[1.9] text-cream/65" data-reveal data-delay="0.2">
+        <p>
+          From around forty, a man&rsquo;s testosterone declines year on year — and with it, quietly, his energy, mood,
+          drive and shape. Most men are told it&rsquo;s stress, or age, or simply life. It is usually hormones — and
+          hormones can be measured, and treated.
+        </p>
+        <p>
+          Dr Wakil is the leading voice raising awareness of andropause in men: diagnosing it with full endocrine
+          panels, treating it with physician-led optimisation, and campaigning for it to be recognised the way
+          menopause finally is.
+        </p>
+      </div>
+
+      <ul class="mt-8 grid gap-2.5 sm:grid-cols-2" data-reveal-child>
+        {
+          symptoms.map((s) => (
+            <li class="flex items-center gap-3 border border-cream/8 bg-ink px-4 py-3 text-sm text-cream/70">
+              <span class="h-1 w-1 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+              {s}
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Andropause Recognition Day callout -->
+      <div class="gold-glow mt-9 flex flex-col gap-6 bg-ink p-8 sm:flex-row sm:items-center" data-reveal>
+        <div class="hairline flex h-20 w-20 shrink-0 flex-col items-center justify-center text-center">
+          <span class="font-serif text-3xl leading-none text-gold">1</span>
+          <span class="mt-1 text-[8px] font-bold tracking-[0.3em] text-cream/60 uppercase">June</span>
+        </div>
+        <div>
+          <p class="font-serif text-2xl leading-snug text-cream">Andropause Recognition Day</p>
+          <p class="mt-1.5 text-sm leading-relaxed text-cream/60">
+            Founded by Dr Wakil — the first day in the calendar dedicated to the change nobody tells men about.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-9 flex flex-col gap-4 sm:flex-row" data-reveal>
+        <a href={withBase('for-him')} class="btn btn-gold" data-magnetic>Explore the For Him pathway</a>
+        <a href="#begin" class="btn btn-ghost" data-magnetic>Book an Endo Test</a>
+      </div>
+    </div>
+  </div>
+</section>

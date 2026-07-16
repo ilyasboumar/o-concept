@@ -14,6 +14,9 @@
   --color-goldlight: #e3c992;
   --color-oxblood: #6e1e2b;
   --color-rose: #d9a4a4;
+  /* Futuristic secondary accent — science, data, interactive UI */
+  --color-teal: #2dd4bf;
+  --color-tealdeep: #0ea5e9;
 
   --font-serif: "Cormorant Garamond", "Georgia", serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -68,6 +71,23 @@
   .hairline-t {
     border-top: 1px solid rgba(201, 169, 110, 0.22);
   }
+  .hairline-teal {
+    border: 1px solid rgba(45, 212, 191, 0.25);
+  }
+  .hairline-teal-t {
+    border-top: 1px solid rgba(45, 212, 191, 0.25);
+  }
+
+  /* Soft radial section glows — lift long stretches of black */
+  .glow-gold {
+    background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(201, 169, 110, 0.07), transparent 65%);
+  }
+  .glow-teal {
+    background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(45, 212, 191, 0.06), transparent 65%);
+  }
+  .eyebrow-teal {
+    @apply text-[11px] font-semibold uppercase tracking-[0.35em] text-teal;
+  }
 
   /* ---------- buttons ---------- */
   .btn {
@@ -87,6 +107,15 @@
   .btn-ghost:hover {
     @apply text-gold;
     border-color: var(--color-gold);
+  }
+  .btn-teal {
+    @apply text-cream;
+    border: 1px solid rgba(45, 212, 191, 0.5);
+  }
+  .btn-teal:hover {
+    @apply text-teal;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 34px rgba(45, 212, 191, 0.18);
   }
 
   /* ---------- forms ---------- */
@@ -491,4 +520,252 @@ details.faq[open] .faq-icon {
   pointer-events: none;
   opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.teal-glow {
+  box-shadow: 0 0 70px rgba(45, 212, 191, 0.12), 0 0 0 1px rgba(45, 212, 191, 0.4);
+}
+
+/* ============================================================
+   Three.js mounts — the canvas fills its host; the static SVG
+   fallback beneath it is shown until (or unless) WebGL mounts.
+   ============================================================ */
+
+[data-three] {
+  position: relative;
+}
+[data-three] canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+[data-three].three-active .three-fallback {
+  opacity: 0;
+}
+.three-fallback {
+  transition: opacity 1.2s ease;
+}
+
+/* ============================================================
+   Recognition band — draggable stream of awards / quotes / press
+   ============================================================ */
+
+.recog-viewport {
+  overflow: hidden;
+  cursor: grab;
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+}
+.recog-viewport.dragging {
+  cursor: grabbing;
+}
+.recog-track {
+  display: flex;
+  width: max-content;
+  align-items: stretch;
+  will-change: transform;
+}
+.recog-card {
+  @apply mx-3 flex w-[290px] shrink-0 flex-col justify-between p-7;
+  border: 1px solid rgba(201, 169, 110, 0.22);
+  background: #101014;
+  user-select: none;
+  transform-style: preserve-3d;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.recog-card:hover {
+  border-color: rgba(201, 169, 110, 0.55);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 0 30px rgba(201, 169, 110, 0.08);
+}
+
+/* ============================================================
+   Split-scroll science section — CSS sticky does the pinning
+   (robust with Lenis); GSAP drives the step indicator states.
+   Falls back to simple stacked flow below lg.
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  .science-sticky {
+    position: sticky;
+    top: 5rem;
+    height: calc(100vh - 5rem);
+  }
+  .science-final {
+    position: sticky;
+    top: 5rem;
+  }
+}
+
+.science-step {
+  transition: color 0.5s ease, opacity 0.5s ease;
+  opacity: 0.35;
+}
+.science-step.active {
+  opacity: 1;
+}
+.science-step.active .science-step-num {
+  color: var(--color-teal);
+}
+.science-step.active .science-step-bar {
+  transform: scaleX(1);
+}
+.science-step-bar {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   Condition finder
+   ============================================================ */
+
+.chip {
+  @apply cursor-pointer border border-cream/15 bg-white/[0.02] px-4 py-2 text-[11px] font-medium tracking-[0.08em] text-cream/70 transition-all duration-300;
+}
+.chip:hover {
+  border-color: rgba(45, 212, 191, 0.6);
+  color: var(--color-teal);
+}
+.chip.active {
+  border-color: var(--color-teal);
+  background: rgba(45, 212, 191, 0.08);
+  color: var(--color-teal);
+  box-shadow: 0 0 22px rgba(45, 212, 191, 0.12);
+}
+
+.finder-card {
+  border: 1px solid rgba(244, 241, 236, 0.1);
+  background: #101014;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+.finder-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(45, 212, 191, 0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 34px rgba(45, 212, 191, 0.07);
+}
+.pathway-tag {
+  @apply inline-block border px-2.5 py-1 text-[8.5px] font-bold uppercase tracking-[0.28em];
+}
+.pathway-tag.him {
+  border-color: rgba(201, 169, 110, 0.5);
+  color: var(--color-gold);
+}
+.pathway-tag.her {
+  border-color: rgba(217, 164, 164, 0.5);
+  color: var(--color-rose);
+}
+.pathway-tag.longevity {
+  border-color: rgba(45, 212, 191, 0.5);
+  color: var(--color-teal);
+}
+
+.condition-chip {
+  @apply inline-block border border-cream/10 px-2.5 py-1 text-[9.5px] tracking-[0.06em] text-cream/50;
+}
+
+/* ============================================================
+   Treatment grid boxes (/treatments)
+   ============================================================ */
+
+.treatment-box {
+  border: 1px solid rgba(244, 241, 236, 0.1);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+.treatment-box:hover {
+  transform: translateY(-5px);
+}
+.treatment-box.him:hover {
+  border-color: rgba(201, 169, 110, 0.55);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(201, 169, 110, 0.09);
+}
+.treatment-box.her:hover {
+  border-color: rgba(217, 164, 164, 0.55);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(217, 164, 164, 0.08);
+}
+.treatment-box.longevity:hover {
+  border-color: rgba(45, 212, 191, 0.55);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(45, 212, 191, 0.09);
+}
+
+.filter-tab {
+  @apply cursor-pointer border border-cream/15 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-cream/60 transition-all duration-300;
+}
+.filter-tab:hover {
+  color: var(--color-cream);
+  border-color: rgba(244, 241, 236, 0.35);
+}
+.filter-tab.active {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+  background: rgba(45, 212, 191, 0.06);
+}
+
+/* ============================================================
+   Video facades — lite-youtube pattern
+   ============================================================ */
+
+.video-facade {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(201, 169, 110, 0.22);
+  background:
+    radial-gradient(ellipse 70% 70% at 30% 20%, rgba(45, 212, 191, 0.1), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 90%, rgba(201, 169, 110, 0.12), transparent 60%),
+    #0d0d10;
+}
+.video-facade iframe {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  border: 0;
+}
+.video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  height: 64px;
+  width: 64px;
+  transform: translate(-50%, -50%);
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(201, 169, 110, 0.6);
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(6px);
+  transition: all 0.45s ease;
+}
+.video-facade:hover .video-play {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 40px rgba(201, 169, 110, 0.3);
+  transform: translate(-50%, -50%) scale(1.07);
+}
+
+/* ============================================================
+   Micro-interactions
+   ============================================================ */
+
+[data-magnetic] {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-tilt] {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ============================================================
+   Concierge cinematic artwork (jet-on-runway SVG treatment)
+   ============================================================ */
+
+.concierge-art {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 100%, rgba(201, 169, 110, 0.12), transparent 65%),
+    linear-gradient(180deg, #08080a 0%, #0d0d11 55%, #101014 100%);
 }

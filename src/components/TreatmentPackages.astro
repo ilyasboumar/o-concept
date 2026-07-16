@@ -1,0 +1,37 @@
+---
+/**
+ * "Treatment Packages" strip — the accessible entry point beneath the
+ * membership tiers. Warmer tone: The O Concept™ is open to everyone,
+ * no membership required, 0% finance available.
+ */
+import { withBase } from '../lib/url';
+---
+
+<div class="hairline-teal relative overflow-hidden bg-ink" data-reveal>
+  <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+  <div class="relative grid gap-10 p-9 md:p-14 lg:grid-cols-12 lg:items-center">
+    <div class="lg:col-span-8">
+      <p class="eyebrow-teal">No membership required</p>
+      <h3 class="mt-4 font-serif text-3xl leading-tight text-cream md:text-4xl">
+        The O Concept<sup class="text-[0.5em] text-teal">™</sup> is open to everyone.
+      </h3>
+      <p class="mt-5 max-w-2xl text-[15px] leading-[1.9] text-cream/65">
+        Membership is one way in — not the only way. Every treatment is available individually, or as a bundled
+        package built around your diagnostics, with <span class="text-teal">0% finance available</span> on all plans.
+        Come for a single session or a complete programme; the standard of care is identical.
+      </p>
+      <ul class="mt-7 flex flex-wrap gap-3">
+        {
+          ['Single treatments', 'Bundled packages', '0% finance available', 'No joining fee'].map((item) => (
+            <li class="border border-cream/12 px-4 py-2.5 text-[10px] font-semibold tracking-[0.2em] text-cream/70 uppercase">
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="flex lg:col-span-4 lg:justify-end">
+      <a href={withBase('treatments')} class="btn btn-teal" data-magnetic>Explore treatment packages</a>
+    </div>
+  </div>
+</div>

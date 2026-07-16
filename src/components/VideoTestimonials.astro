@@ -1,0 +1,71 @@
+---
+/**
+ * "In His Words / As Seen On" — YouTube grid using the lite-embed pattern:
+ * a facade (cover + play button) renders instantly; the iframe only loads
+ * on click (handled in main.js). Video IDs live in src/data/videos.ts —
+ * swap the REPLACE_WITH_VIDEO_ID placeholders and this section is live.
+ */
+import { videos } from '../data/videos';
+
+const isPlaceholder = (id: string) => id.startsWith('REPLACE_WITH');
+---
+
+<section class="hairline-t relative overflow-hidden bg-ink py-24 md:py-32" aria-labelledby="videos-heading">
+  <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+
+  <div class="wrap relative">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">In his words · As seen on</p>
+      <h2 id="videos-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+        Hear it from Dr Wakil — <span class="text-gold italic">and his patients.</span>
+      </h2>
+      <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+        From Channel 4 to his own extensive video library, Dr Wakil has spent two decades bringing this field into the
+        open — with clarity, evidence and dignity.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-x-8 gap-y-14 lg:grid-cols-2" data-reveal-child>
+      {
+        videos.map((v) => (
+          <figure>
+            <div
+              class="video-facade group"
+              data-video-facade
+              data-video-id={v.id}
+              role="button"
+              tabindex="0"
+              aria-label={`Play video: ${v.title}`}
+            >
+              {!isPlaceholder(v.id) && (
+                <img
+                  src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`}
+                  alt=""
+                  class="absolute inset-0 h-full w-full object-cover opacity-80"
+                  loading="lazy"
+                />
+              )}
+              {isPlaceholder(v.id) && (
+                <div class="absolute inset-0 flex items-end p-6" aria-hidden="true">
+                  <p class="max-w-[75%] font-serif text-xl leading-snug text-cream/45 italic md:text-2xl">{v.title}</p>
+                </div>
+              )}
+              <span class="video-play" aria-hidden="true">
+                <svg class="ml-1 h-5 w-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5.5v13l11-6.5-11-6.5Z" />
+                </svg>
+              </span>
+            </div>
+            <figcaption class="hairline mt-5 border-t-0 bg-ink2/60 p-6">
+              <p class="font-serif text-lg leading-snug text-cream/85 italic">
+                <span class="mr-1 font-serif text-3xl leading-none text-gold" aria-hidden="true">“</span>
+                {v.quote}
+              </p>
+              <p class="mt-4 text-[9px] font-semibold tracking-[0.28em] text-gold/80 uppercase">{v.attribution}</p>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

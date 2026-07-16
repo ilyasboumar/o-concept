@@ -1,0 +1,64 @@
+---
+/**
+ * Longevity teaser — homepage. A floating cell/stem-cell particle field
+ * (Three.js Points, lazy-mounted by scripts/three-fx.js) drifts behind the
+ * content; a static SVG cell-cluster fallback shows on mobile and under
+ * prefers-reduced-motion.
+ */
+import { withBase } from '../lib/url';
+
+const pillars = [
+  'Bio-hacking & supplementation',
+  'Hormone optimisation',
+  'IV nutritional therapy',
+  'Regenerative stem-cell medicine',
+  'Expert dietician programmes',
+  'Kinetic body-movement therapy',
+];
+---
+
+<section class="hairline-teal-t relative overflow-hidden bg-[#070708] py-28 md:py-40" aria-labelledby="longevity-teaser-heading">
+  <!-- particle field mount — canvas injected client-side when appropriate -->
+  <div class="absolute inset-0" data-three="cells" aria-hidden="true">
+    <svg class="three-fallback absolute inset-0 h-full w-full opacity-40" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      {
+        Array.from({ length: 26 }).map((_, i) => {
+          const x = (i * 197) % 1200;
+          const y = (i * 131) % 600;
+          const r = 2 + (i % 5);
+          return <circle cx={x} cy={y} r={r} fill={i % 3 === 0 ? '#C9A96E' : '#2DD4BF'} opacity={0.12 + (i % 4) * 0.06} />;
+        })
+      }
+      <circle cx="900" cy="150" r="60" fill="none" stroke="#2DD4BF" stroke-width="0.5" opacity="0.2" />
+      <circle cx="220" cy="440" r="90" fill="none" stroke="#2DD4BF" stroke-width="0.4" opacity="0.15" />
+    </svg>
+  </div>
+  <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #070708 95%);" aria-hidden="true"></div>
+
+  <div class="wrap relative">
+    <div class="max-w-3xl" data-reveal>
+      <p class="eyebrow-teal">The third pathway</p>
+      <h2 id="longevity-teaser-heading" class="mt-5 font-serif text-5xl leading-[1.05] text-cream md:text-7xl">
+        Longevity is a <span class="bg-gradient-to-r from-teal to-tealdeep bg-clip-text text-transparent italic">medical discipline.</span>
+      </h2>
+      <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/65">
+        Dr Wakil&rsquo;s life-optimisation and regenerative programme treats ageing the way we treat everything else:
+        measure it, understand it, and intervene at the cause — cells, hormones, metabolism, movement.
+      </p>
+    </div>
+
+    <ul class="mt-12 flex max-w-3xl flex-wrap gap-3" data-reveal-child>
+      {
+        pillars.map((p) => (
+          <li class="hairline-teal bg-ink/60 px-5 py-3 text-[11px] font-medium tracking-[0.14em] text-cream/75 uppercase backdrop-blur-sm">
+            {p}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12" data-reveal>
+      <a href={withBase('longevity')} class="btn btn-teal" data-magnetic>Explore the Longevity Programme</a>
+    </div>
+  </div>
+</section>

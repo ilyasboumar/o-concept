@@ -1,0 +1,154 @@
+---
+/**
+ * "The Science of The O Concept™" — split-scroll pinned section.
+ *
+ * Desktop (lg+): the LEFT visual column pins (CSS sticky — reliable under
+ * Lenis) while the RIGHT column scrolls through four panels
+ * (Diagnose → Regenerate → Restore → Optimise). The pin then hands over:
+ * the right column's closing panel freezes while the left column's
+ * imagery block scrolls through. GSAP ScrollTrigger (main.js) drives the
+ * step indicator states as each panel enters.
+ *
+ * Below lg everything falls back to a simple stacked flow.
+ */
+const panels = [
+  {
+    step: '01',
+    title: 'Diagnose',
+    body: 'Every protocol begins with the Endo Test — a comprehensive hormonal, metabolic and vascular panel. We measure before we treat, because sexual function is physiology, and physiology leaves evidence.',
+    detail: 'Full endocrine panel · vascular assessment · lifestyle and psychological screening',
+  },
+  {
+    step: '02',
+    title: 'Regenerate',
+    body: 'Platelet-rich plasma, growth factors and the body’s own blood products regenerate vascular and nerve tissue at the source. This is the regenerative core Dr Wakil introduced to the UK — the O-Shot® and P-Shot®.',
+    detail: 'O-Shot® · P-Shot® · stem cells & growth factors · autologous blood products',
+  },
+  {
+    step: '03',
+    title: 'Restore',
+    body: 'Energy-based medicine restores what time and physiology have taken: low-intensity shockwave rebuilds blood supply, radiofrequency and laser restore tissue quality, electromagnetic therapy rebuilds the pelvic floor.',
+    detail: 'ESWT shockwave · Ultra Femme 360 · CO2RE Intima · O Concept™ Chair',
+  },
+  {
+    step: '04',
+    title: 'Optimise',
+    body: 'Results are maintained, not merely achieved. Hormonal optimisation, nutrition, supplementation and scheduled diagnostics keep function — and confidence — quietly compounding year on year.',
+    detail: 'Hormone optimisation · IV nutrition · dietician programmes · ongoing review',
+  },
+];
+---
+
+<section id="science" class="hairline-teal-t relative bg-ink" aria-labelledby="science-heading">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-[60vh] glow-teal" aria-hidden="true"></div>
+
+  <div class="wrap relative pt-24 md:pt-32">
+    <div class="max-w-3xl" data-reveal>
+      <p class="eyebrow-teal">The method</p>
+      <h2 id="science-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
+        The Science of The&nbsp;O&nbsp;Concept<sup class="text-[0.45em] text-teal">™</sup>
+      </h2>
+      <p class="mt-6 max-w-xl text-[15px] leading-relaxed text-cream/60">
+        Four clinical phases, one coherent protocol — created by Dr Wakil, and now taught by him to physicians
+        worldwide.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap relative grid gap-10 pt-14 pb-24 md:pb-32 lg:grid-cols-2 lg:gap-16 lg:pt-6">
+    <!-- LEFT — pinned visual -->
+    <div>
+      <div class="science-sticky flex flex-col justify-center py-10 lg:py-0">
+        <div class="hairline-teal relative overflow-hidden bg-ink2">
+          <img
+            src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-9-e1733484520778.jpg"
+            alt="Advanced clinical technology at Dr SW Clinics, Harley Street"
+            class="h-[300px] w-full object-cover opacity-60 md:h-[380px]"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
+          <!-- luminous helix line-art overlay -->
+          <svg class="absolute right-4 top-4 h-28 w-14 opacity-70 md:h-40 md:w-20" viewBox="0 0 60 160" fill="none" aria-hidden="true">
+            <path d="M12 0 C48 20 48 40 12 60 C-24 80 -24 100 12 120 C48 140 48 160 12 180" transform="translate(9 -10)" stroke="#2DD4BF" stroke-width="1" opacity="0.9" />
+            <path d="M48 0 C12 20 12 40 48 60 C84 80 84 100 48 120 C12 140 12 160 48 180" transform="translate(-9 -10)" stroke="#C9A96E" stroke-width="1" opacity="0.8" />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <line x1="16" x2="44" y1={i * 20 + 2} y2={i * 20 + 2} stroke="#2DD4BF" stroke-width="0.6" opacity="0.5" />
+            ))}
+          </svg>
+          <div class="absolute bottom-5 left-6 right-6">
+            <p class="text-[9px] font-semibold tracking-[0.3em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
+          </div>
+        </div>
+
+        <!-- step indicator, driven by ScrollTrigger -->
+        <ol class="mt-8 space-y-4" data-science-steps>
+          {
+            panels.map((p, i) => (
+              <li class:list={['science-step', i === 0 && 'active']} data-step={i}>
+                <div class="flex items-baseline gap-4">
+                  <span class="science-step-num font-serif text-lg text-cream/50">{p.step}</span>
+                  <span class="text-[11px] font-semibold tracking-[0.3em] text-cream uppercase">{p.title}</span>
+                </div>
+                <span class="science-step-bar mt-2 block h-px w-full bg-gradient-to-r from-teal to-tealdeep/40" aria-hidden="true" />
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <!-- spacer keeps the visual pinned through the right column's panels (desktop only) -->
+      <div class="hidden lg:block lg:h-[260vh]" aria-hidden="true"></div>
+
+      <!-- handover content — scrolls through while the right panel freezes -->
+      <figure class="relative mt-10 hidden overflow-hidden lg:block lg:min-h-[90vh]">
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-10.jpg"
+          alt="Treatment suite at Dr SW Clinics"
+          class="h-[70vh] w-full object-cover"
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/40" aria-hidden="true"></div>
+        <figcaption class="mt-6">
+          <p class="font-serif text-3xl leading-snug text-cream">
+            Nineteen thousand procedures of evidence — <span class="text-teal italic">one</span> protocol.
+          </p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- RIGHT — scrolling panels -->
+    <div>
+      {
+        panels.map((p, i) => (
+          <article class="science-panel flex flex-col justify-center py-14 lg:min-h-[85vh] lg:py-0" data-panel={i}>
+            <div class="hairline-teal relative bg-ink2/60 p-9 backdrop-blur-sm md:p-12">
+              <span class="absolute -top-4 left-8 bg-ink px-3 font-serif text-4xl text-teal">{p.step}</span>
+              <h3 class="mt-2 font-serif text-3xl text-cream md:text-4xl">{p.title}</h3>
+              <p class="mt-5 text-[15px] leading-[1.9] text-cream/65">{p.body}</p>
+              <p class="hairline-teal-t mt-7 pt-5 text-[10px] font-semibold tracking-[0.22em] text-teal/80 uppercase">{p.detail}</p>
+            </div>
+          </article>
+        ))
+      }
+
+      <!-- closing panel — freezes while the left column scrolls through -->
+      <div class="science-final flex flex-col justify-center py-14 lg:min-h-[calc(100vh-5rem)] lg:py-0">
+        <div class="gold-glow relative bg-ink2 p-9 md:p-12">
+          <p class="eyebrow !text-[10px]">The result</p>
+          <p class="mt-5 font-serif text-3xl leading-snug text-cream md:text-4xl">
+            Function, sensation and confidence — <span class="text-gold italic">measured, restored, maintained.</span>
+          </p>
+          <p class="mt-6 text-sm leading-[1.85] text-cream/60">
+            Not a procedure but a protocol: diagnostics first, regeneration at the cause, restoration with energy-based
+            medicine, and optimisation that never stands still. This is the method the world now trains in — with the
+            physician who created it.
+          </p>
+          <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+            <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
+            <a href="#finder" class="btn btn-teal" data-magnetic>Find Your Treatment</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+---
+/**
+ * Recognition band — a draggable, auto-scrolling stream of award badges,
+ * short testimonials and press marks, anchored by a fixed intro cell of
+ * Dr Wakil at the left edge. Drag/auto-scroll logic lives in main.js.
+ */
+const badges = [
+  'https://drswclinics.com/wp-content/uploads/2024/06/award-1.png',
+  'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-1b.png',
+  'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-2.png',
+  'https://drswclinics.com/wp-content/uploads/2022/08/award1.png',
+  'https://drswclinics.com/wp-content/uploads/2022/08/award2.png',
+  'https://drswclinics.com/wp-content/uploads/2022/08/award3.png',
+  'https://drswclinics.com/wp-content/uploads/2022/08/award4.png',
+  'https://drswclinics.com/wp-content/uploads/2022/08/award5.png',
+];
+
+const quotes = [
+  { text: 'One consultation changed everything. Six months on, I feel like myself again.', who: 'Mr A., 54, London' },
+  { text: 'Nothing was rushed, nothing was assumed. The results quietly transformed my confidence.', who: 'Mrs L., 47, Surrey' },
+  { text: 'He treated the cause, not the symptom — for both of us.', who: 'Mr & Mrs D., Kensington' },
+  { text: 'You are quite clearly in the hands of the person who wrote the field.', who: 'Patient, Harley Street' },
+];
+
+const press = ['Channel 4', 'The Times', 'Daily Mail', 'Tatler', 'Harper’s Bazaar', 'GQ', 'Sky News'];
+
+/* Interleave: badge · quote · press · badge · quote … one elegant stream */
+type Cell =
+  | { kind: 'badge'; src: string }
+  | { kind: 'quote'; text: string; who: string }
+  | { kind: 'press'; name: string };
+
+const stream: Cell[] = [];
+const max = Math.max(badges.length, quotes.length, press.length);
+for (let i = 0; i < max; i++) {
+  if (badges[i]) stream.push({ kind: 'badge', src: badges[i] });
+  if (quotes[i]) stream.push({ kind: 'quote', text: quotes[i].text, who: quotes[i].who });
+  if (press[i]) stream.push({ kind: 'press', name: press[i] });
+}
+---
+
+<section class="hairline-t hairline-b relative overflow-hidden bg-[#070708] py-14 md:py-16" aria-label="Awards, testimonials and press recognition">
+  <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+
+  <div class="relative flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-0">
+    <!-- fixed intro cell — Dr Wakil anchors the stream -->
+    <div class="relative z-10 flex shrink-0 items-center gap-5 border-gold/25 bg-[#070708] px-6 md:px-10 lg:w-[340px] lg:border-r">
+      <div class="hairline h-20 w-20 shrink-0 overflow-hidden rounded-full p-1 md:h-24 md:w-24">
+        <img
+          src="https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg"
+          alt="Dr Sherif Wakil"
+          class="h-full w-full rounded-full object-cover object-top"
+          loading="lazy"
+          width="96"
+          height="96"
+        />
+      </div>
+      <div>
+        <p class="font-serif text-xl leading-tight text-cream md:text-2xl">Dr Sherif Wakil</p>
+        <p class="mt-1.5 text-[9px] font-semibold tracking-[0.28em] text-gold uppercase">Creator of The O Concept™</p>
+        <p class="mt-1 text-[9px] tracking-[0.2em] text-cream/40 uppercase">World’s most awarded protocol</p>
+      </div>
+    </div>
+
+    <!-- draggable auto-scrolling stream -->
+    <div class="recog-viewport min-w-0 flex-1" data-recog>
+      <div class="recog-track py-1">
+        {
+          [0, 1].map((copy) => (
+            <div class="flex" aria-hidden={copy === 1 ? 'true' : undefined}>
+              {stream.map((cell) => (
+                <div class="recog-card" data-tilt>
+                  {cell.kind === 'badge' && (
+                    <div class="flex h-full min-h-[150px] items-center justify-center">
+                      <div class="flex h-[120px] w-full items-center justify-center rounded-md bg-cream/95 p-4">
+                        <img src={cell.src} alt="Industry award recognising Dr SW Clinics" class="max-h-full max-w-full object-contain" loading="lazy" draggable="false" />
+                      </div>
+                    </div>
+                  )}
+                  {cell.kind === 'quote' && (
+                    <blockquote class="flex h-full flex-col justify-between">
+                      <p class="font-serif text-[1.05rem] leading-snug text-cream/85 italic">
+                        <span class="mr-1 text-2xl leading-none text-gold" aria-hidden="true">“</span>
+                        {cell.text}
+                      </p>
+                      <footer class="mt-4 text-[9px] font-semibold tracking-[0.25em] text-gold/80 uppercase">{cell.who}</footer>
+                    </blockquote>
+                  )}
+                  {cell.kind === 'press' && (
+                    <div class="flex h-full min-h-[150px] flex-col items-center justify-center gap-3">
+                      <span class="text-[8.5px] font-semibold tracking-[0.35em] text-cream/35 uppercase">As seen in</span>
+                      <span class="font-serif text-3xl text-cream/70">{cell.name}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

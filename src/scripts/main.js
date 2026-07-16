@@ -1,10 +1,12 @@
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { treatments, findTreatments, PATHWAY_LABELS } from '../data/treatments';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 /* ============================================================
    Smooth scrolling (Lenis) + ScrollTrigger sync
@@ -172,7 +174,130 @@ if (!reduced) {
 }
 
 /* ============================================================
-   Hero photography rotation — slow crossfade
+   Split-scroll science section — step indicator states.
+   (Pinning itself is CSS sticky; ScrollTrigger drives which
+   step is lit as each right-hand panel passes the viewport.)
+   ============================================================ */
+
+const scienceSteps = document.querySelectorAll('[data-science-steps] .science-step');
+if (scienceSteps.length) {
+  const setStep = (i) => {
+    scienceSteps.forEach((s, j) => s.classList.toggle('active', j === i));
+  };
+  document.querySelectorAll('.science-panel').forEach((panel) => {
+    const i = parseInt(panel.dataset.panel, 10);
+    ScrollTrigger.create({
+      trigger: panel,
+      start: 'top 60%',
+      end: 'bottom 40%',
+      onEnter: () => setStep(i),
+      onEnterBack: () => setStep(i),
+    });
+  });
+}
+
+/* ============================================================
+   Recognition band — auto-scroll + pointer drag
+   ============================================================ */
+
+document.querySelectorAll('[data-recog]').forEach((viewport) => {
+  const track = viewport.querySelector('.recog-track');
+  if (!track) return;
+
+  if (reduced) {
+    viewport.style.overflowX = 'auto';
+    viewport.style.cursor = 'default';
+    return;
+  }
+
+  let x = 0;
+  let dragging = false;
+  let hovering = false;
+  let startX = 0;
+  let startTrackX = 0;
+
+  const half = () => track.scrollWidth / 2;
+
+  gsap.ticker.add((_, dt) => {
+    if (!dragging && !hovering) x -= dt * 0.028;
+    const h = half();
+    if (h > 0) {
+      if (x <= -h) x += h;
+      if (x > 0) x -= h;
+    }
+    track.style.transform = `translate3d(${x}px,0,0)`;
+  });
+
+  viewport.addEventListener('mouseenter', () => (hovering = true));
+  viewport.addEventListener('mouseleave', () => (hovering = false));
+
+  viewport.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startTrackX = x;
+    viewport.classList.add('dragging');
+    viewport.setPointerCapture(e.pointerId);
+  });
+  viewport.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    x = startTrackX + (e.clientX - startX);
+  });
+  const endDrag = () => {
+    dragging = false;
+    viewport.classList.remove('dragging');
+  };
+  viewport.addEventListener('pointerup', endDrag);
+  viewport.addEventListener('pointercancel', endDrag);
+});
+
+/* ============================================================
+   Micro-interactions — magnetic buttons + 3D tilt cards
+   ============================================================ */
+
+if (!reduced && finePointer) {
+  document.querySelectorAll('[data-magnetic]').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
+      const dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+      el.style.transform = `translate(${dx * 5}px, ${dy * 4}px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+
+  document.querySelectorAll('[data-tilt]').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5;
+      const dy = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(850px) rotateX(${(-dy * 3.5).toFixed(2)}deg) rotateY(${(dx * 3.5).toFixed(2)}deg)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+}
+
+/* ============================================================
+   Three.js — lazy-mounted only where it earns its keep
+   ============================================================ */
+
+if (
+  document.querySelector('[data-three]') &&
+  !reduced &&
+  window.matchMedia('(min-width: 1024px)').matches
+) {
+  import('./three-fx.js')
+    .then((m) => m.initThree())
+    .catch(() => {
+      /* chunk failed to load — SVG fallbacks remain */
+    });
+}
+
+/* ============================================================
+   Hero photography rotation — slow crossfade (legacy pages)
    ============================================================ */
 
 const heroSlides = document.querySelectorAll('.hero-slide');
@@ -284,8 +409,121 @@ document.querySelectorAll('form[data-demo]').forEach((form) => {
   });
 });
 
+/* Base-aware URL prefix — resolves to the GitHub Pages subpath in production. */
+const BASE = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : import.meta.env.BASE_URL + '/';
+
 /* ============================================================
-   AI Treatment Match — client-side quiz engine
+   Condition finder — instant, client-side, nothing stored
+   ============================================================ */
+
+const finderInput = document.getElementById('finder-input');
+if (finderInput) {
+  const chips = document.querySelectorAll('[data-finder-chips] .chip');
+  const results = document.querySelector('[data-finder-results]');
+  const empty = document.querySelector('[data-finder-empty]');
+
+  const card = (t, query) => {
+    const q = query.trim().toLowerCase();
+    const matched = t.conditions.filter(
+      (c) => !q || c.clinical.toLowerCase().includes(q) || c.plain.toLowerCase().includes(q)
+    );
+    const shown = (matched.length ? matched : t.conditions).slice(0, 3);
+    return `
+      <a href="${BASE}treatments#${t.slug}" class="finder-card group flex flex-col p-7">
+        <div class="flex items-start justify-between gap-4">
+          <h3 class="font-serif text-2xl text-cream">${t.name}</h3>
+          <span class="pathway-tag ${t.pathway} shrink-0">${PATHWAY_LABELS[t.pathway]}</span>
+        </div>
+        <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">${t.desc}</p>
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          ${shown.map((c) => `<span class="condition-chip">${c.clinical}</span>`).join('')}
+        </div>
+        <span class="mt-6 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-teal uppercase">
+          View treatment <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
+        </span>
+      </a>`;
+  };
+
+  const render = (query) => {
+    const q = query.trim();
+    chips.forEach((c) => c.classList.toggle('active', c.dataset.condition.toLowerCase() === q.toLowerCase()));
+    if (!q) {
+      results.innerHTML = '';
+      empty?.classList.add('hidden');
+      return;
+    }
+    const matches = findTreatments(q).slice(0, 6);
+    results.innerHTML = matches.map((t) => card(t, q)).join('');
+    empty?.classList.toggle('hidden', matches.length > 0);
+  };
+
+  finderInput.addEventListener('input', () => render(finderInput.value));
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const value = chip.classList.contains('active') ? '' : chip.dataset.condition;
+      finderInput.value = value;
+      render(value);
+    });
+  });
+}
+
+/* ============================================================
+   /treatments — pathway filter tabs
+   ============================================================ */
+
+const filterWrap = document.querySelector('[data-treatment-filters]');
+if (filterWrap) {
+  const tabs = filterWrap.querySelectorAll('.filter-tab');
+  const boxes = document.querySelectorAll('[data-treatment-grid] [data-pathway]');
+  const emptyMsg = document.querySelector('[data-treatment-empty]');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.toggle('active', t === tab));
+      const f = tab.dataset.filter;
+      let visible = 0;
+      boxes.forEach((box) => {
+        const show = f === 'all' || box.dataset.pathway === f;
+        box.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      emptyMsg?.classList.toggle('hidden', visible > 0);
+      ScrollTrigger.refresh();
+    });
+  });
+}
+
+/* ============================================================
+   Video facades — lite-embed: iframe loads only on click
+   ============================================================ */
+
+document.querySelectorAll('[data-video-facade]').forEach((facade) => {
+  const play = () => {
+    const id = facade.dataset.videoId;
+    if (!id || id.startsWith('REPLACE_WITH')) {
+      facade.innerHTML = `
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center">
+          <span class="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Video slot reserved</span>
+          <p class="max-w-xs text-sm leading-relaxed text-cream/55">The final video is being selected from Dr Wakil's library — the real embed will load here.</p>
+        </div>`;
+      return;
+    }
+    facade.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  };
+  facade.addEventListener('click', play, { once: true });
+  facade.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      play();
+    }
+  });
+});
+
+/* ============================================================
+   Confidential Self-Assessment — client-side, reviewed-by-humans
+   framing throughout. Recommendations are drawn from the shared
+   treatments data model; nothing is stored or sent.
    ============================================================ */
 
 const QUIZ_STEPS = [
@@ -298,8 +536,8 @@ const QUIZ_STEPS = [
     options: [
       'Function & performance',
       'Sensation & satisfaction',
-      'Hormonal balance, energy & drive',
-      'Confidence & intimacy',
+      'Energy, hormones & weight',
+      'Long-term health & optimisation',
     ],
   },
   {
@@ -317,37 +555,57 @@ const QUIZ_STEPS = [
   },
 ];
 
-/* Base-aware URL prefix — resolves to the GitHub Pages subpath in production. */
-const BASE = import.meta.env.BASE_URL.endsWith('/')
-  ? import.meta.env.BASE_URL
-  : import.meta.env.BASE_URL + '/';
+const bySlug = (slug) => treatments.find((t) => t.slug === slug);
 
-const QUIZ_RESULTS = [
-  {
-    title: 'The O Concept™ for Him — Regenerative Pathway',
-    body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then typically combine regenerative and energy-based therapies in a protocol built around your diagnostics.',
-    items: ['P-Shot® — platelet-rich plasma therapy', 'O Concept™ ESWT — low-intensity shockwave', 'Endo Test — full hormonal diagnostics'],
-    href: `${BASE}for-him`,
-  },
-  {
-    title: 'The O Concept™ for Her — Restorative Pathway',
-    body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then design a gentle, multi-modality protocol focused on comfort, sensation and confidence.',
-    items: ['O-Shot® — platelet-rich plasma therapy', 'Ultra Femme 360 — radiofrequency rejuvenation', 'Endo Test — full hormonal diagnostics'],
-    href: `${BASE}for-her`,
-  },
-  {
-    title: 'The O Concept™ — Couples Programme',
-    body: 'Based on your answers, we would recommend parallel consultations with aligned protocols, so both partners progress together under one clinical team — with complete discretion for each of you.',
-    items: ['Paired confidential consultations', 'Individual Endo Test diagnostics', 'Membership — continuity of care for two'],
-    href: `${BASE}membership`,
-  },
-  {
+/* Likely pathway from (who, concern) — longevity concerns override */
+function quizResult(answers) {
+  const who = answers[0] ?? 3;
+  const concern = answers[1] ?? 0;
+
+  if (concern === 2 || concern === 3) {
+    return {
+      pathway: 'longevity',
+      title: 'The O Concept™ Longevity — Optimisation Pathway',
+      body: 'Your answers point towards energy, hormones and long-term optimisation. We would begin with a confidential consultation and the Endo Test, then build a physician-led programme around your diagnostics.',
+      matches: ['endo-test', 'hormone-optimisation', 'iv-nutrition'].map(bySlug),
+      href: `${BASE}longevity`,
+    };
+  }
+  if (who === 0) {
+    return {
+      pathway: 'him',
+      title: 'The O Concept™ for Him — Regenerative Pathway',
+      body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then typically combine regenerative and energy-based therapies in a protocol built around your diagnostics.',
+      matches: ['p-shot', 'eswt', 'endo-test'].map(bySlug),
+      href: `${BASE}for-him`,
+    };
+  }
+  if (who === 1) {
+    return {
+      pathway: 'her',
+      title: 'The O Concept™ for Her — Restorative Pathway',
+      body: 'Based on your answers, we would begin with a confidential consultation and Endo Test, then design a gentle, multi-modality protocol focused on comfort, sensation and confidence.',
+      matches: ['o-shot', 'ultra-femme-360', 'endo-test'].map(bySlug),
+      href: `${BASE}for-her`,
+    };
+  }
+  if (who === 2) {
+    return {
+      pathway: null,
+      title: 'The O Concept™ — Couples Programme',
+      body: 'We would recommend parallel consultations with aligned protocols, so both partners progress together under one clinical team — with complete discretion for each of you.',
+      matches: ['endo-test', 'p-shot', 'o-shot'].map(bySlug),
+      href: `${BASE}membership`,
+    };
+  }
+  return {
+    pathway: null,
     title: 'A Confidential Starting Point',
     body: 'That is entirely understandable. We suggest beginning with a private consultation and Endo Test — a clear, clinical picture of where you are, with no obligation and no assumptions.',
-    items: ['Confidential consultation at 77 Harley Street', 'Endo Test — full hormonal diagnostics', 'A written protocol, only if appropriate'],
+    matches: ['endo-test'].map(bySlug),
     href: `${BASE}#begin`,
-  },
-];
+  };
+}
 
 function initQuiz(root) {
   let step = 0;
@@ -355,6 +613,24 @@ function initQuiz(root) {
 
   const progressBar = (pct) =>
     `<div class="h-px w-full bg-cream/10"><div class="h-px bg-gold transition-all duration-700" style="width:${pct}%"></div></div>`;
+
+  function renderReviewSuccess() {
+    root.innerHTML = `
+      <div class="quiz-inner py-6 text-center">
+        <div class="hairline mx-auto flex h-14 w-14 items-center justify-center rounded-full text-xl text-gold">✓</div>
+        <h3 class="mt-6 font-serif text-2xl text-cream">Request received.</h3>
+        <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/60">
+          A clinician will review and respond within 24 hours — discreetly, and with no obligation.
+        </p>
+        <button type="button" class="quiz-restart btn btn-ghost mt-8">Start Again</button>
+        <p class="mt-5 text-[10px] uppercase tracking-[0.2em] text-cream/30">Prototype — nothing is stored or sent</p>
+      </div>`;
+    root.querySelector('.quiz-restart')?.addEventListener('click', () => {
+      step = 0;
+      answers.length = 0;
+      render(1);
+    });
+  }
 
   function render(direction = 1) {
     let html = '';
@@ -373,29 +649,33 @@ function initQuiz(root) {
               .map((opt, i) => `<button type="button" class="quiz-option" data-i="${i}">${opt}</button>`)
               .join('')}
           </div>
-          <p class="mt-6 text-[10px] uppercase tracking-[0.2em] text-cream/30">Confidential · Nothing is stored in this prototype</p>
+          <p class="mt-6 text-[10px] uppercase tracking-[0.2em] text-cream/30">Confidential · Reviewed by our clinical team · Nothing is stored in this prototype</p>
         </div>`;
     } else {
-      const r = QUIZ_RESULTS[answers[0] ?? 3];
+      const r = quizResult(answers);
       html = `
         <div class="quiz-inner">
           ${progressBar(100)}
-          <p class="eyebrow mt-7 !text-[10px]">Your recommended pathway</p>
+          <div class="mt-7 flex items-center gap-3">
+            <p class="eyebrow !text-[10px]">Your likely pathway</p>
+            ${r.pathway ? `<span class="pathway-tag ${r.pathway}">${PATHWAY_LABELS[r.pathway]}</span>` : ''}
+          </div>
           <h3 class="mt-3 font-serif text-2xl leading-snug text-cream">${r.title}</h3>
           <p class="mt-4 text-sm leading-relaxed text-cream/60">${r.body}</p>
           <ul class="mt-6 space-y-3">
-            ${r.items
+            ${r.matches
+              .filter(Boolean)
               .map(
-                (item) =>
-                  `<li class="hairline flex items-center gap-3 px-4 py-3 text-sm text-cream/80"><span class="h-1 w-1 shrink-0 rounded-full bg-gold"></span>${item}</li>`
+                (t) =>
+                  `<li class="hairline flex items-center gap-3 px-4 py-3 text-sm text-cream/80"><span class="h-1 w-1 shrink-0 rounded-full bg-gold"></span><span>${t.name}<span class="ml-2 text-cream/45">— ${t.tag.toLowerCase()}</span></span></li>`
               )
               .join('')}
           </ul>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="${r.href}" class="btn btn-gold flex-1">Book a Consultation</a>
-            <button type="button" class="quiz-restart btn btn-ghost flex-1">Start Again</button>
+            <button type="button" class="quiz-review btn btn-teal flex-1">Request a Doctor's Review Online</button>
           </div>
-          <p class="mt-5 text-center text-[10px] uppercase tracking-[0.2em] text-cream/30">Simulated recommendation — prototype only</p>
+          <p class="mt-5 text-center text-[10px] uppercase tracking-[0.2em] text-cream/30">Your responses are reviewed by our clinical team — Dr Wakil's team will recommend your pathway</p>
         </div>`;
     }
 
@@ -412,11 +692,7 @@ function initQuiz(root) {
       step -= 1;
       render(-1);
     });
-    root.querySelector('.quiz-restart')?.addEventListener('click', () => {
-      step = 0;
-      answers.length = 0;
-      render(1);
-    });
+    root.querySelector('.quiz-review')?.addEventListener('click', renderReviewSuccess);
 
     if (!reduced) {
       gsap.fromTo(
@@ -433,7 +709,7 @@ function initQuiz(root) {
 document.querySelectorAll('[data-quiz]').forEach(initQuiz);
 
 /* ============================================================
-   Discreet AI Concierge — scripted prototype
+   Discreet Patient Concierge — scripted prototype (routes to humans)
    ============================================================ */
 
 const fab = document.getElementById('concierge-fab');
@@ -462,7 +738,7 @@ const CONCIERGE_SCRIPT = [
 ];
 
 const CONCIERGE_FALLBACK =
-  'Thank you — in the live version I will answer that directly, triage your concern and offer appointment times, all under clinical supervision. For this prototype, may I suggest one of the questions below, or a call on +44 (0)20 3006 8459?';
+  'Thank you — in the live version I will pass that straight to the right member of our clinical team and offer appointment times. For this prototype, may I suggest one of the questions below, or a call on +44 (0)20 3006 8459?';
 
 let conciergeStarted = false;
 
@@ -474,7 +750,7 @@ function addMessage(text, who) {
   log.scrollTop = log.scrollHeight;
 }
 
-function aiReply(text) {
+function conciergeReply(text) {
   const typing = document.createElement('div');
   typing.className = 'chat-msg from-ai chat-typing';
   typing.innerHTML = '<span></span><span></span><span></span>';
@@ -496,7 +772,7 @@ function renderChips() {
     b.textContent = item.chip;
     b.addEventListener('click', () => {
       addMessage(item.chip, 'user');
-      aiReply(item.reply);
+      conciergeReply(item.reply);
     });
     chipsWrap.appendChild(b);
   });
@@ -511,8 +787,8 @@ if (fab && panel) {
     if (open && !conciergeStarted) {
       conciergeStarted = true;
       renderChips();
-      aiReply(
-        'Good evening. I am the O Concept™ concierge — fully confidential and clinically supervised. How may I help you today?'
+      conciergeReply(
+        'Good evening. I am the O Concept™ concierge — fully confidential, and everything you tell me reaches a human clinician. How may I help you today?'
       );
     }
   });
@@ -527,6 +803,6 @@ if (fab && panel) {
     if (!value) return;
     addMessage(value, 'user');
     conciergeInput.value = '';
-    aiReply(CONCIERGE_FALLBACK);
+    conciergeReply(CONCIERGE_FALLBACK);
   });
 }

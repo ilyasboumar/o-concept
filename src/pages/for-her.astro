@@ -3,49 +3,53 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import { treatmentsByPathway } from '../data/treatments';
 
-const treatments = [
+const herTreatments = treatmentsByPathway('her');
+
+const faqs = [
   {
-    name: 'O-Shot®',
-    tag: 'Regenerative',
-    desc: 'Platelet-rich plasma therapy for sensation, natural lubrication and urinary confidence — brought to the UK by Dr Wakil.',
+    q: 'Is it normal to feel dryness and discomfort during intimacy after menopause?',
+    a: 'Common, yes — but "normal to endure" is a different question. Dryness, irritation and discomfort through menopause are caused by measurable tissue and hormonal changes, and they respond well to treatment: the O-Shot®, CO2RE Intima laser and gentle radiofrequency all restore tissue quality without surgery or downtime.',
   },
   {
-    name: 'ThermiVa',
-    tag: 'Radiofrequency',
-    desc: 'Gentle radiofrequency for tissue laxity and comfort, with no downtime and no anaesthetic required.',
+    q: 'Why do I leak when I laugh, cough or exercise — and can it be fixed without surgery?',
+    a: 'Stress urinary incontinence usually reflects pelvic-floor weakening and tissue laxity, often after childbirth or through menopause. Non-surgical options — the O-Shot®, the O Concept™ Chair (electromagnetic pelvic-floor strengthening, fully clothed) and radiofrequency treatments — address the cause for most women.',
   },
   {
-    name: 'CO2RE Intima',
-    tag: 'Laser',
-    desc: 'Fractional CO2 laser restoring mucosal health — particularly valued after childbirth and through menopause.',
+    q: 'Sensation isn’t what it used to be. Is there actually a treatment for that?',
+    a: 'Yes. Loss of sensation has physical causes — tissue, vascular and nerve changes that regenerative medicine can address. The O-Shot® uses your own platelet-rich plasma to regenerate tissue, and Dr Wakil’s signature Clitoxin™ protocol was developed specifically for sensation and ease of arousal.',
   },
   {
-    name: 'Ultra Femme 360',
-    tag: 'Radiofrequency',
-    desc: 'Complete 360° radiofrequency rejuvenation, internal and external, in a course of comfortable eight-minute sessions.',
-  },
-  {
-    name: 'Clitoxin™',
-    tag: 'Signature',
-    desc: 'A pioneering protocol developed by Dr Wakil to enhance sensation and ease of arousal — precise and discreet.',
-  },
-  {
-    name: 'O Concept™ Chair for Her',
-    tag: 'Non-invasive',
-    desc: 'Electromagnetic pelvic-floor strengthening for continence and sensation. Fully clothed, entirely comfortable.',
-  },
-  {
-    name: 'DAFNE',
-    tag: 'Signature',
-    desc: 'Dr Wakil’s signature multi-layer rejuvenation of the external intimate area — tone, volume and skin quality.',
+    q: 'I’m embarrassed to talk about this. What is the consultation actually like?',
+    a: 'Private, unhurried, and led by listening. Nothing is assumed and nothing is rushed; a confidential conversation with a female member of our care team is always available on request. Most patients tell us the anticipation was far harder than the appointment.',
   },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const procedureSchema = herTreatments.map((t) => ({
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: t.name,
+  description: t.desc,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  relevantSpecialty: 'Female intimate health and rejuvenation',
+}));
 ---
 
 <Base
-  title="The O Concept™ for Her — Female Intimate Health | Harley Street"
-  description="Restorative intimate health for women — O-Shot®, Ultra Femme 360, CO2RE Intima and more, delivered gently and confidentially on Harley Street."
+  title="Vaginal Laxity, Dryness & Incontinence Treatment — The O Concept™ for Her | Harley Street"
+  description="Treatment for vaginal laxity, dryness, urinary incontinence, menopause symptoms and loss of sensation — O-Shot®, Ultra Femme 360, CO2RE Intima and Dr Wakil's signature protocols, delivered gently and confidentially at 77 Harley Street."
+  schema={[faqSchema, ...procedureSchema]}
 >
   <PageHero
     theme="rose"
@@ -54,8 +58,14 @@ const treatments = [
     sub="Childbirth, menopause, time — a woman's body carries every chapter. Comfort, sensation and confidence are not luxuries to be endured without; they can be gently, medically restored."
   />
 
-  <section class="bg-ink py-24 md:py-32">
-    <div class="wrap">
+  <section class="relative bg-ink py-24 md:py-32">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(110,30,43,0.12), transparent 65%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="wrap relative">
       <div class="grid gap-12 lg:grid-cols-12" data-reveal>
         <div class="lg:col-span-5">
           <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Heard, first</p>
@@ -77,15 +87,44 @@ const treatments = [
 
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
-          treatments.map((t) => (
-            <div class="group flex flex-col border border-rose/20 bg-ink2 p-8 transition-colors duration-500 hover:border-rose/60">
+          herTreatments.map((t) => (
+            <div class="group flex flex-col border border-rose/20 bg-ink2 p-8 transition-colors duration-500 hover:border-rose/60" data-tilt>
               <span class="text-[9px] font-bold tracking-[0.3em] text-rose/80 uppercase">{t.tag}</span>
               <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
               <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-              <a href="#" class="mt-7 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-rose uppercase">
-                Learn more <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
-              </a>
+              <div class="mt-6 flex flex-wrap gap-1.5">
+                {t.conditions.slice(0, 3).map((c) => (
+                  <span class="condition-chip" title={c.plain}>{c.clinical}</span>
+                ))}
+              </div>
             </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="hairline-t bg-ink2 py-24 md:py-32">
+    <div class="wrap grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4" data-reveal>
+        <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Asked gently, often</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions women actually search.</h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+          A confidential conversation with a female member of our care team:
+          <a href="tel:+442030068459" class="text-rose">+44 (0)20 3006 8459</a>.
+        </p>
+      </div>
+      <div class="space-y-4 lg:col-span-8" data-reveal-child>
+        {
+          faqs.map((faq) => (
+            <details class="faq border border-rose/20 bg-ink px-7">
+              <summary class="flex items-center justify-between gap-6 py-6">
+                <span class="font-serif text-xl text-cream">{faq.q}</span>
+                <span class="faq-icon shrink-0 text-xl font-light text-rose" aria-hidden="true">＋</span>
+              </summary>
+              <p class="border-t border-rose/20 pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+            </details>
           ))
         }
       </div>

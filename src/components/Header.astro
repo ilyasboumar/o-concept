@@ -4,9 +4,12 @@ import { withBase } from '../lib/url';
 const links = [
   { label: 'For Him', slug: 'for-him' },
   { label: 'For Her', slug: 'for-her' },
-  { label: 'The Science', slug: '#science' },
+  { label: 'Longevity', slug: 'longevity' },
+  { label: 'Treatments', slug: 'treatments' },
   { label: 'Membership', slug: 'membership' },
+  { label: 'Training', slug: 'training' },
   { label: 'About Dr Wakil', slug: 'about-dr-wakil' },
+  { label: 'Shop', slug: 'shop' },
 ];
 const current = Astro.url.pathname.replace(/\/$/, '');
 const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug);
@@ -21,13 +24,13 @@ const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug)
       <span class="mt-1 text-[8.5px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by Dr SW Clinics</span>
     </a>
 
-    <nav class="hidden items-center gap-9 lg:flex" aria-label="Primary">
+    <nav class="hidden items-center gap-6 xl:flex" aria-label="Primary">
       {
         links.map((link) => (
           <a
             href={withBase(link.slug)}
             class:list={[
-              'text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+              'text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-400 hover:text-gold',
               isActive(link.slug) ? 'text-gold' : 'text-cream/75',
             ]}
           >
@@ -37,16 +40,13 @@ const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug)
       }
     </nav>
 
-    <div class="hidden items-center gap-7 lg:flex">
-      <a href="tel:+442030068459" class="text-[11px] font-medium tracking-[0.14em] text-cream/70 transition-colors duration-400 hover:text-gold">
-        +44 (0)20 3006 8459
-      </a>
+    <div class="hidden items-center gap-6 xl:flex">
       <a href="#begin" class="btn btn-ghost !px-6 !py-3">Book a Consultation</a>
     </div>
 
     <button
       id="menu-toggle"
-      class="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[7px] lg:hidden"
+      class="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[7px] xl:hidden"
       aria-label="Open menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
@@ -57,15 +57,15 @@ const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug)
   </div>
 </header>
 
-<div id="mobile-menu" class="fixed inset-0 z-[110] flex flex-col bg-ink/[0.98] backdrop-blur-xl lg:hidden" aria-hidden="true">
-  <div class="wrap flex h-20 items-center justify-between">
+<div id="mobile-menu" class="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-ink/[0.98] backdrop-blur-xl xl:hidden" aria-hidden="true">
+  <div class="wrap flex h-20 shrink-0 items-center justify-between">
     <span class="font-serif text-2xl text-cream">The O Concept<sup class="text-[0.55em] text-gold">™</sup></span>
     <button data-menu-close class="flex h-11 w-11 cursor-pointer items-center justify-center text-2xl font-light text-gold" aria-label="Close menu">✕</button>
   </div>
-  <nav class="wrap mt-10 flex flex-col gap-7" aria-label="Mobile">
+  <nav class="wrap mt-8 flex flex-col gap-5" aria-label="Mobile">
     {
       links.map((link) => (
-        <a href={withBase(link.slug)} class="hairline-b pb-6 font-serif text-3xl text-cream transition-colors duration-400 hover:text-gold">
+        <a href={withBase(link.slug)} class="hairline-b pb-5 font-serif text-[1.65rem] text-cream transition-colors duration-400 hover:text-gold">
           {link.label}
         </a>
       ))
