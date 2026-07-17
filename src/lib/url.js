@@ -7,3 +7,10 @@ export const withBase = (path = '') => {
   const base = import.meta.env.BASE_URL;
   return (base.endsWith('/') ? base : base + '/') + String(path).replace(/^\//, '');
 };
+
+/**
+ * Resolve an image reference from the data layer: absolute URLs
+ * (stable drswclinics.com hotlinks) pass through untouched; local
+ * site-relative paths ("images/…") get the GitHub Pages base prefix.
+ */
+export const imageUrl = (src) => (/^https?:\/\//.test(src) ? src : withBase(src));

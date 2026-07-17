@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import { withBase } from '../lib/url';
 
 const credentials = [
   'Registered with the General Medical Council (GMC)',
@@ -19,11 +20,15 @@ const milestones = [
   { mark: 'IAAGSW', text: 'President and Founder of the International Association of Aesthetic Gynaecology and Sexual Well-being.' },
   { mark: 'The O Concept™', text: 'Creator of the holistic, multi-modality protocol for male and female sexual dysfunction.' },
   { mark: '1st June', text: 'Founder of Andropause Recognition Day — bringing the "male menopause" into the open.' },
-  { mark: '19,000+', text: 'Procedures performed — with patients travelling from around the world to see him.' },
+  { mark: '25,000+', text: 'Cases worldwide — with patients travelling from every continent to see him, across clinics in London, Dubai and Egypt.' },
   { mark: '2024', text: 'Global Excellence Award — World’s Best Sexual Rejuvenation Clinic.' },
+  { mark: '2025', text: 'Global Excellence Awards — The O Concept™ Protocol.' },
 ];
 
 const badges = [
+  withBase('images/award-2025-global-excellence.png'),
+  withBase('images/award-ghp-2024.png'),
+  withBase('images/award-ghp-2024-b.png'),
   'https://drswclinics.com/wp-content/uploads/2024/06/award-1.png',
   'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-1b.png',
   'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-2.png',
@@ -101,9 +106,10 @@ const badges = [
             He is a pioneer of many techniques, often the first to introduce them to the United Kingdom — most
             significantly The O Concept™ for treating male and female sexual dysfunction. He was also the first UK
             practitioner to introduce the &ldquo;soft surgery&rdquo; approach, including non-surgical blepharoplasty,
-            and PRP therapies such as the Vampire Facelift™ and Vampire Breast Lift™. Having performed more than
-            19,000 procedures, he is an international trainer and speaker, and the President and Founder of the
-            International Association of Aesthetic Gynaecology and Sexual Well-being (IAAGSW).
+            and PRP therapies such as the Vampire Facelift™ and Vampire Breast Lift™. With more than 25,000 cases
+            worldwide — across clinics in London, Dubai and Egypt, headquartered at 77 Harley Street — he is an
+            international trainer and speaker, and the President and Founder of the International Association of
+            Aesthetic Gynaecology and Sexual Well-being (IAAGSW).
           </p>
         </div>
       </div>
@@ -112,15 +118,15 @@ const badges = [
         <div class="hairline p-2">
           <div class="overflow-hidden">
             <img
-              src="https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg"
-              alt="Dr Sherif Wakil in clinic at Dr SW Clinics, Harley Street"
-              class="aspect-[4/5] w-full scale-[1.08] object-cover"
+              src={withBase('images/dr-wakil-about.jpg')}
+              alt="Dr Sherif Wakil — official portrait"
+              class="aspect-[4/5] w-full object-cover object-top"
               loading="lazy"
               data-parallax="-4"
             />
           </div>
         </div>
-        <p class="mt-4 text-[10px] tracking-[0.25em] text-cream/40 uppercase">In clinic, Harley Street</p>
+        <p class="mt-4 text-[10px] tracking-[0.25em] text-cream/40 uppercase">Dr Sherif Wakil · Clinics in London, Dubai &amp; Egypt</p>
       </div>
     </div>
 
@@ -177,7 +183,10 @@ const badges = [
       </div>
 
       <p class="mt-14 max-w-3xl font-serif text-3xl leading-snug text-cream md:text-4xl" data-reveal>
-        <span class="text-gold">2024 Global Excellence Award</span> — World&rsquo;s Best Sexual Rejuvenation Clinic.
+        <span class="text-gold">Global Excellence Awards 2025</span> — The O Concept™ Protocol.
+      </p>
+      <p class="mt-4 max-w-3xl font-serif text-2xl leading-snug text-cream/75 md:text-3xl" data-reveal>
+        2024 — World&rsquo;s Best Sexual Rejuvenation Clinic.
       </p>
 
       <div class="hairline mt-12 bg-gold/20 p-px">
@@ -197,6 +206,53 @@ const badges = [
             ))
           }
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OUR PROMISE ============ -->
+  <section class="hairline-t relative overflow-hidden bg-ink2 py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative grid items-center gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-5" data-reveal>
+        <figure class="hairline p-2">
+          <div class="overflow-hidden">
+            <img
+              src={withBase('images/clinic-doctor.jpg')}
+              alt="A physician in consultation at Dr SW Clinics, Harley Street"
+              class="aspect-[4/5] w-full object-cover"
+              loading="lazy"
+              data-parallax="-4"
+            />
+          </div>
+          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/40 uppercase">
+            In consultation · 77 Harley Street
+          </figcaption>
+        </figure>
+      </div>
+      <div class="lg:col-span-7">
+        <p class="eyebrow" data-reveal>Our promise</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl" data-reveal data-delay="0.1">
+          Natural results. <span class="text-gold italic">Always.</span>
+        </h2>
+        <div class="mt-7 space-y-5 text-[15px] leading-[1.9] text-cream/65" data-reveal data-delay="0.2">
+          <p>
+            Our mission is simple to state and demanding to keep: to provide real solutions for sexual dysfunction and
+            to enhance sexual wellness — with kindness, discretion and privacy at every step.
+          </p>
+          <p>
+            Every patient is treated as a unique individual, with a bespoke solution built from their own diagnostics —
+            never a menu, never a template. And one promise holds above all: you will never leave looking
+            &ldquo;overdone&rdquo; or artificial. Natural results, always.
+          </p>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
+          {
+            ['Kindness, discretion & privacy', 'A bespoke solution for every patient', 'Never "overdone" — natural, always'].map((item) => (
+              <li class="hairline px-5 py-3 text-[10px] font-semibold tracking-[0.2em] text-gold/85 uppercase">{item}</li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </section>

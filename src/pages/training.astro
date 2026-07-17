@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import { withBase } from '../lib/url';
+import { trainingVideo } from '../data/videos';
 
 const fellowship = [
   {
@@ -51,7 +53,7 @@ const audience = [
         <div class="mt-8 space-y-6 text-[15px] leading-[1.9] text-cream/65">
           <p>
             Every field has its teachers, and then it has its source. Dr Sherif Wakil created The O Concept™, brought
-            the O-Shot® and P-Shot® to the United Kingdom, and has performed more than 19,000 procedures. When
+            the O-Shot® and P-Shot® to the United Kingdom, and has more than 25,000 cases worldwide. When
             physicians train with him, they are not learning a version of the protocol — they are learning the
             protocol, from the person who wrote it.
           </p>
@@ -144,7 +146,22 @@ const audience = [
           </p>
         </div>
       </div>
-      <div class="flex flex-col justify-center lg:col-span-6" data-reveal data-delay="0.15">
+      <div class="flex flex-col justify-center gap-6 lg:col-span-6" data-reveal data-delay="0.15">
+        <!-- credibility image — the first world congress -->
+        <figure class="hairline-teal bg-ink p-2">
+          <div class="overflow-hidden">
+            <img
+              src={withBase('images/iaagsw-congress.jpg')}
+              alt="Delegates at the 1st World IAAGSW Congress at the Royal Society of Medicine, London"
+              class="aspect-[16/9] w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">
+            1st World IAAGSW Congress — Royal Society of Medicine
+          </figcaption>
+        </figure>
+
         <div class="hairline-teal grid grid-cols-2 gap-px bg-teal/15">
           {
             [
@@ -159,6 +176,51 @@ const audience = [
               </div>
             ))
           }
+        </div>
+        <div>
+          <a href="https://iaagsw.com" target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
+            Visit the IAAGSW ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What delegates say -->
+  <section class="hairline-t relative bg-ink2 py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5" data-reveal>
+        <p class="eyebrow">What delegates say</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">From the course, in their words.</h2>
+        <blockquote class="mt-8">
+          <p class="font-serif text-2xl leading-snug text-cream/85 italic">
+            <span class="mr-1 font-serif text-4xl leading-none text-gold" aria-hidden="true">“</span>
+            {trainingVideo.quote}
+          </p>
+          <footer class="mt-5 text-[10px] font-semibold tracking-[0.28em] text-gold/80 uppercase">{trainingVideo.attribution}</footer>
+        </blockquote>
+      </div>
+      <div class="lg:col-span-7" data-reveal data-delay="0.15">
+        <div
+          class="video-facade group"
+          data-video-facade
+          data-video-id={trainingVideo.id}
+          role="button"
+          tabindex="0"
+          aria-label={`Play video: ${trainingVideo.title}`}
+        >
+          <img
+            src={`https://i.ytimg.com/vi/${trainingVideo.id}/hqdefault.jpg`}
+            alt=""
+            class="absolute inset-0 h-full w-full object-cover opacity-80"
+            loading="lazy"
+          />
+          <span class="video-play" aria-hidden="true">
+            <svg class="ml-1 h-5 w-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5.5v13l11-6.5-11-6.5Z" />
+            </svg>
+          </span>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import { imageUrl } from '../lib/url';
 import { treatmentsByPathway } from '../data/treatments';
 
 const herTreatments = treatmentsByPathway('her');
@@ -88,14 +89,25 @@ const procedureSchema = herTreatments.map((t) => ({
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           herTreatments.map((t) => (
-            <div class="group flex flex-col border border-rose/20 bg-ink2 p-8 transition-colors duration-500 hover:border-rose/60" data-tilt>
-              <span class="text-[9px] font-bold tracking-[0.3em] text-rose/80 uppercase">{t.tag}</span>
-              <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-              <div class="mt-6 flex flex-wrap gap-1.5">
-                {t.conditions.slice(0, 3).map((c) => (
-                  <span class="condition-chip" title={c.plain}>{c.clinical}</span>
-                ))}
+            <div class="group flex flex-col overflow-hidden border border-rose/20 bg-ink2 transition-colors duration-500 hover:border-rose/60" data-tilt>
+              <div class="relative aspect-[3/2] overflow-hidden">
+                <img
+                  src={imageUrl(t.image)}
+                  alt={t.imageAlt}
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-ink2 via-ink/20 to-ink/5" aria-hidden="true"></div>
+              </div>
+              <div class="flex flex-1 flex-col p-8 pt-6">
+                <span class="text-[9px] font-bold tracking-[0.3em] text-rose/80 uppercase">{t.tag}</span>
+                <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
+                <div class="mt-6 flex flex-wrap gap-1.5">
+                  {t.conditions.slice(0, 3).map((c) => (
+                    <span class="condition-chip" title={c.plain}>{c.clinical}</span>
+                  ))}
+                </div>
               </div>
             </div>
           ))

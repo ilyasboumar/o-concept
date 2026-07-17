@@ -2,15 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import { imageUrl } from '../lib/url';
 import { treatments, PATHWAY_LABELS } from '../data/treatments';
-
-/* Abstract clinical artwork per pathway — tasteful gradient treatments
-   until dedicated treatment photography is supplied. */
-const art: Record<string, string> = {
-  him: 'radial-gradient(ellipse 80% 65% at 75% 15%, rgba(201,169,110,0.22), transparent 60%), radial-gradient(ellipse 50% 40% at 15% 90%, rgba(201,169,110,0.08), transparent 65%), linear-gradient(165deg, #16161c, #0a0a0b 75%)',
-  her: 'radial-gradient(ellipse 80% 65% at 25% 15%, rgba(110,30,43,0.42), transparent 62%), radial-gradient(ellipse 50% 40% at 85% 90%, rgba(217,164,164,0.1), transparent 65%), linear-gradient(195deg, #16161c, #0a0a0b 75%)',
-  longevity: 'radial-gradient(ellipse 80% 65% at 50% 10%, rgba(45,212,191,0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 80% 95%, rgba(14,165,233,0.1), transparent 65%), linear-gradient(180deg, #16161c, #0a0a0b 75%)',
-};
 
 const procedureSchema = treatments.map((t) => ({
   '@context': 'https://schema.org',
@@ -36,7 +29,7 @@ const faqs = [
   },
   {
     q: 'Who performs the treatments?',
-    a: 'Dr Sherif Wakil and his dedicated clinical team at 77 Harley Street. Dr Wakil created The O Concept™, brought the O-Shot® and P-Shot® to the UK, and has performed more than 19,000 procedures — doctors from around the world train with him in these exact techniques.',
+    a: 'Dr Sherif Wakil and his world-class clinical team, headquartered at 77 Harley Street with clinics in London, Dubai and Egypt. Dr Wakil created The O Concept™, brought the O-Shot® and P-Shot® to the UK, and has more than 25,000 cases worldwide — doctors from around the world train with him in these exact techniques.',
   },
 ];
 
@@ -77,15 +70,17 @@ const faqSchema = {
         {
           treatments.map((t) => (
             <article class:list={['treatment-box group flex flex-col overflow-hidden bg-ink2', t.pathway]} data-pathway={t.pathway} id={t.slug} data-tilt>
-              <!-- abstract clinical artwork -->
-              <div class="relative h-44 shrink-0" style={`background:${art[t.pathway]}`}>
-                <svg class="absolute inset-0 h-full w-full opacity-40" viewBox="0 0 400 176" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                  <circle cx="330" cy="40" r="60" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.5" opacity="0.5" />
-                  <circle cx="330" cy="40" r="34" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.4" stroke-dasharray="2 8" opacity="0.6" />
-                  <path d="M0 140 Q100 100 200 130 T400 110" stroke={t.pathway === 'her' ? '#D9A4A4' : t.pathway === 'longevity' ? '#2DD4BF' : '#C9A96E'} stroke-width="0.6" opacity="0.45" />
-                </svg>
+              <!-- real treatment imagery — fixed ratio, uniform crop, dark overlay for legibility -->
+              <div class="relative aspect-[3/2] shrink-0 overflow-hidden">
+                <img
+                  src={imageUrl(t.image)}
+                  alt={t.imageAlt}
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/10" aria-hidden="true"></div>
                 <span class:list={['pathway-tag absolute top-5 left-6', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
-                <span class="absolute bottom-5 left-6 text-[9px] font-bold tracking-[0.3em] text-cream/50 uppercase">{t.tag}</span>
+                <span class="absolute bottom-4 left-6 text-[9px] font-bold tracking-[0.3em] text-cream/70 uppercase">{t.tag}</span>
               </div>
 
               <div class="flex flex-1 flex-col p-7">

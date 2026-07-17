@@ -15,33 +15,45 @@ import VideoTestimonials from '../components/VideoTestimonials.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
 
 const authorityBar = [
+  'Global Excellence Awards 2025 — The O Concept™ Protocol',
   '2024 World’s Best Sexual Rejuvenation Clinic',
   'Creator of The O Concept™',
-  '19,000+ procedures',
+  '25,000+ cases worldwide',
   'President & Founder, IAAGSW',
   'As seen on Channel 4',
 ];
 
+/* Real multidisciplinary team — a market leader flanked by a world-class bench */
 const team = [
   {
     name: 'Dr Sherif Wakil',
     role: 'Founder & Medical Director',
     img: 'https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg',
+    bio: 'Creator of The O Concept™; the first physician to bring the O-Shot® and P-Shot® to the UK. 25,000+ cases worldwide.',
   },
   {
-    name: 'Dr Amira Hassan',
-    role: 'Intimate Health Physician',
-    img: 'https://placehold.co/640x800/101014/C9A96E?text=Clinician+Portrait&font=playfair-display',
+    name: 'Dr Davood Fallahdar',
+    role: 'Plastic & Reconstructive Surgeon',
+    img: withBase('images/team-fallahdar.jpg'),
+    bio: 'Honours graduate in Medicine and Surgery (Milan); on the UK GMC specialist register for Plastic Surgery since 2000; former Consultant at Addenbrooke’s Hospital, Cambridge.',
   },
   {
-    name: 'Rachel Whitmore',
-    role: 'Lead Clinical Nurse',
-    img: 'https://placehold.co/640x800/101014/C9A96E?text=Clinician+Portrait&font=playfair-display',
+    name: 'Dr Ralph Rogers',
+    role: 'Consultant, Regenerative Orthopaedics & Sports Medicine',
+    img: withBase('images/team-rogers.jpg'),
+    bio: 'Internationally trained consultant treating chronic pain with innovative regenerative medicine.',
   },
   {
-    name: 'James Carter',
-    role: 'Patient Care Director',
-    img: 'https://placehold.co/640x800/101014/C9A96E?text=Team+Portrait&font=playfair-display',
+    name: 'Dr Fouad Ghaly',
+    role: 'Regenerative Medicine Specialist',
+    img: withBase('images/team-ghaly.jpg'),
+    bio: 'Board Certified, American Board of Regenerative Medicine; founder of the Ghaly Center for Regenerative Medicine; expert in PRP and bio-identical hormone therapy.',
+  },
+  {
+    name: 'Mr Myutan Kulendran',
+    role: 'Upper GI & Weight Loss Surgeon',
+    img: withBase('images/team-kulendran.jpg'),
+    bio: 'St George’s Hospital London; PhD in weight loss; FRCS (Gen).',
   },
 ];
 
@@ -148,10 +160,18 @@ const testimonials = [
             <span class="text-[9px] font-semibold tracking-[0.3em] text-gold/80 uppercase">The Originator</span>
           </figcaption>
         </figure>
-        <!-- floating award chip -->
-        <div class="gold-glow absolute -bottom-5 left-1/2 w-max max-w-[90%] -translate-x-1/2 bg-ink px-6 py-4 text-center lg:-left-10 lg:translate-x-0">
-          <p class="font-serif text-xl leading-none text-gold">2024</p>
-          <p class="mt-1.5 text-[8.5px] font-semibold tracking-[0.24em] text-cream/70 uppercase">World&rsquo;s Best Sexual Rejuvenation Clinic</p>
+        <!-- floating flagship-award chip -->
+        <div class="gold-glow absolute -bottom-5 left-1/2 flex w-max max-w-[92%] -translate-x-1/2 items-center gap-4 bg-ink px-5 py-3.5 lg:-left-10 lg:translate-x-0">
+          <img
+            src={withBase('images/award-2025-global-excellence.png')}
+            alt="Global Excellence Awards 2025 winner's badge — The O Concept™ Protocol"
+            class="h-14 w-auto shrink-0 rounded-sm bg-cream/95 p-1"
+            loading="lazy"
+          />
+          <div class="text-left">
+            <p class="font-serif text-lg leading-none text-gold">Global Excellence Awards 2025</p>
+            <p class="mt-1.5 text-[8.5px] font-semibold tracking-[0.24em] text-cream/70 uppercase">The O Concept™ Protocol</p>
+          </div>
         </div>
       </div>
     </div>
@@ -174,7 +194,7 @@ const testimonials = [
       <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
         <div class="lg:col-span-6" data-reveal>
           <blockquote class="font-serif text-4xl leading-[1.15] text-cream md:text-5xl">
-            More than <span class="text-gold">19,000 procedures.</span> The doctor who brought the O&#8209;Shot<sup class="text-[0.45em]">®</sup>
+            More than <span class="text-gold">25,000 cases worldwide.</span> The doctor who brought the O&#8209;Shot<sup class="text-[0.45em]">®</sup>
             and P&#8209;Shot<sup class="text-[0.45em]">®</sup> to the UK.
           </blockquote>
           <div class="mt-12 flex flex-wrap items-end gap-8">
@@ -222,8 +242,8 @@ const testimonials = [
 
       <dl class="hairline-t mt-20 grid grid-cols-2 gap-x-8 gap-y-12 pt-16 lg:grid-cols-4" data-reveal-child>
         <div class="flex flex-col">
-          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Procedures performed</dt>
-          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="19000" data-suffix="+">19,000+</dd>
+          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Cases worldwide</dt>
+          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="25000" data-suffix="+">25,000+</dd>
         </div>
         <div class="flex flex-col">
           <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Years of clinical practice</dt>
@@ -234,8 +254,8 @@ const testimonials = [
           <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl"><span data-count="1" data-suffix="st">1st</span></dd>
         </div>
         <div class="flex flex-col">
-          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">World’s Best Sexual Rejuvenation Clinic</dt>
-          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="2024" data-plain>2024</dd>
+          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Global Excellence Awards — The O Concept™ Protocol</dt>
+          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="2025" data-plain>2025</dd>
         </div>
       </dl>
     </div>
@@ -464,27 +484,23 @@ const testimonials = [
       <div class="max-w-2xl" data-reveal>
         <p class="eyebrow">The clinical team</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-          Led by Dr Wakil. Delivered by a dedicated clinical team.
+          Led by Dr Wakil. Delivered by a world-class clinical team.
         </h2>
+        <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+          A multidisciplinary bench of consultants — plastic surgery, regenerative orthopaedics, regenerative
+          medicine and metabolic surgery — practising as one team across clinics in London, Dubai and Egypt.
+        </p>
       </div>
 
-      <!--
-        CLIENT ASSET SLOT — wide team photograph.
-        Replace the placeholder src below with the real photo of Dr Wakil
-        together with his nurses and clinical team (landscape, ~1600×760).
-        The frame, overlay and caption are already styled for it.
-      -->
       <figure class="relative mt-14 overflow-hidden" data-reveal>
         <img
-          src="https://placehold.co/1600x760/101014/C9A96E?text=Dr+Wakil+%26+the+Clinical+Team+—+photo+slot&font=playfair-display"
-          alt="Dr Wakil with the clinical team at 77 Harley Street"
+          src={withBase('images/team-hero.jpg')}
+          alt="The Dr SW Clinics team at 77 Harley Street"
           class="h-[420px] w-full object-cover md:h-[520px]"
-          width="1600"
-          height="760"
           loading="lazy"
           data-parallax="-6"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
         <figcaption class="absolute bottom-8 left-8 max-w-md md:bottom-12 md:left-12">
           <p class="eyebrow !text-[9px]">77 Harley Street, London</p>
           <p class="mt-3 font-serif text-2xl leading-snug text-cream md:text-3xl">
@@ -493,22 +509,21 @@ const testimonials = [
         </figcaption>
       </figure>
 
-      <div class="mt-6 grid grid-cols-2 gap-6 lg:grid-cols-4" data-reveal-child>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           team.map((member) => (
-            <div class="group" data-tilt>
+            <div class="group hairline flex flex-col bg-ink p-3 pb-6" data-tilt>
               <div class="overflow-hidden">
                 <img
                   src={member.img}
                   alt={`Portrait of ${member.name}, ${member.role}`}
-                  class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  width="640"
-                  height="800"
+                  class="aspect-[4/5] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
                   loading="lazy"
                 />
               </div>
-              <h3 class="mt-5 font-serif text-xl text-cream">{member.name}</h3>
-              <p class="mt-1 text-[10px] font-semibold tracking-[0.25em] text-gold/80 uppercase">{member.role}</p>
+              <h3 class="mt-5 px-3 font-serif text-xl text-cream">{member.name}</h3>
+              <p class="mt-1 px-3 text-[10px] font-semibold tracking-[0.25em] text-gold/80 uppercase">{member.role}</p>
+              <p class="mt-3 px-3 text-[13px] leading-relaxed text-cream/55">{member.bio}</p>
             </div>
           ))
         }
