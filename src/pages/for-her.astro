@@ -3,6 +3,8 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
+import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
 import { treatmentsByPathway } from '../data/treatments';
 
@@ -59,6 +61,9 @@ const procedureSchema = herTreatments.map((t) => ({
     sub="Childbirth, menopause, time — a woman's body carries every chapter. Comfort, sensation and confidence are not luxuries to be endured without; they can be gently, medically restored."
   />
 
+  <FeaturedSpotlight pageKey="for-her" />
+  <TreatmentCarousel pathway="her" />
+
   <section class="relative bg-ink py-24 md:py-32">
     <div
       class="pointer-events-none absolute inset-0"
@@ -89,7 +94,7 @@ const procedureSchema = herTreatments.map((t) => ({
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           herTreatments.map((t) => (
-            <div class="group flex flex-col overflow-hidden border border-rose/20 bg-ink2 transition-colors duration-500 hover:border-rose/60" data-tilt>
+            <div id={t.slug} class="group flex flex-col overflow-hidden border border-rose/20 bg-ink2 transition-colors duration-500 hover:border-rose/60" data-tilt>
               <div class="relative aspect-[3/2] overflow-hidden">
                 <img
                   src={imageUrl(t.image)}

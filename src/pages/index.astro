@@ -13,6 +13,7 @@ import AndropauseSection from '../components/AndropauseSection.astro';
 import LongevityTeaser from '../components/LongevityTeaser.astro';
 import VideoTestimonials from '../components/VideoTestimonials.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
+import ScienceInterlude from '../components/ScienceInterlude.astro';
 
 const authorityBar = [
   'Global Excellence Awards 2025 — The O Concept™ Protocol',
@@ -82,21 +83,14 @@ const testimonials = [
 >
   <!-- ============ HERO — Dr Wakil-centric, instant market-leader read ============ -->
   <section class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink">
-    <!-- Three.js DNA helix mounts here; the SVG beneath is the mobile / reduced-motion fallback -->
-    <div class="absolute inset-0" data-three="helix" data-helix-parallax aria-hidden="true">
-      <svg
-        class="three-fallback absolute top-1/2 right-[-6%] h-[120vmin] w-[46vmin] -translate-y-1/2 opacity-25 md:right-[6%]"
-        viewBox="0 0 200 800"
-        fill="none"
-        preserveAspectRatio="xMidYMid meet"
-        aria-hidden="true"
-      >
-        <path d="M40 0 C160 50 160 100 40 150 C-80 200 -80 250 40 300 C160 350 160 400 40 450 C-80 500 -80 550 40 600 C160 650 160 700 40 750 C-20 775 -20 790 40 800" transform="translate(30 0)" stroke="#2DD4BF" stroke-width="1.1" opacity="0.85" />
-        <path d="M160 0 C40 50 40 100 160 150 C280 200 280 250 160 300 C40 350 40 400 160 450 C280 500 280 550 160 600 C40 650 40 700 160 750 C220 775 220 790 160 800" transform="translate(-30 0)" stroke="#C9A96E" stroke-width="1" opacity="0.7" />
-        {Array.from({ length: 16 }).map((_, i) => (
-          <line x1="55" x2="145" y1={i * 50 + 12} y2={i * 50 + 12} stroke="#2DD4BF" stroke-width="0.55" opacity="0.45" />
-        ))}
-      </svg>
+    <!-- subtle gold particle drift — the helix now lives in its own showpiece section below -->
+    <div class="absolute inset-0" aria-hidden="true">
+      <span class="particle" style="top:24%; left:14%; animation-delay:0s"></span>
+      <span class="particle" style="top:64%; left:8%; animation-delay:-4s"></span>
+      <span class="particle" style="top:36%; left:74%; animation-delay:-8s"></span>
+      <span class="particle" style="top:74%; left:60%; animation-delay:-2s"></span>
+      <span class="particle" style="top:16%; left:48%; animation-delay:-11s"></span>
+      <span class="particle" style="top:82%; left:34%; animation-delay:-6s"></span>
     </div>
 
     <!-- colour lift — teal science glow + gold brand glow -->
@@ -260,6 +254,9 @@ const testimonials = [
       </dl>
     </div>
   </section>
+
+  <!-- ============ SCIENCE INTERLUDE — the 3D showpiece ============ -->
+  <ScienceInterlude />
 
   <!-- ============ THE SCIENCE — split-scroll pinned section ============ -->
   <ScienceSplit />

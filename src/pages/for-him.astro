@@ -4,6 +4,8 @@ import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 import AndropauseSection from '../components/AndropauseSection.astro';
+import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
+import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
 import { treatments } from '../data/treatments';
 
@@ -62,6 +64,9 @@ const procedureSchema = himTreatments.map((t) => ({
     sub="Erectile function, performance, drive. These are medical matters with medical answers — and addressing them early is the strongest move a man can make."
   />
 
+  <FeaturedSpotlight pageKey="for-him" />
+  <TreatmentCarousel pathway="him" />
+
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
@@ -86,7 +91,7 @@ const procedureSchema = himTreatments.map((t) => ({
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           himTreatments.map((t) => (
-            <div class="hairline group flex flex-col overflow-hidden bg-ink2 transition-colors duration-500 hover:border-gold/50" data-tilt>
+            <div id={t.slug} class="hairline group flex flex-col overflow-hidden bg-ink2 transition-colors duration-500 hover:border-gold/50" data-tilt>
               <div class="relative aspect-[3/2] overflow-hidden">
                 <img
                   src={imageUrl(t.image)}

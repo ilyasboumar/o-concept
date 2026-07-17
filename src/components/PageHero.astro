@@ -18,6 +18,13 @@ const glow = glows[theme];
 
 <section class="relative -mt-20 flex min-h-[72vh] items-end overflow-hidden bg-ink2 pt-48 pb-20 md:pb-28">
   <div class="pointer-events-none absolute inset-0" style={`background:${glow}`} aria-hidden="true"></div>
+  {
+    Astro.slots.has('bg') && (
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <slot name="bg" />
+      </div>
+    )
+  }
   <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
 
   <div class="wrap relative">

@@ -1,0 +1,59 @@
+---
+/**
+ * "Treatment of the Month" spotlight — cinematic full-width band for one
+ * featured treatment, driven by the `featured` map in src/data/treatments.ts
+ * (page → slug; swapping the monthly feature is a one-line data change).
+ * Sits directly under the page hero, above the treatment grid.
+ */
+import { imageUrl } from '../lib/url';
+import { treatments, featured, PATHWAY_LABELS } from '../data/treatments';
+
+interface Props {
+  pageKey: keyof typeof featured;
+}
+const { pageKey } = Astro.props;
+
+const t = treatments.find((x) => x.slug === featured[pageKey]);
+if (!t) throw new Error(`FeaturedSpotlight: unknown featured slug for page "${pageKey}"`);
+---
+
+<section class="relative overflow-hidden bg-ink py-20 md:py-28" aria-labelledby={`spotlight-${pageKey}`}>
+  <!-- soft teal radial glow + gold hairline that draws in on scroll entry -->
+  <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+  <div class="absolute top-0 right-0 left-0 h-px bg-cream/8" aria-hidden="true"></div>
+  <div class="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-gold via-gold to-gold/20" data-line-draw aria-hidden="true"></div>
+
+  <div class="wrap relative grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <!-- image — gold hairline frame, slow Ken Burns drift -->
+    <figure class="hairline p-2" data-reveal>
+      <div class="overflow-hidden">
+        <img
+          src={imageUrl(t.image)}
+          alt={t.imageAlt}
+          class="kenburns aspect-[4/3] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="flex items-center justify-between px-2 pt-3 pb-1">
+        <span class="text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">{t.tag}</span>
+        <span class:list={['pathway-tag', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
+      </figcaption>
+    </figure>
+
+    <!-- copy + CTAs -->
+    <div data-reveal-child>
+      <p class="shimmer-label text-[11px] font-semibold tracking-[0.35em] uppercase">Treatment of the Month</p>
+      <h2 id={`spotlight-${pageKey}`} class="mt-6 font-serif text-4xl leading-[1.05] text-cream md:text-6xl">
+        {t.name}
+      </h2>
+      <div class="mt-6 flex flex-wrap gap-1.5">
+        {t.conditions.map((c) => <span class="condition-chip" title={c.plain}>{c.clinical}</span>)}
+      </div>
+      <p class="mt-6 max-w-lg text-[15px] leading-[1.85] text-cream/65 line-clamp-2">{t.desc}</p>
+      <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+        <a href="#begin" class="btn btn-gold" data-magnetic>Book a Consultation</a>
+        <a href={`#${t.slug}`} class="btn btn-ghost" data-magnetic>Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>

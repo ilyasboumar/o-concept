@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
+import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
 import { treatments, PATHWAY_LABELS } from '../data/treatments';
 
@@ -54,6 +56,9 @@ const faqSchema = {
     title="Every treatment. <em class='text-teal'>Every condition it answers.</em>"
     sub="The complete O Concept™ toolkit — regenerative, energy-based, hormonal and longevity medicine. Start from the treatment, or start from what you feel; both roads lead to the same door."
   />
+
+  <FeaturedSpotlight pageKey="treatments" />
+  <TreatmentCarousel pathway="all" />
 
   <section class="relative bg-ink py-20 md:py-28">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>

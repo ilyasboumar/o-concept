@@ -1,11 +1,10 @@
 ---
 /**
- * Longevity teaser — homepage. A floating cell/stem-cell particle field
- * (Three.js Points, lazy-mounted by scripts/three-fx.js) drifts behind the
- * content; a static SVG cell-cluster fallback shows on mobile and under
- * prefers-reduced-motion.
+ * Longevity teaser — homepage. The stem-cell particle field (CellField,
+ * Three.js) drifts behind the content at low opacity.
  */
 import { withBase } from '../lib/url';
+import CellField from './CellField.astro';
 
 const pillars = [
   'Bio-hacking & supplementation',
@@ -18,20 +17,9 @@ const pillars = [
 ---
 
 <section class="hairline-teal-t relative overflow-hidden bg-[#070708] py-28 md:py-40" aria-labelledby="longevity-teaser-heading">
-  <!-- particle field mount — canvas injected client-side when appropriate -->
-  <div class="absolute inset-0" data-three="cells" aria-hidden="true">
-    <svg class="three-fallback absolute inset-0 h-full w-full opacity-40" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      {
-        Array.from({ length: 26 }).map((_, i) => {
-          const x = (i * 197) % 1200;
-          const y = (i * 131) % 600;
-          const r = 2 + (i % 5);
-          return <circle cx={x} cy={y} r={r} fill={i % 3 === 0 ? '#C9A96E' : '#2DD4BF'} opacity={0.12 + (i % 4) * 0.06} />;
-        })
-      }
-      <circle cx="900" cy="150" r="60" fill="none" stroke="#2DD4BF" stroke-width="0.5" opacity="0.2" />
-      <circle cx="220" cy="440" r="90" fill="none" stroke="#2DD4BF" stroke-width="0.4" opacity="0.15" />
-    </svg>
+  <!-- stem-cell particle field — always behind content -->
+  <div class="absolute inset-0" aria-hidden="true">
+    <CellField count={200} opacity={0.5} size={0.38} />
   </div>
   <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #070708 95%);" aria-hidden="true"></div>
 

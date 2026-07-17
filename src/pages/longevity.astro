@@ -3,6 +3,9 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
+import CellField from '../components/CellField.astro';
+import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
+import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
 import { treatmentsByPathway } from '../data/treatments';
 
@@ -57,7 +60,12 @@ const procedureSchema = programmes.map((t) => ({
     eyebrow="The O Concept™ Longevity"
     title="Ageing is inevitable. <em class='text-teal'>Decline is not.</em>"
     sub="Dr Wakil's life-optimisation and regenerative programme — energy, hormones, metabolism and strength, measured and managed like the medical outcomes they are."
-  />
+  >
+    <CellField slot="bg" count={200} opacity={0.2} />
+  </PageHero>
+
+  <FeaturedSpotlight pageKey="longevity" />
+  <TreatmentCarousel pathway="longevity" />
 
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
@@ -86,7 +94,7 @@ const procedureSchema = programmes.map((t) => ({
       <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           programmes.map((t) => (
-            <div class="hairline-teal group flex flex-col overflow-hidden bg-ink2 transition-all duration-500 hover:border-teal/60" data-tilt>
+            <div id={t.slug} class="hairline-teal group flex flex-col overflow-hidden bg-ink2 transition-all duration-500 hover:border-teal/60" data-tilt>
               <div class="relative aspect-[3/2] overflow-hidden">
                 <img
                   src={imageUrl(t.image)}

@@ -1,4 +1,5 @@
 ---
+import DnaHelix from './DnaHelix.astro';
 /**
  * "The Science of The O Concept™" — split-scroll pinned section.
  *
@@ -67,14 +68,12 @@ const panels = [
             loading="lazy"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
-          <!-- luminous helix line-art overlay -->
-          <svg class="absolute right-4 top-4 h-28 w-14 opacity-70 md:h-40 md:w-20" viewBox="0 0 60 160" fill="none" aria-hidden="true">
-            <path d="M12 0 C48 20 48 40 12 60 C-24 80 -24 100 12 120 C48 140 48 160 12 180" transform="translate(9 -10)" stroke="#2DD4BF" stroke-width="1" opacity="0.9" />
-            <path d="M48 0 C12 20 12 40 48 60 C84 80 84 100 48 120 C12 140 12 160 48 180" transform="translate(-9 -10)" stroke="#C9A96E" stroke-width="1" opacity="0.8" />
-            {Array.from({ length: 8 }).map((_, i) => (
-              <line x1="16" x2="44" y1={i * 20 + 2} y2={i * 20 + 2} stroke="#2DD4BF" stroke-width="0.6" opacity="0.5" />
-            ))}
-          </svg>
+          <!-- dark panel gradient so the helix reads clearly without fighting the photo -->
+          <div class="absolute inset-y-0 right-0 w-[55%] bg-gradient-to-l from-ink/90 via-ink/45 to-transparent" aria-hidden="true"></div>
+          <!-- interactive DNA helix — persistent in the pinned column while panels scroll -->
+          <div class="absolute inset-y-0 right-0 w-[52%]" aria-hidden="true">
+            <DnaHelix nodeCount={82} opacity={1} interactive mobile="reduced" mobileNodes={40} />
+          </div>
           <div class="absolute bottom-5 left-6 right-6">
             <p class="text-[9px] font-semibold tracking-[0.3em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
           </div>

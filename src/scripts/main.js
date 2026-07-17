@@ -268,11 +268,12 @@ if (!reduced && finePointer) {
   });
 
   document.querySelectorAll('[data-tilt]').forEach((el) => {
+    const max = parseFloat(el.dataset.tiltMax || '3.5');
     el.addEventListener('mousemove', (e) => {
       const r = el.getBoundingClientRect();
       const dx = (e.clientX - r.left) / r.width - 0.5;
       const dy = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = `perspective(850px) rotateX(${(-dy * 3.5).toFixed(2)}deg) rotateY(${(dx * 3.5).toFixed(2)}deg)`;
+      el.style.transform = `perspective(850px) rotateX(${(-dy * max).toFixed(2)}deg) rotateY(${(dx * max).toFixed(2)}deg)`;
     });
     el.addEventListener('mouseleave', () => {
       el.style.transform = '';
@@ -281,20 +282,122 @@ if (!reduced && finePointer) {
 }
 
 /* ============================================================
-   Three.js — lazy-mounted only where it earns its keep
+   Three.js — lazy chunk. three-fx.js itself decides per host:
+   mobile hero hosts keep their SVG, reduced-motion renders a
+   single static frame, everything else animates.
    ============================================================ */
 
-if (
-  document.querySelector('[data-three]') &&
-  !reduced &&
-  window.matchMedia('(min-width: 1024px)').matches
-) {
+if (document.querySelector('[data-three]')) {
   import('./three-fx.js')
     .then((m) => m.initThree())
     .catch(() => {
       /* chunk failed to load — SVG fallbacks remain */
     });
 }
+
+/* ============================================================
+   All-treatments carousel — slow marquee (~40s/loop), pauses on
+   hover/touch, draggable with momentum, resumes 3s after the
+   interaction ends. Drags never fire the card's anchor click.
+   Reduced motion: CSS turns the viewport into a scrollable row.
+   ============================================================ */
+
+document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
+  const track = viewport.querySelector('.tx-track');
+  if (!track || reduced) return;
+
+  let x = 0;
+  let dragging = false;
+  let paused = false;
+  let resumeTimer = null;
+  let startX = 0;
+  let startTrackX = 0;
+  let lastX = 0;
+  let lastT = 0;
+  let velocity = 0;
+  let dragDistance = 0;
+
+  const half = () => track.scrollWidth / 2;
+  const scheduleResume = () => {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => (paused = false), 3000);
+  };
+
+  gsap.ticker.add((_, dt) => {
+    if (!dragging) {
+      if (Math.abs(velocity) > 0.05) {
+        x += velocity * dt; // drag momentum, decaying
+        velocity *= Math.pow(0.94, dt / 16.7);
+      } else if (!paused) {
+        x -= (half() / 40000) * dt; // ~40s per seamless loop
+      }
+    }
+    const h = half();
+    if (h > 0) {
+      if (x <= -h) x += h;
+      if (x > 0) x -= h;
+    }
+    track.style.transform = `translate3d(${x}px,0,0)`;
+  });
+
+  viewport.addEventListener('mouseenter', () => {
+    paused = true;
+    clearTimeout(resumeTimer);
+  });
+  viewport.addEventListener('mouseleave', () => {
+    if (!dragging) scheduleResume();
+  });
+  viewport.addEventListener('touchstart', () => {
+    paused = true;
+    clearTimeout(resumeTimer);
+  }, { passive: true });
+  viewport.addEventListener('touchend', scheduleResume, { passive: true });
+
+  /* No pointer capture — capturing would retarget the click away from the
+     card links, breaking plain clicks. Window listeners track the drag. */
+  viewport.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    paused = true;
+    clearTimeout(resumeTimer);
+    velocity = 0;
+    dragDistance = 0;
+    startX = lastX = e.clientX;
+    startTrackX = x;
+    lastT = performance.now();
+    viewport.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    x = startTrackX + (e.clientX - startX);
+    dragDistance = Math.max(dragDistance, Math.abs(e.clientX - startX));
+    const now = performance.now();
+    const dt = Math.max(1, now - lastT);
+    velocity = (e.clientX - lastX) / dt; // px per ms
+    lastX = e.clientX;
+    lastT = now;
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    viewport.classList.remove('dragging');
+    scheduleResume();
+  };
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  /* a real drag must not fire the card link underneath */
+  viewport.addEventListener(
+    'click',
+    (e) => {
+      if (dragDistance > 8) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragDistance = 0;
+      }
+    },
+    true
+  );
+});
 
 /* ============================================================
    Hero photography rotation — slow crossfade (legacy pages)

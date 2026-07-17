@@ -527,6 +527,142 @@ details.faq[open] .faq-icon {
 }
 
 /* ============================================================
+   Featured Treatment Spotlight
+   ============================================================ */
+
+.shimmer-label {
+  background: linear-gradient(100deg, #c9a96e 42%, #f6ecd6 50%, #c9a96e 58%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: labelShimmer 6s linear infinite;
+}
+@keyframes labelShimmer {
+  from {
+    background-position: 190% 0;
+  }
+  to {
+    background-position: -90% 0;
+  }
+}
+
+.kenburns {
+  animation: kenburns 12s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+/* ============================================================
+   All-treatments carousel — marquee + drag, edge fade masks
+   ============================================================ */
+
+.tx-viewport {
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y; /* vertical page scroll stays native; horizontal drags reach us */
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+.tx-viewport.dragging {
+  cursor: grabbing;
+}
+.tx-track {
+  display: flex;
+  width: max-content;
+  align-items: stretch;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tx-viewport {
+    overflow-x: auto;
+    cursor: default;
+  }
+  /* the seamless-loop duplicate is pointless in a static scrollable row */
+  .tx-track > div[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+.tx-card {
+  @apply mx-3 flex w-[250px] shrink-0 flex-col overflow-hidden;
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  background: #101014;
+  user-select: none;
+  transform-style: preserve-3d;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.tx-card:hover {
+  border-color: rgba(45, 212, 191, 0.55);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.45), 0 0 32px rgba(45, 212, 191, 0.1);
+}
+
+/* ============================================================
+   3D layer hosts
+   ============================================================ */
+
+.three-host {
+  position: relative;
+  pointer-events: none;
+}
+.three-host canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Showpiece interaction hint — pointer-type variants, fades on first use */
+[data-helix-hint] {
+  transition: opacity 1.2s ease;
+}
+[data-helix-hint].faded {
+  opacity: 0;
+}
+.hint-coarse {
+  display: none;
+}
+@media (pointer: coarse) {
+  .hint-fine {
+    display: none;
+  }
+  .hint-coarse {
+    display: inline;
+  }
+}
+/* no live canvas (WebGL missing) or reduced motion → the hint is a lie */
+[data-helix-stage]:not(:has(.three-active)) [data-helix-hint] {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-helix-hint] {
+    opacity: 0 !important;
+  }
+}
+
+/* Mobile FPS fallback — the static SVG takes over with a slow, gentle sway */
+.svg-sway {
+  animation: svgSway 26s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes svgSway {
+  from {
+    transform: perspective(900px) rotateY(-14deg);
+  }
+  to {
+    transform: perspective(900px) rotateY(14deg);
+  }
+}
+
+/* ============================================================
    Three.js mounts — the canvas fills its host; the static SVG
    fallback beneath it is shown until (or unless) WebGL mounts.
    ============================================================ */

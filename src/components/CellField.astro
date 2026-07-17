@@ -1,0 +1,42 @@
+---
+/**
+ * Stem-cell particle field — Three.js, mounted client-side by
+ * scripts/three-fx.js. Soft glowing particles (teal-dominant, occasional
+ * gold) with a few larger faint "cell" sprites, drifting in depth with
+ * gentle mouse parallax. Always behind content, pointer-events none.
+ *
+ * Mobile runs at ~80 particles; prefers-reduced-motion renders one static
+ * frame; the SVG fallback shows wherever WebGL never mounts.
+ */
+interface Props {
+  count?: number;
+  opacity?: number;
+  /** particle sprite size in world units (default 0.3) */
+  size?: number;
+  class?: string;
+}
+const { count = 200, opacity = 0.3, size = 0.3, class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['three-host pointer-events-none h-full w-full', className]}
+  data-three="cells"
+  data-count={count}
+  data-size={size}
+  style={`opacity:${opacity}`}
+  aria-hidden="true"
+>
+  <!-- static cell-cluster fallback -->
+  <svg class="three-fallback absolute inset-0 h-full w-full" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    {
+      Array.from({ length: 26 }).map((_, i) => {
+        const x = (i * 197) % 1200;
+        const y = (i * 131) % 600;
+        const r = 2 + (i % 5);
+        return <circle cx={x} cy={y} r={r} fill={i % 3 === 0 ? '#C9A96E' : '#2DD4BF'} opacity={0.35 + (i % 4) * 0.12} />;
+      })
+    }
+    <circle cx="900" cy="150" r="60" fill="none" stroke="#2DD4BF" stroke-width="0.5" opacity="0.5" />
+    <circle cx="220" cy="440" r="90" fill="none" stroke="#2DD4BF" stroke-width="0.4" opacity="0.4" />
+  </svg>
+</div>

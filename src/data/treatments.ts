@@ -275,6 +275,17 @@ export const treatments: Treatment[] = [
   },
 ];
 
+/**
+ * "Treatment of the Month" — page → featured treatment slug.
+ * Swapping the monthly feature is a one-line change here.
+ */
+export const featured: Record<'for-him' | 'for-her' | 'longevity' | 'treatments', string> = {
+  'for-him': 'p-shot',
+  'for-her': 'o-shot',
+  longevity: 'regenerative-medicine',
+  treatments: 'p-shot',
+};
+
 /** Flat, de-duplicated list of conditions for chips & search */
 export function allConditions(): Condition[] {
   const seen = new Set<string>();
