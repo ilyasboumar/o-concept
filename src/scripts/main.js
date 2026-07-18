@@ -53,6 +53,77 @@ const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 24)
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
+/* ============================================================
+   Desktop nav dropdowns — hover-intent (80ms in / 160ms out with
+   a CSS hover bridge), click/focus toggle, full keyboard support
+   ============================================================ */
+
+document.querySelectorAll('[data-dropdown]').forEach((drop) => {
+  const trigger = drop.querySelector('.nav-trigger');
+  const panel = drop.querySelector('.nav-panel');
+  if (!trigger || !panel) return;
+  const items = [...panel.querySelectorAll('a')];
+  let openTimer = null;
+  let closeTimer = null;
+
+  const setOpen = (open) => {
+    drop.classList.toggle('open', open);
+    trigger.setAttribute('aria-expanded', String(open));
+  };
+
+  drop.addEventListener('mouseenter', () => {
+    clearTimeout(closeTimer);
+    openTimer = setTimeout(() => setOpen(true), 80);
+  });
+  drop.addEventListener('mouseleave', () => {
+    clearTimeout(openTimer);
+    closeTimer = setTimeout(() => setOpen(false), 160);
+  });
+
+  trigger.addEventListener('click', () => setOpen(!drop.classList.contains('open')));
+
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setOpen(true);
+      items[0]?.focus();
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    }
+  });
+  panel.addEventListener('keydown', (e) => {
+    const i = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      items[(i + 1) % items.length]?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      items[(i - 1 + items.length) % items.length]?.focus();
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+      trigger.focus();
+    }
+  });
+
+  /* close when focus or clicks leave the group */
+  drop.addEventListener('focusout', (e) => {
+    if (!drop.contains(e.relatedTarget)) setOpen(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (!drop.contains(e.target)) setOpen(false);
+  });
+});
+
+/* Mobile menu grouped accordions */
+document.querySelectorAll('[data-acc]').forEach((acc) => {
+  const btn = acc.querySelector('.m-acc-btn');
+  btn?.addEventListener('click', () => {
+    const open = !acc.classList.contains('open');
+    acc.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  });
+});
+
 const menuToggle = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 function setMenu(open) {
@@ -280,6 +351,88 @@ if (!reduced && finePointer) {
     });
   });
 }
+
+/* ============================================================
+   3D award ring (About hero) — slow auto-rotate, hover pause,
+   drag to spin, arrow keys, offscreen pause. Front tile gets the
+   teal active glow; flanking tiles dim with angular distance.
+   Reduced motion: CSS swaps in the static grid, JS never runs.
+   ============================================================ */
+
+document.querySelectorAll('[data-award-ring]').forEach((stage) => {
+  const ring = stage.querySelector('.award-ring');
+  if (!ring || reduced) return;
+  const tiles = [...ring.querySelectorAll('.award-tile')];
+  const n = tiles.length;
+  if (!n) return;
+  const step = 360 / n;
+
+  let angle = 0; // 0 = badge 0 (the 2025 flagship) front-centre
+  let paused = false;
+  let dragging = false;
+  let visible = true;
+  let startX = 0;
+  let startAngle = 0;
+  let activeIdx = -1;
+
+  const render = () => {
+    ring.style.transform = `rotateY(${angle}deg)`;
+    /* nearest-to-front tile: its slot angle + ring angle ≈ 0 (mod 360) */
+    const idx = ((Math.round(-angle / step) % n) + n) % n;
+    if (idx !== activeIdx) {
+      activeIdx = idx;
+      tiles.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+    tiles.forEach((t, i) => {
+      const d = Math.abs((((i * step + angle) % 360) + 540) % 360 - 180); // 180=front … 0=rear
+      t.style.opacity = (0.35 + 0.65 * Math.pow(d / 180, 1.6)).toFixed(3);
+    });
+  };
+
+  gsap.ticker.add((_, dt) => {
+    if (!visible) return;
+    if (!paused && !dragging) {
+      angle -= (360 / 46000) * dt; // one lap ≈ 46s
+    }
+    render();
+  });
+
+  new IntersectionObserver(([entry]) => (visible = entry.isIntersecting), { threshold: 0.05 }).observe(stage);
+
+  stage.addEventListener('mouseenter', () => (paused = true));
+  stage.addEventListener('mouseleave', () => (paused = false));
+
+  stage.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startAngle = angle;
+    stage.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    angle = startAngle + (e.clientX - startX) * 0.28;
+  });
+  const endRingDrag = () => {
+    dragging = false;
+    stage.classList.remove('dragging');
+  };
+  window.addEventListener('pointerup', endRingDrag);
+  window.addEventListener('pointercancel', endRingDrag);
+
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      angle -= step;
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      angle += step;
+    }
+  });
+  stage.addEventListener('focus', () => (paused = true));
+  stage.addEventListener('blur', () => (paused = false));
+
+  render();
+});
 
 /* ============================================================
    Three.js — lazy chunk. three-fx.js itself decides per host:

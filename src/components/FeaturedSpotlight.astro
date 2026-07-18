@@ -17,13 +17,13 @@ const t = treatments.find((x) => x.slug === featured[pageKey]);
 if (!t) throw new Error(`FeaturedSpotlight: unknown featured slug for page "${pageKey}"`);
 ---
 
-<section class="relative overflow-hidden bg-ink py-20 md:py-28" aria-labelledby={`spotlight-${pageKey}`}>
+<section class="relative overflow-hidden bg-ink pt-14 pb-20 md:pt-16 md:pb-28" aria-labelledby={`spotlight-${pageKey}`}>
   <!-- soft teal radial glow + gold hairline that draws in on scroll entry -->
   <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
   <div class="absolute top-0 right-0 left-0 h-px bg-cream/8" aria-hidden="true"></div>
   <div class="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-gold via-gold to-gold/20" data-line-draw aria-hidden="true"></div>
 
-  <div class="wrap relative grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+  <div class="wrap relative grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
     <!-- image — gold hairline frame, slow Ken Burns drift -->
     <figure class="hairline p-2" data-reveal>
       <div class="overflow-hidden">

@@ -73,21 +73,19 @@ const products = [
     sub="The skincare and supplementation Dr Wakil's patients use between treatments — curated, dosed and quality-controlled to clinical standards."
   />
 
-  <section class="relative bg-ink py-20 md:py-28">
+  <section class="relative bg-ink pt-12 pb-20 md:pt-14 md:pb-28">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
-      <!-- curated-by note -->
-      <div class="hairline mx-auto max-w-3xl bg-ink2 p-8 text-center md:p-10" data-reveal>
-        <p class="eyebrow !text-[10px]">Curated by Dr Wakil</p>
-        <p class="mt-4 font-serif text-2xl leading-snug text-cream md:text-3xl">
-          Every product here is one Dr Wakil formulates, prescribes or personally recommends in clinic.
-        </p>
-        <p class="mt-4 text-sm leading-relaxed text-cream/55">
-          Orders are fulfilled by our official store — each product below opens in the store in a new tab.
+      <!-- curated-by note — slim strip so the first product row shares the opening viewport -->
+      <div class="hairline flex flex-col items-center justify-center gap-x-6 gap-y-2 bg-ink2 px-6 py-4 text-center md:flex-row" data-reveal>
+        <p class="eyebrow !text-[9px] shrink-0">Curated by Dr Wakil</p>
+        <p class="text-sm leading-relaxed text-cream/60">
+          Every product is one Dr Wakil formulates, prescribes or personally recommends in clinic — fulfilled by the
+          official store, opening in a new tab.
         </p>
       </div>
 
-      <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-child>
+      <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-child>
         {
           products.map((p, i) => (
             <article class="treatment-box him group flex flex-col overflow-hidden bg-ink2" data-tilt>

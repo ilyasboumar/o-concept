@@ -9,9 +9,11 @@ import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
 import { treatments } from '../data/treatments';
 
+/* Native him treatments, plus cross-listed diagnostics and hormone
+   (andropause / testosterone) optimisation — every box carries a real image. */
 const himTreatments = [
   ...treatments.filter((t) => t.pathway === 'him'),
-  ...treatments.filter((t) => t.slug === 'endo-test'),
+  ...treatments.filter((t) => ['endo-test', 'hormone-optimisation'].includes(t.slug)),
 ];
 
 const faqs = [
@@ -61,7 +63,7 @@ const procedureSchema = himTreatments.map((t) => ({
   <PageHero
     eyebrow="The O Concept™ for Him"
     title="For the concerns men <em class='text-gold'>rarely discuss.</em>"
-    sub="Erectile function, performance, drive. These are medical matters with medical answers — and addressing them early is the strongest move a man can make."
+    sub="Function, performance and confidence — restored discreetly, without surgery. These are medical matters with medical answers, and addressing them early is the strongest move a man can make."
   />
 
   <FeaturedSpotlight pageKey="for-him" />
@@ -70,7 +72,7 @@ const procedureSchema = himTreatments.map((t) => ({
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
-      <div class="grid gap-12 lg:grid-cols-12" data-reveal>
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
         <div class="lg:col-span-5">
           <p class="eyebrow">Cause, not symptom</p>
           <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Function is physiology. Physiology can be treated.</h2>
@@ -88,7 +90,7 @@ const procedureSchema = himTreatments.map((t) => ({
         </div>
       </div>
 
-      <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+      <div class="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           himTreatments.map((t) => (
             <div id={t.slug} class="hairline group flex flex-col overflow-hidden bg-ink2 transition-colors duration-500 hover:border-gold/50" data-tilt>
@@ -123,7 +125,7 @@ const procedureSchema = himTreatments.map((t) => ({
 
   <!-- FAQ -->
   <section class="hairline-t bg-ink py-24 md:py-32">
-    <div class="wrap grid gap-14 lg:grid-cols-12">
+    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow">Asked quietly, often</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions men actually search.</h2>

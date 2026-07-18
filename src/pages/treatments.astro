@@ -71,7 +71,7 @@ const faqSchema = {
         <button type="button" class="filter-tab" data-filter="longevity">Longevity</button>
       </div>
 
-      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-treatment-grid data-reveal-child>
+      <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-treatment-grid data-reveal-child>
         {
           treatments.map((t) => (
             <article class:list={['treatment-box group flex flex-col overflow-hidden bg-ink2', t.pathway]} data-pathway={t.pathway} id={t.slug} data-tilt>
@@ -113,7 +113,7 @@ const faqSchema = {
 
   <!-- FAQ -->
   <section class="hairline-t bg-ink2 py-24 md:py-32">
-    <div class="wrap grid gap-14 lg:grid-cols-12">
+    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow">Before you ask</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions everyone has.</h2>

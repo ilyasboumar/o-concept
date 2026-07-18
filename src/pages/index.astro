@@ -105,22 +105,22 @@ const testimonials = [
     </div>
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
 
-    <div class="wrap relative grid items-center gap-14 pt-36 pb-24 lg:grid-cols-12 lg:gap-10">
+    <div class="wrap relative grid grid-cols-1 items-center gap-10 pt-24 pb-14 md:pt-28 lg:grid-cols-12 lg:gap-10">
       <!-- headline block -->
       <div class="lg:col-span-7">
         <p class="eyebrow" data-reveal>The O Concept™ · 77 Harley Street, London</p>
-        <h1 class="mt-7 font-serif text-[2.9rem] leading-[1.04] font-medium tracking-tight text-cream sm:text-6xl md:text-7xl xl:text-[5.4rem]">
+        <h1 class="mt-5 font-serif text-[2.6rem] leading-[1.05] font-medium tracking-tight text-cream sm:text-6xl md:text-6xl xl:text-[4.7rem]">
           <span class="hw-line"><span class="hw">We don&rsquo;t follow</span></span>
           <span class="hw-line"><span class="hw">protocols.</span></span>
           <span class="hw-line"><span class="hw text-gold italic">We create them.</span></span>
         </h1>
-        <p class="mt-8 max-w-xl text-base leading-relaxed text-cream/70 md:text-lg" data-reveal data-delay="0.7">
+        <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/70 md:text-lg" data-reveal data-delay="0.7">
           Dr Sherif Wakil — creator of The&nbsp;O&nbsp;Concept<sup class="text-[0.55em] text-gold">™</sup>. The
           world&rsquo;s most awarded sexual rejuvenation and regenerative protocol. Harley Street, London.
         </p>
 
         <!-- authority bar -->
-        <ul class="mt-8 flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-2" data-reveal data-delay="0.85" aria-label="Credentials">
+        <ul class="mt-6 flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-1.5" data-reveal data-delay="0.85" aria-label="Credentials">
           {
             authorityBar.map((item, i) => (
               <>
@@ -131,7 +131,7 @@ const testimonials = [
           }
         </ul>
 
-        <div class="mt-11 flex flex-col gap-5 sm:flex-row" data-reveal data-delay="1">
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row" data-reveal data-delay="1">
           <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
           <a href="#finder" class="btn btn-teal" data-magnetic>Find Your Treatment</a>
         </div>
@@ -185,7 +185,7 @@ const testimonials = [
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
-      <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
         <div class="lg:col-span-6" data-reveal>
           <blockquote class="font-serif text-4xl leading-[1.15] text-cream md:text-5xl">
             More than <span class="text-gold">25,000 cases worldwide.</span> The doctor who brought the O&#8209;Shot<sup class="text-[0.45em]">®</sup>
@@ -379,7 +379,7 @@ const testimonials = [
       </div>
 
       <!-- Confidential Self-Assessment — working embedded quiz -->
-      <div class="hairline mt-16 grid overflow-hidden bg-ink lg:grid-cols-2" data-reveal>
+      <div class="hairline mt-16 grid grid-cols-1 overflow-hidden bg-ink lg:grid-cols-2" data-reveal>
         <div class="flex flex-col justify-center p-9 md:p-14">
           <span class="mb-6 inline-block w-fit border border-gold/40 px-3 py-1 text-[9px] font-bold tracking-[0.3em] text-gold uppercase">Prototype</span>
           <h3 class="font-serif text-3xl text-cream md:text-4xl">Confidential Self-Assessment</h3>
@@ -395,7 +395,7 @@ const testimonials = [
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-2" data-reveal-child>
+      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2" data-reveal-child>
         <!-- Discreet triage that routes to humans -->
         <div class="hairline flex flex-col bg-ink p-9 md:p-12" data-tilt>
           <span class="mb-6 inline-block w-fit border border-teal/40 px-3 py-1 text-[9px] font-bold tracking-[0.3em] text-teal uppercase">Coming 2026</span>
@@ -506,7 +506,7 @@ const testimonials = [
         </figcaption>
       </figure>
 
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+      <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           team.map((member) => (
             <div class="group hairline flex flex-col bg-ink p-3 pb-6" data-tilt>

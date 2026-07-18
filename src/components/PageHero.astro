@@ -16,7 +16,7 @@ const eyebrowColor = { gold: 'text-gold', rose: 'text-rose', teal: 'text-teal' }
 const glow = glows[theme];
 ---
 
-<section class="relative -mt-20 flex min-h-[72vh] items-end overflow-hidden bg-ink2 pt-48 pb-20 md:pb-28">
+<section class="relative -mt-20 flex min-h-[54vh] items-end overflow-hidden bg-ink2 pt-40 pb-12 md:pb-16">
   <div class="pointer-events-none absolute inset-0" style={`background:${glow}`} aria-hidden="true"></div>
   {
     Astro.slots.has('bg') && (
@@ -32,6 +32,13 @@ const glow = glows[theme];
       {eyebrow}
     </p>
     <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1" set:html={title} />
-    <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">{sub}</p>
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">{sub}</p>
+    {
+      Astro.slots.has('default') && (
+        <div class="mt-8" data-reveal data-delay="0.3">
+          <slot />
+        </div>
+      )
+    }
   </div>
 </section>

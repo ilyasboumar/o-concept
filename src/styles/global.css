@@ -209,6 +209,91 @@ html.js .hw {
   visibility: visible;
 }
 
+/* ---------- desktop nav dropdowns ---------- */
+
+.nav-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: -1.25rem;
+  min-width: 240px;
+  padding: 0.9rem 0.5rem;
+  background: #101014;
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+/* safe hover bridge — covers the gap between trigger and panel */
+.nav-panel::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 0;
+  right: 0;
+  height: 15px;
+}
+.nav-drop.open .nav-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.nav-drop.open .nav-chev {
+  transform: rotate(180deg);
+}
+
+.nav-item {
+  position: relative;
+  display: block;
+  padding: 0.6rem 1rem 0.6rem 1.6rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 236, 0.7);
+  transition: color 0.3s ease;
+}
+.nav-item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.7rem;
+  height: 1px;
+  width: 0.65rem;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+.nav-item:hover,
+.nav-item:focus-visible,
+.nav-item.active {
+  color: var(--color-gold);
+}
+.nav-item:hover::before,
+.nav-item:focus-visible::before,
+.nav-item.active::before {
+  transform: scaleX(1);
+}
+
+/* ---------- mobile nav accordions ---------- */
+
+.m-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.m-acc-inner {
+  overflow: hidden;
+}
+.m-acc.open .m-acc-panel {
+  grid-template-rows: 1fr;
+}
+.m-acc.open .m-acc-chev {
+  transform: rotate(180deg);
+}
+
 /* ============================================================
    Hero
    ============================================================ */
@@ -560,6 +645,26 @@ details.faq[open] .faq-icon {
   }
 }
 
+/* Slower hero variant — base scale-up masks marginal source resolution */
+.kenburns-slow {
+  animation: kenburnsSlow 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenburnsSlow {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.09);
+  }
+}
+
+/* Fine grain layer — makes marginal imagery read cinematic and intentional */
+.grain-layer {
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* ============================================================
    All-treatments carousel — marquee + drag, edge fade masks
    ============================================================ */
@@ -602,6 +707,91 @@ details.faq[open] .faq-icon {
 .tx-card:hover {
   border-color: rgba(45, 212, 191, 0.55);
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.45), 0 0 32px rgba(45, 212, 191, 0.1);
+}
+
+/* ============================================================
+   3D award ring — CSS cylinder, JS-driven rotation (main.js).
+   Reduced motion / no JS: the static grid fallback shows instead.
+   ============================================================ */
+
+.award-stage {
+  position: relative;
+  height: 190px;
+  perspective: 1400px;
+  cursor: grab;
+  outline: none;
+  touch-action: pan-y;
+}
+.award-stage.dragging {
+  cursor: grabbing;
+}
+.award-stage:focus-visible {
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.5);
+}
+.award-ring {
+  --ring-r: 380px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 122px;
+  width: 172px;
+  margin: -61px 0 0 -86px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+@media (max-width: 767px) {
+  .award-ring {
+    --ring-r: 210px;
+    height: 96px;
+    width: 132px;
+    margin: -48px 0 0 -66px;
+  }
+  .award-stage {
+    height: 150px;
+  }
+}
+.award-tile {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  background: rgba(244, 241, 236, 0.95);
+  backface-visibility: hidden;
+  transform: rotateY(calc(var(--i) * var(--ring-step))) translateZ(var(--ring-r));
+  transition: box-shadow 0.45s ease;
+  user-select: none;
+}
+.award-tile img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.award-tile.active {
+  box-shadow: 0 0 34px rgba(45, 212, 191, 0.35), 0 0 0 1px rgba(45, 212, 191, 0.55);
+}
+
+/* fallback visibility rules */
+.award-static {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .award-stage {
+    display: none;
+  }
+  .award-static {
+    display: flex;
+  }
+}
+html:not(.js) .award-stage {
+  display: none;
+}
+html:not(.js) .award-static {
+  display: flex;
 }
 
 /* ============================================================

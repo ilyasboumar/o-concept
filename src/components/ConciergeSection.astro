@@ -1,114 +1,79 @@
 ---
 /**
- * The O Concept™ Concierge — Platinum-tier, door-to-door service, now with
- * the client's real imagery: private jet (cinematic full-width background),
- * Rolls-Royce inset, and a world map behind the International Patients block.
+ * The O Concept™ Concierge — slim teaser. The full international journey
+ * (VIP reception, transfers, world map, remote-first pathway) now lives
+ * canonically on /international; this section frames it and links out.
+ *
+ * variant 'teaser'  = homepage — short, ends in a link to /international
+ * variant 'full'    = membership page — Platinum-tier framing + link out
  */
 import { withBase } from '../lib/url';
 
 interface Props {
-  /** compact = homepage teaser; full = membership page section */
   variant?: 'full' | 'teaser';
 }
 const { variant = 'full' } = Astro.props;
 ---
 
 <section class="hairline-t relative overflow-hidden bg-[#070708]" aria-labelledby="concierge-heading">
-  <div class:list={['relative', variant === 'full' ? 'py-28 md:py-40' : 'py-24 md:py-32']}>
+  <div class="relative py-24 md:py-32">
     <!-- cinematic private-jet background under the standard dark overlay -->
     <img
-      src={withBase('images/concierge-jet.jpg')}
+      src={withBase('images/concierge-jet-rolls.png')}
       alt=""
       class="absolute inset-0 h-full w-full object-cover"
+      style="object-position: 66% 40%;"
       loading="lazy"
       aria-hidden="true"
     />
     <div
       class="pointer-events-none absolute inset-0"
       style="background:
-        linear-gradient(90deg, rgba(7,7,8,0.94) 0%, rgba(7,7,8,0.78) 45%, rgba(7,7,8,0.45) 100%),
+        linear-gradient(90deg, rgba(7,7,8,0.94) 0%, rgba(7,7,8,0.78) 45%, rgba(7,7,8,0.5) 100%),
         linear-gradient(rgba(7,7,8,0.55), rgba(7,7,8,0.85));"
       aria-hidden="true"
     >
     </div>
 
     <div class="wrap relative">
-      <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
-        <div class="lg:col-span-7">
-          <div class="max-w-2xl" data-reveal>
-            <p class="eyebrow">The Capital of Regenerative Medicine and Wellbeing</p>
-            <h2 id="concierge-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
-              The O Concept<sup class="text-[0.45em] text-gold">™</sup> Concierge
-            </h2>
-            <p class="mt-7 font-serif text-2xl leading-snug text-cream/85 italic md:text-3xl">
-              From airstrip to clinic and back — complete discretion, door-to-door.
-            </p>
-            <p class="mt-6 max-w-xl text-[15px] leading-[1.9] text-cream/65">
-              VIP cars receive you at the airport, and remain at your disposal between hotel and clinic throughout
-              your stay. Our team arranges the most suitable accommodation in London, priority scheduling, and
-              treatment completed within your day — premium hospitality, unmarked and unhurried, from the moment you
-              land to the moment you leave.
-            </p>
-          </div>
-
-          <ul class="mt-10 flex max-w-2xl flex-wrap gap-3" data-reveal-child>
-            {
-              ['VIP airport reception', 'Hotel–clinic transfers throughout', 'Accommodation arranged', 'Treatment within your day', 'Complete discretion'].map((item) => (
-                <li class="hairline bg-ink/70 px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-gold/85 uppercase backdrop-blur-sm">
-                  {item}
-                </li>
-              ))
-            }
-          </ul>
-
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">{variant === 'full' ? 'The Platinum experience' : 'International patients'}</p>
+        <h2 id="concierge-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
+          The O Concept<sup class="text-[0.45em] text-gold">™</sup> Concierge
+        </h2>
+        <p class="mt-7 font-serif text-2xl leading-snug text-cream/85 italic md:text-3xl">
+          From airstrip to clinic and back — complete discretion, door-to-door.
+        </p>
+        <p class="mt-6 max-w-xl text-[15px] leading-[1.9] text-cream/65">
           {
-            variant === 'full' && (
-              <div class="mt-12" data-reveal>
-                <a href="#begin" class="btn btn-gold" data-magnetic>
-                  Enquire About Concierge
-                </a>
-              </div>
-            )
+            variant === 'full'
+              ? 'Included with Platinum membership: VIP airport reception, transfers between hotel and clinic throughout your stay, accommodation arranged, and treatment completed within your day — premium hospitality, entirely private.'
+              : 'VIP cars at the airport, transfers throughout your stay, accommodation arranged, and treatment completed within your day. Patients travel from around the world to 77 Harley Street — we make the journey effortless.'
           }
-        </div>
+        </p>
+      </div>
 
-        <div class="flex flex-col justify-center gap-6 lg:col-span-5">
-          <!-- Rolls-Royce inset -->
-          <figure class="hairline bg-ink/70 p-2 backdrop-blur-sm" data-reveal data-delay="0.15">
-            <div class="overflow-hidden">
-              <img
-                src={withBase('images/concierge-rolls.png')}
-                alt="Chauffeured Rolls-Royce transfer for O Concept™ Concierge patients"
-                class="aspect-[16/9] w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">
-              Door-to-door, at your disposal
-            </figcaption>
-          </figure>
+      {
+        variant === 'full' && (
+          <ul class="mt-10 flex max-w-2xl flex-wrap gap-3" data-reveal-child>
+            {['VIP airport reception', 'Hotel–clinic transfers', 'Accommodation arranged', 'Complete discretion'].map((item) => (
+              <li class="hairline bg-ink/70 px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-gold/85 uppercase backdrop-blur-sm">
+                {item}
+              </li>
+            ))}
+          </ul>
+        )
+      }
 
-          <!-- International Patients — world map at low opacity behind -->
-          <div class="hairline relative overflow-hidden bg-ink/80 p-8 backdrop-blur-sm" data-reveal data-delay="0.25">
-            <img
-              src={withBase('images/world-map.png')}
-              alt=""
-              class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.13]"
-              loading="lazy"
-              aria-hidden="true"
-            />
-            <div class="relative">
-              <p class="eyebrow !text-[10px]">International Patients</p>
-              <p class="mt-4 font-serif text-2xl leading-snug text-cream">
-                Patients travel from every continent to be treated by Dr Wakil.
-              </p>
-              <p class="mt-4 text-sm leading-relaxed text-cream/60">
-                Clinics in London, Dubai and Egypt — headquartered at 77 Harley Street. Wherever you begin, the
-                concierge team manages every mile in between.
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="mt-11" data-reveal>
+        <a
+          href={withBase('international')}
+          class:list={[variant === 'full' ? 'btn btn-gold' : 'inline-flex items-center gap-3 text-[11px] font-semibold tracking-[0.25em] text-gold uppercase transition-colors duration-400 hover:text-goldlight']}
+          data-magnetic={variant === 'full' ? true : undefined}
+        >
+          {variant === 'full' ? 'Explore the International Service' : 'Discover our International service'}
+          {variant === 'teaser' && <span aria-hidden="true">→</span>}
+        </a>
       </div>
     </div>
   </div>

@@ -208,8 +208,8 @@ export const treatments: Treatment[] = [
     pathway: 'longevity',
     tag: 'Longevity',
     desc: 'Physician-led balancing of testosterone, thyroid and adrenal function — dosed from your diagnostics, reviewed continuously.',
-    image: 'images/abstract-1.png',
-    imageAlt: 'Hormone optimisation — physician-led endocrine balancing',
+    image: 'images/tx-p-shot-2.jpg',
+    imageAlt: 'A couple restored to vitality — hormone optimisation at Dr SW Clinics',
     conditions: [
       { clinical: 'Andropause / low testosterone', plain: 'low energy, low drive, weight gain in men over 40' },
       { clinical: 'Menopause & perimenopause', plain: 'hot flushes, mood changes, disrupted sleep' },

@@ -1,18 +1,32 @@
 ---
 import { withBase } from '../lib/url';
 
-const links = [
+const current = Astro.url.pathname.replace(/\/$/, '');
+const is = (slug: string) => current.endsWith('/' + slug);
+
+const treatmentsChildren = [
   { label: 'For Him', slug: 'for-him' },
   { label: 'For Her', slug: 'for-her' },
   { label: 'Longevity', slug: 'longevity' },
-  { label: 'Treatments', slug: 'treatments' },
-  { label: 'Membership', slug: 'membership' },
-  { label: 'Training', slug: 'training' },
-  { label: 'About Dr Wakil', slug: 'about-dr-wakil' },
+];
+const aboutChildren = [
+  { label: 'Dr Sherif Wakil', slug: 'about-dr-wakil' },
+  { label: 'Training & IAAGSW', slug: 'training' },
   { label: 'Shop', slug: 'shop' },
 ];
-const current = Astro.url.pathname.replace(/\/$/, '');
-const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug);
+
+/* a group trigger lights up when the current page is any of its children */
+const treatmentsActive = ['for-him', 'for-her', 'longevity', 'treatments'].some(is);
+const aboutActive = ['about-dr-wakil', 'training', 'shop'].some(is);
+
+const triggerClass = (active: boolean) => [
+  'nav-trigger flex cursor-pointer items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+  active ? 'text-gold' : 'text-cream/75',
+];
+const linkClass = (active: boolean) => [
+  'text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+  active ? 'text-gold' : 'text-cream/75',
+];
 ---
 
 <header id="site-header" class="sticky top-0 z-40">
@@ -24,29 +38,63 @@ const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug)
       <span class="mt-1 text-[8.5px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by Dr SW Clinics</span>
     </a>
 
-    <nav class="hidden items-center gap-6 xl:flex" aria-label="Primary">
-      {
-        links.map((link) => (
-          <a
-            href={withBase(link.slug)}
-            class:list={[
-              'text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-400 hover:text-gold',
-              isActive(link.slug) ? 'text-gold' : 'text-cream/75',
-            ]}
-          >
-            {link.label}
+    <nav class="hidden items-center gap-9 lg:flex" aria-label="Primary">
+      <!-- Treatments ▾ -->
+      <div class="nav-drop relative" data-dropdown>
+        <button type="button" class:list={triggerClass(treatmentsActive)} aria-expanded="false" aria-haspopup="true">
+          Treatments
+          <svg class="nav-chev h-3 w-3 transition-transform duration-300" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-panel" role="menu" aria-label="Treatments">
+          {
+            treatmentsChildren.map((link) => (
+              <a href={withBase(link.slug)} role="menuitem" class:list={['nav-item', is(link.slug) && 'active']}>
+                {link.label}
+              </a>
+            ))
+          }
+          <div class="mx-4 my-2 h-px bg-gold/20" role="separator" aria-hidden="true"></div>
+          <a href={withBase('treatments')} role="menuitem" class:list={['nav-item', is('treatments') && 'active']}>
+            View All Treatments
           </a>
-        ))
-      }
+        </div>
+      </div>
+
+      <a href={withBase('membership')} class:list={linkClass(is('membership'))}>Membership</a>
+      <a href={withBase('international')} class:list={linkClass(is('international'))}>International</a>
+
+      <!-- About ▾ -->
+      <div class="nav-drop relative" data-dropdown>
+        <button type="button" class:list={triggerClass(aboutActive)} aria-expanded="false" aria-haspopup="true">
+          About
+          <svg class="nav-chev h-3 w-3 transition-transform duration-300" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-panel" role="menu" aria-label="About">
+          {
+            aboutChildren.map((link) => (
+              <a href={withBase(link.slug)} role="menuitem" class:list={['nav-item', is(link.slug) && 'active']}>
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
     </nav>
 
-    <div class="hidden items-center gap-6 xl:flex">
-      <a href="#begin" class="btn btn-ghost !px-6 !py-3">Book a Consultation</a>
+    <div class="hidden items-center gap-7 lg:flex">
+      <a href="tel:+442030068459" class="text-[11px] font-medium tracking-[0.14em] text-cream/70 transition-colors duration-400 hover:text-gold">
+        +44 (0)20 3006 8459
+      </a>
+      <a href="#begin" class="btn btn-gold !px-6 !py-3">Book a Consultation</a>
     </div>
 
     <button
       id="menu-toggle"
-      class="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[7px] xl:hidden"
+      class="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[7px] lg:hidden"
       aria-label="Open menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
@@ -57,21 +105,63 @@ const isActive = (slug) => !slug.startsWith('#') && current.endsWith('/' + slug)
   </div>
 </header>
 
-<div id="mobile-menu" class="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-ink/[0.98] backdrop-blur-xl xl:hidden" aria-hidden="true">
+<div id="mobile-menu" class="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-ink/[0.98] backdrop-blur-xl lg:hidden" aria-hidden="true">
   <div class="wrap flex h-20 shrink-0 items-center justify-between">
     <span class="font-serif text-2xl text-cream">The O Concept<sup class="text-[0.55em] text-gold">™</sup></span>
     <button data-menu-close class="flex h-11 w-11 cursor-pointer items-center justify-center text-2xl font-light text-gold" aria-label="Close menu">✕</button>
   </div>
-  <nav class="wrap mt-8 flex flex-col gap-5" aria-label="Mobile">
-    {
-      links.map((link) => (
-        <a href={withBase(link.slug)} class="hairline-b pb-5 font-serif text-[1.65rem] text-cream transition-colors duration-400 hover:text-gold">
-          {link.label}
-        </a>
-      ))
-    }
+
+  <nav class="wrap mt-8 flex flex-col" aria-label="Mobile">
+    <!-- Treatments accordion -->
+    <div class="m-acc hairline-b" data-acc>
+      <button type="button" class="m-acc-btn flex w-full cursor-pointer items-center justify-between py-5" aria-expanded="false">
+        <span class="font-serif text-[1.65rem] text-cream">Treatments</span>
+        <svg class="m-acc-chev h-4 w-4 text-gold transition-transform duration-400" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="m2.5 4.5 3.5 3.5 3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <div class="m-acc-panel">
+        <div class="m-acc-inner">
+          {
+            treatmentsChildren.map((link) => (
+              <a href={withBase(link.slug)} class="block py-2.5 text-sm tracking-[0.18em] text-cream/70 uppercase transition-colors duration-300 hover:text-gold">
+                {link.label}
+              </a>
+            ))
+          }
+          <a href={withBase('treatments')} class="block py-2.5 pb-5 text-sm tracking-[0.18em] text-gold/85 uppercase transition-colors duration-300 hover:text-gold">
+            View All Treatments
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <a href={withBase('membership')} class="hairline-b py-5 font-serif text-[1.65rem] text-cream transition-colors duration-400 hover:text-gold">Membership</a>
+    <a href={withBase('international')} class="hairline-b py-5 font-serif text-[1.65rem] text-cream transition-colors duration-400 hover:text-gold">International</a>
+
+    <!-- About accordion -->
+    <div class="m-acc hairline-b" data-acc>
+      <button type="button" class="m-acc-btn flex w-full cursor-pointer items-center justify-between py-5" aria-expanded="false">
+        <span class="font-serif text-[1.65rem] text-cream">About</span>
+        <svg class="m-acc-chev h-4 w-4 text-gold transition-transform duration-400" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="m2.5 4.5 3.5 3.5 3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <div class="m-acc-panel">
+        <div class="m-acc-inner">
+          {
+            aboutChildren.map((link) => (
+              <a href={withBase(link.slug)} class="block py-2.5 last:pb-5 text-sm tracking-[0.18em] text-cream/70 uppercase transition-colors duration-300 hover:text-gold">
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
   </nav>
-  <div class="wrap mt-auto mb-12 flex flex-col gap-5">
+
+  <div class="wrap mt-auto mb-12 flex flex-col gap-5 pt-10">
     <a href="tel:+442030068459" class="text-sm tracking-[0.14em] text-cream/70">+44 (0)20 3006 8459</a>
     <a href="#begin" class="btn btn-gold w-full">Book a Consultation</a>
   </div>

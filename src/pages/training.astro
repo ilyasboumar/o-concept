@@ -39,12 +39,42 @@ const audience = [
     eyebrow="Training & IAAGSW"
     title="Training the world in <em class='text-gold'>The O Concept™.</em>"
     sub="Doctors don't learn this field from a textbook. They learn it from the physician who built it — the creator of the protocol, teaching the medicine he pioneered."
-  />
+  >
+    <!-- authority hook — in the first viewport, not two scrolls down -->
+    <ul class="flex flex-wrap gap-3" aria-label="Training credentials">
+      {
+        ['Creator of The O Concept™', 'President & Founder, IAAGSW', '25,000+ cases behind the teaching'].map((item) => (
+          <li class="hairline bg-ink/60 px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-gold/85 uppercase backdrop-blur-sm">
+            {item}
+          </li>
+        ))
+      }
+    </ul>
+  </PageHero>
+
+  <!-- cinematic band — real training photography, directly under the hero -->
+  <section class="relative overflow-hidden" aria-label="The O Concept™ training in session">
+    <img
+      src={withBase('images/training-congress.jpg')}
+      alt="Dr Wakil teaching medical professionals at an IAAGSW training session"
+      class="h-[46vh] w-full object-cover md:h-[56vh]"
+      data-parallax="-5"
+    />
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/30" aria-hidden="true"></div>
+    <div class="absolute right-0 bottom-8 left-0 md:bottom-10">
+      <div class="wrap">
+        <p class="eyebrow !text-[10px]" data-reveal>In session · The O Concept™ Training</p>
+        <p class="mt-2 max-w-lg font-serif text-2xl leading-snug text-cream md:text-3xl" data-reveal data-delay="0.1">
+          The field&rsquo;s founder, teaching the field.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- positioning -->
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
-    <div class="wrap relative grid gap-14 lg:grid-cols-12 lg:gap-20">
+    <div class="wrap relative grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
       <div class="lg:col-span-7" data-reveal>
         <p class="eyebrow">From the source</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
@@ -96,18 +126,33 @@ const audience = [
   <!-- fellowship -->
   <section class="hairline-t relative bg-ink2 py-24 md:py-32">
     <div class="wrap">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow">For medical professionals</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-          The O Concept<sup class="text-[0.45em] text-gold">™</sup> Training Fellowship
-        </h2>
-        <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
-          A structured pathway from foundation to certification, for clinicians who intend to practise this medicine
-          at the standard it deserves.
-        </p>
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+        <div class="max-w-2xl lg:col-span-7" data-reveal>
+          <p class="eyebrow">For medical professionals</p>
+          <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+            The O Concept<sup class="text-[0.45em] text-gold">™</sup> Training Fellowship
+          </h2>
+          <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+            A structured pathway from foundation to certification, for clinicians who intend to practise this medicine
+            at the standard it deserves.
+          </p>
+        </div>
+        <figure class="hairline p-2 lg:col-span-5" data-reveal data-delay="0.15">
+          <div class="overflow-hidden">
+            <img
+              src={withBase('images/training-2.jpg')}
+              alt="Hands-on clinical training on The O Concept™ fellowship"
+              class="aspect-[3/2] w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">
+            Hands-on training · Small cohorts
+          </figcaption>
+        </figure>
       </div>
 
-      <div class="mt-16 grid gap-6 lg:grid-cols-3" data-reveal-child>
+      <div class="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3" data-reveal-child>
         {
           fellowship.map((f) => (
             <div class="hairline flex flex-col bg-ink p-9" data-tilt>
@@ -127,7 +172,7 @@ const audience = [
   <!-- IAAGSW -->
   <section class="hairline-teal-t relative overflow-hidden bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
-    <div class="wrap relative grid gap-14 lg:grid-cols-12">
+    <div class="wrap relative grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-6" data-reveal>
         <p class="eyebrow-teal">The professional body</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">IAAGSW</h2>
@@ -189,7 +234,7 @@ const audience = [
   <!-- What delegates say -->
   <section class="hairline-t relative bg-ink2 py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
-    <div class="wrap relative grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+    <div class="wrap relative grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5" data-reveal>
         <p class="eyebrow">What delegates say</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">From the course, in their words.</h2>

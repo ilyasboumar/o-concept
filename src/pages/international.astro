@@ -1,0 +1,259 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+
+/* Canonical home of the international/concierge content — the homepage and
+   membership page carry slim teasers that link here. */
+
+const journey = [
+  {
+    n: '01',
+    title: 'Enquiry & Remote Consultation',
+    body: 'A confidential video consultation with the clinical team — history, concerns and diagnostics planned before you ever book a flight.',
+  },
+  {
+    n: '02',
+    title: 'Arrival — VIP Reception',
+    body: 'A modern VIP car receives you at the airport. Your driver, your schedule, your privacy — from the jet bridge onwards.',
+  },
+  {
+    n: '03',
+    title: 'Treatment at Harley Street',
+    body: 'Priority scheduling at 77 Harley Street, with treatment completed within your day wherever clinically possible.',
+  },
+  {
+    n: '04',
+    title: 'Return — Aftercare Anywhere',
+    body: 'Transfers back to your hotel or airport, and structured remote aftercare wherever in the world you land.',
+  },
+];
+
+const internationalSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'International Patient Concierge — The O Concept™',
+    serviceType: 'International patient concierge and treatment coordination',
+    provider: {
+      '@type': 'MedicalClinic',
+      name: 'Dr SW Clinics — The O Concept™',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '77 Harley Street',
+        addressLocality: 'London',
+        postalCode: 'W1G 8QN',
+        addressCountry: 'GB',
+      },
+    },
+    areaServed: 'Worldwide',
+    availableLanguage: ['English', 'Arabic'],
+    description:
+      'Door-to-door concierge for international patients travelling to 77 Harley Street, London: VIP airport reception, hotel and clinic transfers, accommodation arranged, remote consultation before travel and aftercare after returning home.',
+  },
+];
+---
+
+<Base
+  title="International Patients — Harley Street Clinic, London | The O Concept™"
+  description="Travelling from abroad for treatment? Dr Wakil's Harley Street clinic welcomes international patients — video consultation before you fly, VIP airport reception, door-to-door transfers and treatment completed within your day. Clinics in London, Dubai and Egypt."
+  schema={internationalSchema}
+>
+  <!-- ============ HERO — jet-first, full viewport ============ -->
+  <section class="relative -mt-20 flex min-h-screen items-end overflow-hidden pb-16 md:pb-20">
+    <!-- the jet dominates: scaled up slightly (900px source at full viewport),
+         Ken Burns drift, grain layer — cinematic, intentional -->
+    <img
+      src={withBase('images/concierge-jet-rolls.png')}
+      alt="A private jet and chauffeured Rolls-Royce awaiting an O Concept™ international patient"
+      class="kenburns-slow absolute inset-0 h-full w-full object-cover"
+      style="object-position: 66% 42%;"
+      fetchpriority="high"
+    />
+    <!-- heavier at bottom and left where text sits; light over the jet -->
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background:
+        linear-gradient(to top, rgba(10,10,11,0.94) 0%, rgba(10,10,11,0.5) 34%, rgba(7,7,8,0.14) 62%, rgba(7,7,8,0.1) 100%),
+        linear-gradient(100deg, rgba(7,7,8,0.78) 0%, rgba(7,7,8,0.34) 42%, transparent 68%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="grain-layer pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+    <div class="wrap relative">
+      <p class="eyebrow" data-reveal>International Patients</p>
+      <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1">
+        The Capital of Regenerative Medicine <span class="text-gold italic">and Wellbeing.</span>
+      </h1>
+      <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/75 md:text-lg" data-reveal data-delay="0.2">
+        Patients travel from around the world to 77 Harley Street. We make the journey effortless.
+      </p>
+      <div class="mt-10" data-reveal data-delay="0.3">
+        <a href="#begin" class="btn btn-gold" data-magnetic>Plan Your Visit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THE JOURNEY, DOOR TO DOOR ============ -->
+  <section class="relative bg-ink py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end">
+        <div class="max-w-2xl lg:col-span-8" data-reveal>
+          <p class="eyebrow">The journey, door to door</p>
+          <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+            From airstrip to clinic and back — complete discretion.
+          </h2>
+        </div>
+        <figure class="hairline max-w-xs p-2 lg:col-span-4 lg:justify-self-end" data-reveal data-delay="0.15">
+          <div class="overflow-hidden">
+            <img
+              src={withBase('images/london-aerial.jpg')}
+              alt="Aerial view of London — home of 77 Harley Street"
+              class="aspect-[16/10] w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">
+            London · 77 Harley Street
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="relative mt-16 md:mt-20">
+        <div class="absolute top-6 left-0 hidden h-px w-full bg-cream/10 md:block" aria-hidden="true"></div>
+        <div class="absolute top-6 left-0 hidden h-px w-full bg-gold md:block" data-line-draw aria-hidden="true"></div>
+
+        <div class="grid grid-cols-1 gap-12 md:grid-cols-4 md:gap-8" data-reveal-child>
+          {
+            journey.map((step) => (
+              <div class="relative">
+                <div class="hairline relative z-10 flex h-12 w-12 items-center justify-center bg-ink font-serif text-lg text-gold">
+                  {step.n}
+                </div>
+                <h3 class="mt-6 font-serif text-xl text-cream">{step.title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-cream/55">{step.body}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREMIUM HOSPITALITY ============ -->
+  <section class="hairline-t relative bg-ink2 py-24 md:py-32">
+    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-5" data-reveal>
+        <p class="eyebrow">Premium hospitality</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          Treated like a guest. <span class="text-gold italic">Cared for like a patient.</span>
+        </h2>
+      </div>
+      <div class="space-y-6 text-[15px] leading-[1.9] text-cream/65 lg:col-span-7" data-reveal data-delay="0.15">
+        <p>
+          Modern VIP cars receive you at the airport, and remain at your disposal for transfers between your hotel and
+          the clinic throughout your stay. Our team arranges the most suitable accommodation in London for your
+          preferences and your treatment plan — and remains at your service from the moment you land to the moment you
+          leave.
+        </p>
+        <p>
+          And at every step, complete privacy: unmarked correspondence, discreet scheduling, private appointment times
+          on request. Discretion is not a courtesy of this service; it is the service.
+        </p>
+        <ul class="flex flex-wrap gap-3 pt-2">
+          {
+            ['VIP airport reception', 'Hotel–clinic transfers throughout', 'Accommodation arranged', 'Complete privacy at every step'].map((item) => (
+              <li class="hairline px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-gold/85 uppercase">{item}</li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ A GLOBAL PRACTICE ============ -->
+  <section class="hairline-t relative overflow-hidden bg-ink py-24 md:py-32">
+    <img
+      src={withBase('images/world-map.png')}
+      alt=""
+      class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.08]"
+      loading="lazy"
+      aria-hidden="true"
+    />
+    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow">A global practice</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">One protocol. Every continent.</h2>
+      </div>
+
+      <dl class="mt-16 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-3" data-reveal-child>
+        <div class="flex flex-col">
+          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Cases worldwide</dt>
+          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="25000" data-suffix="+">25,000+</dd>
+        </div>
+        <div class="flex flex-col">
+          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Clinics — London, Dubai &amp; Egypt</dt>
+          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="3" data-plain>3</dd>
+        </div>
+        <!-- "40+ countries" is a representative placeholder — confirm the real figure with the client -->
+        <div class="flex flex-col">
+          <dt class="order-2 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Countries patients travel from</dt>
+          <dd class="order-1 mb-3 font-serif text-5xl text-gold md:text-6xl" data-count="40" data-suffix="+">40+</dd>
+        </div>
+      </dl>
+
+      <p class="mt-14 text-[11px] font-semibold tracking-[0.25em] text-teal/80 uppercase" data-reveal>
+        Multilingual consultation available
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ REMOTE-FIRST PATHWAY ============ -->
+  <section class="hairline-teal-t relative bg-ink2 py-24 md:py-32">
+    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <div class="wrap relative grid grid-cols-1 gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7" data-reveal>
+        <p class="eyebrow-teal">Begin before you board</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          Your visit can be as short as <span class="text-teal italic">one to two days.</span>
+        </h2>
+        <p class="mt-6 max-w-xl text-[15px] leading-[1.9] text-cream/65">
+          Begin with a confidential video consultation and the online self-assessment before travelling. Diagnostics
+          are reviewed and your treatment plan is confirmed in advance — so time in London is spent on treatment, not
+          on waiting rooms.
+        </p>
+      </div>
+      <div class="flex flex-col justify-center gap-4 lg:col-span-5 lg:items-end" data-reveal data-delay="0.15">
+        <a href="#begin" class="btn btn-gold w-full sm:w-auto" data-magnetic>Start with a Video Consultation</a>
+        <button data-open-quiz class="btn btn-teal w-full sm:w-auto" data-magnetic>Take the Confidential Self-Assessment</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="begin" class="hairline-t relative overflow-hidden bg-[#070708] py-28 md:py-40">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(201,169,110,0.13), transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="wrap relative text-center">
+      <p class="eyebrow" data-reveal>The O Concept™ — worldwide</p>
+      <h2 class="mx-auto mt-6 max-w-4xl font-serif text-5xl leading-[1.05] text-cream md:text-7xl" data-reveal data-delay="0.1">
+        London. Dubai. Cairo.<br />One standard of care.
+      </h2>
+      <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-cream/60" data-reveal data-delay="0.2">
+        Speak to the international patient team — by phone, WhatsApp or video, in complete confidence.
+      </p>
+      <div class="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row" data-reveal data-delay="0.3">
+        <a href="tel:+442030068459" class="btn btn-gold" data-magnetic>Book a Consultation</a>
+        <a href="https://wa.me/442030068459" target="_blank" rel="noopener" class="btn btn-ghost" data-magnetic>
+          WhatsApp +44 (0)20 3006 8459
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

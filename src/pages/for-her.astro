@@ -6,9 +6,14 @@ import FinalCTA from '../components/FinalCTA.astro';
 import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
 import TreatmentCarousel from '../components/TreatmentCarousel.astro';
 import { imageUrl } from '../lib/url';
-import { treatmentsByPathway } from '../data/treatments';
+import { treatments, treatmentsByPathway } from '../data/treatments';
 
-const herTreatments = treatmentsByPathway('her');
+/* Native her treatments, plus the O Concept™ Chair (its image is the
+   women's-incontinence EM chair) — every box carries a real image. */
+const herTreatments = [
+  ...treatmentsByPathway('her'),
+  ...treatments.filter((t) => t.slug === 'o-concept-chair'),
+];
 
 const faqs = [
   {
@@ -72,7 +77,7 @@ const procedureSchema = herTreatments.map((t) => ({
     >
     </div>
     <div class="wrap relative">
-      <div class="grid gap-12 lg:grid-cols-12" data-reveal>
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
         <div class="lg:col-span-5">
           <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Heard, first</p>
           <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Medicine that listens before it treats.</h2>
@@ -91,7 +96,7 @@ const procedureSchema = herTreatments.map((t) => ({
         </div>
       </div>
 
-      <div class="mt-20 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+      <div class="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
         {
           herTreatments.map((t) => (
             <div id={t.slug} class="group flex flex-col overflow-hidden border border-rose/20 bg-ink2 transition-colors duration-500 hover:border-rose/60" data-tilt>
@@ -109,9 +114,12 @@ const procedureSchema = herTreatments.map((t) => ({
                 <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
                 <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
                 <div class="mt-6 flex flex-wrap gap-1.5">
-                  {t.conditions.slice(0, 3).map((c) => (
-                    <span class="condition-chip" title={c.plain}>{c.clinical}</span>
-                  ))}
+                  {t.conditions
+                    .filter((c) => !/erectile/i.test(c.clinical))
+                    .slice(0, 3)
+                    .map((c) => (
+                      <span class="condition-chip" title={c.plain}>{c.clinical}</span>
+                    ))}
                 </div>
               </div>
             </div>
@@ -123,7 +131,7 @@ const procedureSchema = herTreatments.map((t) => ({
 
   <!-- FAQ -->
   <section class="hairline-t bg-ink2 py-24 md:py-32">
-    <div class="wrap grid gap-14 lg:grid-cols-12">
+    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
         <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Asked gently, often</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions women actually search.</h2>

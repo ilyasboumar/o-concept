@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
 import MembershipTiers from '../components/MembershipTiers.astro';
 import TreatmentPackages from '../components/TreatmentPackages.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
@@ -62,24 +61,42 @@ const faqSchema = {
   description="Silver, Gold and Platinum: head-to-toe health memberships with comprehensive diagnostics, priority access and ongoing optimisation — plus open-to-everyone treatment packages with 0% finance. Dr SW Clinics, 77 Harley Street."
   schema={[faqSchema]}
 >
-  <PageHero
-    eyebrow="Membership"
-    title="Care that <em class='text-gold'>continues.</em>"
-    sub="Silver, Gold and Platinum — three tiers of head-to-toe health investment: comprehensive diagnostics, priority access, and optimisation that never stands still. Each by application."
-  />
+  <!-- ============ HERO + TIERS — one opening section, the hook ============ -->
+  <section class="relative -mt-20 overflow-hidden bg-ink2 pt-28 pb-20 md:pt-32 md:pb-24">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background:
+        radial-gradient(ellipse 75% 65% at 70% 0%, rgba(201,169,110,0.14), transparent 65%),
+        radial-gradient(ellipse 55% 50% at 15% 100%, rgba(201,169,110,0.07), transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
 
-  <section class="relative bg-ink py-24 md:py-32">
-    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
-      <MembershipTiers />
+      <p class="eyebrow" data-reveal>Membership</p>
+      <h1 class="mt-5 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-6xl" data-reveal data-delay="0.1">
+        Care that <em class="text-gold">continues.</em>
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">
+        Silver, Gold and Platinum — three tiers of head-to-toe health investment: comprehensive diagnostics, priority
+        access, and optimisation that never stands still. Each by application.
+      </p>
+
+      <!-- the three tiers share the opening screen with the title -->
+      <div class="mt-12 lg:mt-14">
+        <MembershipTiers />
+      </div>
       <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
         Pricing confirmed at application · No joining fees · Prototype placeholders shown
       </p>
+    </div>
+  </section>
 
-      <!-- open-to-everyone packages -->
-      <div class="mt-20">
-        <TreatmentPackages />
-      </div>
+  <!-- open-to-everyone packages -->
+  <section class="relative bg-ink py-20 md:py-24">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <TreatmentPackages />
     </div>
   </section>
 
@@ -126,7 +143,7 @@ const faqSchema = {
 
   <!-- FAQ -->
   <section class="hairline-t bg-ink py-24 md:py-32">
-    <div class="wrap grid gap-14 lg:grid-cols-12">
+    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow">Questions, answered</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Asked quietly, often.</h2>
