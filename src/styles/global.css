@@ -44,11 +44,16 @@
     background: #0a0a0b;
   }
   ::-webkit-scrollbar-thumb {
-    background: #26262e;
+    background: linear-gradient(180deg, rgba(201, 169, 110, 0.45), rgba(45, 212, 191, 0.4));
     border-radius: 5px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(201, 169, 110, 0.5);
+    background: linear-gradient(180deg, rgba(201, 169, 110, 0.8), rgba(45, 212, 191, 0.75));
+  }
+
+  :focus-visible {
+    outline: 1px solid rgba(45, 212, 191, 0.65);
+    outline-offset: 3px;
   }
 }
 
@@ -89,16 +94,33 @@
     @apply text-[11px] font-semibold uppercase tracking-[0.35em] text-teal;
   }
 
-  /* ---------- buttons ---------- */
+  /* ---------- buttons — sci-fi bevel cut + light sweep ---------- */
   .btn {
-    @apply inline-flex cursor-pointer items-center justify-center gap-3 px-8 py-4 text-[11px] font-semibold tracking-[0.25em] uppercase transition-all duration-500;
+    @apply relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden px-8 py-4 text-[11px] font-semibold tracking-[0.25em] uppercase transition-all duration-500;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  }
+  /* light sweep on hover — plays once, rests invisible */
+  .btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    transform: skewX(-20deg);
+  }
+  .btn:hover::after {
+    animation: btnSheen 0.9s ease;
   }
   .btn-gold {
     @apply bg-gold text-ink;
   }
   .btn-gold:hover {
     @apply bg-goldlight;
-    box-shadow: 0 0 40px rgba(201, 169, 110, 0.25);
+    filter: drop-shadow(0 0 18px rgba(201, 169, 110, 0.4));
   }
   .btn-ghost {
     @apply text-cream;
@@ -107,6 +129,7 @@
   .btn-ghost:hover {
     @apply text-gold;
     border-color: var(--color-gold);
+    filter: drop-shadow(0 0 14px rgba(201, 169, 110, 0.25));
   }
   .btn-teal {
     @apply text-cream;
@@ -115,7 +138,7 @@
   .btn-teal:hover {
     @apply text-teal;
     border-color: var(--color-teal);
-    box-shadow: 0 0 34px rgba(45, 212, 191, 0.18);
+    filter: drop-shadow(0 0 14px rgba(45, 212, 191, 0.3));
   }
 
   /* ---------- forms ---------- */
@@ -418,17 +441,28 @@ html.js .hw {
     flex: 1.55;
   }
 }
-.pathway .pathway-more {
-  transition: opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s;
-}
+/* The reveal block collapses to zero height when idle (grid-rows trick),
+   so idle cards stack identically and headings align; on hover it expands
+   as a smooth height animation instead of popping into layout. */
 @media (min-width: 768px) {
   .pathway .pathway-more {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: 0;
     opacity: 0;
-    transform: translateY(14px);
+    transition:
+      grid-template-rows 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      margin-top 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.55s ease 0.1s;
+  }
+  .pathway .pathway-more > ul {
+    overflow: hidden;
+    min-height: 0;
   }
   .pathway:hover .pathway-more {
+    grid-template-rows: 1fr;
+    margin-top: 1.5rem;
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -595,6 +629,46 @@ details.faq[open] .faq-icon {
 .side-tab {
   writing-mode: vertical-rl;
   text-orientation: mixed;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-left: 0;
+}
+.side-tab:hover {
+  box-shadow: 0 0 34px rgba(201, 169, 110, 0.2);
+}
+.side-pill {
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+.side-pill:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), 0 0 30px rgba(201, 169, 110, 0.22);
+}
+.side-pill:hover .side-tab-dot {
+  background: var(--color-ink);
+  box-shadow: none;
+}
+.side-tab-dot {
+  display: inline-block;
+  height: 6px;
+  width: 6px;
+  border-radius: 9999px;
+  background: var(--color-teal);
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.8);
+  margin-inline-end: 12px;
+  vertical-align: middle;
+  animation: dotPulse 2.4s ease-in-out infinite;
+}
+.side-tab:hover .side-tab-dot {
+  background: var(--color-ink);
+  box-shadow: none;
+}
+@keyframes dotPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .grain::after {
@@ -961,6 +1035,82 @@ html:not(.js) .award-static {
   box-shadow: 0 0 22px rgba(45, 212, 191, 0.12);
 }
 
+/* ---------- diagnostic console — system tabs + condition chips ---------- */
+
+.sys-tab {
+  @apply inline-flex cursor-pointer items-center gap-2.5 border border-cream/12 bg-white/[0.02] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-cream/60 transition-all duration-300;
+}
+.sys-tab:hover {
+  color: var(--color-cream);
+  border-color: rgba(45, 212, 191, 0.4);
+}
+.sys-tab.active {
+  color: var(--color-teal);
+  border-color: rgba(45, 212, 191, 0.65);
+  background: rgba(45, 212, 191, 0.07);
+  box-shadow: 0 0 24px rgba(45, 212, 191, 0.12);
+}
+.sys-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  background: rgba(45, 212, 191, 0.06);
+  font-size: 9px;
+  letter-spacing: 0;
+  color: var(--color-teal);
+}
+
+.sys-panel {
+  animation: panelIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cond-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.9rem 1.15rem;
+  text-align: left;
+}
+.cond-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(244, 241, 236, 0.85);
+  transition: color 0.3s ease;
+}
+.cond-plain {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
+  color: rgba(244, 241, 236, 0.42);
+  transition: color 0.3s ease;
+}
+.cond-chip:hover .cond-name,
+.cond-chip.active .cond-name {
+  color: var(--color-teal);
+}
+.cond-chip:hover .cond-plain,
+.cond-chip.active .cond-plain {
+  color: rgba(244, 241, 236, 0.6);
+}
+
 .finder-card {
   border: 1px solid rgba(244, 241, 236, 0.1);
   background: #101014;
@@ -1077,13 +1227,120 @@ html:not(.js) .award-static {
    Micro-interactions
    ============================================================ */
 
+/* magnetic + tilt motion is rAF-lerped in main.js (a CSS transition on top
+   would double-smooth and lag the cursor) */
 [data-magnetic] {
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 [data-tilt] {
   transform-style: preserve-3d;
   will-change: transform;
+}
+
+@keyframes btnSheen {
+  from {
+    left: -60%;
+    opacity: 1;
+  }
+  to {
+    left: 130%;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   HUD corner brackets — appear on card hover; teal for science
+   surfaces, gold for editorial ones
+   ============================================================ */
+
+[data-tilt],
+.finder-card,
+.tx-card,
+.recog-card,
+.treatment-box {
+  position: relative;
+}
+[data-tilt]::after,
+.finder-card::after,
+.tx-card::after,
+.recog-card::after,
+.treatment-box::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  --hud: rgba(45, 212, 191, 0.7);
+  background:
+    linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 1px 16px;
+  background-repeat: no-repeat;
+}
+[data-tilt]::after,
+.recog-card::after {
+  --hud: rgba(201, 169, 110, 0.65);
+}
+[data-tilt]:hover::after,
+.finder-card:hover::after,
+.tx-card:hover::after,
+.recog-card:hover::after,
+.treatment-box:hover::after {
+  opacity: 1;
+}
+
+/* ============================================================
+   Holographic atmosphere — blueprint grid + scanner sweep
+   ============================================================ */
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(45, 212, 191, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 212, 191, 0.05) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, black, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, black, transparent 78%);
+}
+
+.scan-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 140px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(45, 212, 191, 0.045) 45%,
+    rgba(45, 212, 191, 0.09) 50%,
+    rgba(45, 212, 191, 0.045) 55%,
+    transparent
+  );
+  animation: scanSweep 10s linear infinite;
+}
+@keyframes scanSweep {
+  from {
+    transform: translateY(-160px);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scan-sweep {
+    display: none;
+  }
 }
 
 /* ============================================================

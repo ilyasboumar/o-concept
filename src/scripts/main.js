@@ -325,29 +325,82 @@ document.querySelectorAll('[data-recog]').forEach((viewport) => {
    Micro-interactions — magnetic buttons + 3D tilt cards
    ============================================================ */
 
+const lerpN = (a, b, k) => a + (b - a) * k;
+
 if (!reduced && finePointer) {
+  /* Magnetic buttons — the rect is cached on entry: reading it on every
+     move while the element is mid-transform feeds the transform back into
+     the measurement (jitter-then-settle). Motion is rAF-lerped so it
+     glides in and eases back out. */
   document.querySelectorAll('[data-magnetic]').forEach((el) => {
+    let rect = null;
+    let raf = null;
+    let tx = 0, ty = 0, x = 0, y = 0;
+    const settle = () => {
+      x = lerpN(x, tx, 0.18);
+      y = lerpN(y, ty, 0.18);
+      el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+      if (Math.abs(x - tx) > 0.04 || Math.abs(y - ty) > 0.04) {
+        raf = requestAnimationFrame(settle);
+      } else {
+        raf = null;
+        if (tx === 0 && ty === 0) el.style.transform = '';
+      }
+    };
+    const kick = () => {
+      if (raf === null) raf = requestAnimationFrame(settle);
+    };
+    el.addEventListener('mouseenter', () => {
+      rect = el.getBoundingClientRect();
+    });
     el.addEventListener('mousemove', (e) => {
-      const r = el.getBoundingClientRect();
-      const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
-      const dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
-      el.style.transform = `translate(${dx * 5}px, ${dy * 4}px)`;
+      if (!rect) rect = el.getBoundingClientRect();
+      tx = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+      ty = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
+      kick();
     });
     el.addEventListener('mouseleave', () => {
-      el.style.transform = '';
+      rect = null;
+      tx = 0;
+      ty = 0;
+      kick();
     });
   });
 
+  /* 3D tilt cards — same cached-rect + eased-follow treatment */
   document.querySelectorAll('[data-tilt]').forEach((el) => {
     const max = parseFloat(el.dataset.tiltMax || '3.5');
+    let rect = null;
+    let raf = null;
+    let trx = 0, tryy = 0, rx = 0, ry = 0;
+    const settle = () => {
+      rx = lerpN(rx, trx, 0.14);
+      ry = lerpN(ry, tryy, 0.14);
+      el.style.transform = `perspective(850px) rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg)`;
+      if (Math.abs(rx - trx) > 0.02 || Math.abs(ry - tryy) > 0.02) {
+        raf = requestAnimationFrame(settle);
+      } else {
+        raf = null;
+        if (trx === 0 && tryy === 0) el.style.transform = '';
+      }
+    };
+    const kick = () => {
+      if (raf === null) raf = requestAnimationFrame(settle);
+    };
+    el.addEventListener('mouseenter', () => {
+      rect = el.getBoundingClientRect();
+    });
     el.addEventListener('mousemove', (e) => {
-      const r = el.getBoundingClientRect();
-      const dx = (e.clientX - r.left) / r.width - 0.5;
-      const dy = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = `perspective(850px) rotateX(${(-dy * max).toFixed(2)}deg) rotateY(${(dx * max).toFixed(2)}deg)`;
+      if (!rect) rect = el.getBoundingClientRect();
+      trx = -((e.clientY - rect.top) / rect.height - 0.5) * max;
+      tryy = ((e.clientX - rect.left) / rect.width - 0.5) * max;
+      kick();
     });
     el.addEventListener('mouseleave', () => {
-      el.style.transform = '';
+      rect = null;
+      trx = 0;
+      tryy = 0;
+      kick();
     });
   });
 }
@@ -389,11 +442,13 @@ document.querySelectorAll('[data-award-ring]').forEach((stage) => {
     });
   };
 
+  let speedF = 1; // eased spin factor — hover/drag glides to a stop, never snaps
+
   gsap.ticker.add((_, dt) => {
     if (!visible) return;
-    if (!paused && !dragging) {
-      angle -= (360 / 46000) * dt; // one lap ≈ 46s
-    }
+    const target = paused || dragging ? 0 : 1;
+    speedF += (target - speedF) * Math.min(1, dt / 420);
+    if (speedF > 0.001) angle -= (360 / 46000) * dt * speedF; // one lap ≈ 46s
     render();
   });
 
@@ -461,7 +516,8 @@ document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
 
   let x = 0;
   let dragging = false;
-  let paused = false;
+  let hovering = false; // hover holds the strip; leaving releases it instantly
+  let paused = false; // touch/drag pause — released by the resume timer
   let resumeTimer = null;
   let startX = 0;
   let startTrackX = 0;
@@ -473,7 +529,7 @@ document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
   const half = () => track.scrollWidth / 2;
   const scheduleResume = () => {
     clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(() => (paused = false), 3000);
+    resumeTimer = setTimeout(() => (paused = false), 2000);
   };
 
   gsap.ticker.add((_, dt) => {
@@ -481,7 +537,7 @@ document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
       if (Math.abs(velocity) > 0.05) {
         x += velocity * dt; // drag momentum, decaying
         velocity *= Math.pow(0.94, dt / 16.7);
-      } else if (!paused) {
+      } else if (!paused && !hovering) {
         x -= (half() / 40000) * dt; // ~40s per seamless loop
       }
     }
@@ -493,13 +549,8 @@ document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
     track.style.transform = `translate3d(${x}px,0,0)`;
   });
 
-  viewport.addEventListener('mouseenter', () => {
-    paused = true;
-    clearTimeout(resumeTimer);
-  });
-  viewport.addEventListener('mouseleave', () => {
-    if (!dragging) scheduleResume();
-  });
+  viewport.addEventListener('mouseenter', () => (hovering = true));
+  viewport.addEventListener('mouseleave', () => (hovering = false));
   viewport.addEventListener('touchstart', () => {
     paused = true;
     clearTimeout(resumeTimer);
@@ -721,6 +772,19 @@ if (finderInput) {
       const value = chip.classList.contains('active') ? '' : chip.dataset.condition;
       finderInput.value = value;
       render(value);
+    });
+  });
+
+  /* diagnostic console — system tabs swap the visible condition panel */
+  const sysTabs = document.querySelectorAll('[data-finder-systems] .sys-tab');
+  const sysPanels = document.querySelectorAll('[data-system-panel]');
+  sysTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      sysTabs.forEach((t) => {
+        t.classList.toggle('active', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+      sysPanels.forEach((p) => p.classList.toggle('hidden', p.dataset.systemPanel !== tab.dataset.system));
     });
   });
 }

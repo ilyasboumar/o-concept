@@ -340,6 +340,38 @@ function mountHelix(host) {
     )
   );
 
+  /* diagnostic scan ring — a thin teal halo sweeping the strand like a
+     sequencer read-head; nodes brighten as it passes (medical sci-fi) */
+  const RING_SEG = 64;
+  const ringPts = new Float32Array(RING_SEG * 3);
+  for (let i = 0; i < RING_SEG; i++) {
+    const a = (i / RING_SEG) * Math.PI * 2;
+    ringPts[i * 3] = Math.cos(a) * RADIUS * 1.5;
+    ringPts[i * 3 + 2] = Math.sin(a) * RADIUS * 1.5;
+  }
+  const ringGeo = new THREE.BufferGeometry();
+  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPts, 3));
+  const ringBaseOpacity = preset.bloom ? 0.42 : 0.22;
+  const ringMat = new THREE.LineBasicMaterial({
+    color: TEAL,
+    transparent: true,
+    opacity: ringBaseOpacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const scanRing = new THREE.LineLoop(ringGeo, ringMat);
+  const echoMat = new THREE.LineBasicMaterial({
+    color: TEAL_DEEP,
+    transparent: true,
+    opacity: ringBaseOpacity * 0.35,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const scanEcho = new THREE.LineLoop(ringGeo.clone(), echoMat);
+  group.add(scanRing, scanEcho);
+  const SCAN_SPAN = HEIGHT + 3;
+  let scanY = 0;
+
   /* section-level cursor in canvas NDC — for the proximity glow */
   const localCursor = { x: 0, y: 0, active: false };
   if (useProximity) {
@@ -456,6 +488,12 @@ function mountHelix(host) {
 
     group.updateMatrixWorld();
 
+    /* scan sweep — bottom to top, looping; opacity gently pulses */
+    scanY = reduced ? 0 : ((time * 1.15) % SCAN_SPAN) - SCAN_SPAN / 2;
+    scanRing.position.y = scanY;
+    scanEcho.position.y = scanY - 0.5;
+    ringMat.opacity = ringBaseOpacity * (0.7 + 0.3 * Math.sin(time * 2.6));
+
     /* per-node brightness: idle breathing (±10%, phase travelling up the
        strand) × cursor-proximity glow (O(n) projected-distance check) */
     for (const s of [A, B]) {
@@ -475,7 +513,9 @@ function mountHelix(host) {
 
         const pulse = 1 + 0.1 * Math.sin(time * 1.4 + (i / nodeCount) * Math.PI * 4);
         const wave = useDrag ? 1 + 0.12 * Math.sin(time * 0.9 - (i / nodeCount) * Math.PI * 2) : 1;
-        const b = pulse * wave * (1 + 0.32 * s.glow[i]);
+        const dyScan = s.pos[i * 3 + 1] - scanY;
+        const scanBoost = Math.exp(-dyScan * dyScan * 2.4);
+        const b = pulse * wave * (1 + 0.32 * s.glow[i] + 0.5 * scanBoost);
         col.array[i * 3] = s.base[i * 3] * b;
         col.array[i * 3 + 1] = s.base[i * 3 + 1] * b;
         col.array[i * 3 + 2] = s.base[i * 3 + 2] * b;
@@ -562,6 +602,31 @@ function mountCells(host) {
   const group = new THREE.Group();
   group.add(points, bigPoints);
 
+  /* molecular plexus — faint teal filaments linking nearby cells; the
+     classic sci-fi "living tissue network" read (desktop only) */
+  const LINK_N = isMobile ? 0 : Math.min(COUNT, 90);
+  const MAX_LINKS = 160;
+  const LINK_D2 = 2.1 * 2.1;
+  let linkGeo = null;
+  if (LINK_N) {
+    linkGeo = new THREE.BufferGeometry();
+    linkGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MAX_LINKS * 6), 3));
+    linkGeo.setDrawRange(0, 0);
+    group.add(
+      new THREE.LineSegments(
+        linkGeo,
+        new THREE.LineBasicMaterial({
+          color: TEAL,
+          transparent: true,
+          opacity: 0.13,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        })
+      )
+    );
+  }
+  let frameCount = 0;
+
   const rec = createScene(host, tick);
   rec.camera.fov = 55;
   rec.camera.updateProjectionMatrix();
@@ -583,6 +648,30 @@ function mountCells(host) {
       attr.array[i * 3 + 2] = base[i * 3 + 2] + Math.sin(time * s * 0.6 + p * 0.9) * 0.5;
     }
     attr.needsUpdate = true;
+
+    /* rebuild plexus links every other frame — O(n²) over 90 points */
+    if (LINK_N && (frameCount++ & 1) === 0) {
+      const lp = linkGeo.getAttribute('position');
+      let n = 0;
+      outer: for (let i = 0; i < LINK_N; i++) {
+        for (let j = i + 1; j < LINK_N; j++) {
+          const dx = attr.array[i * 3] - attr.array[j * 3];
+          const dy = attr.array[i * 3 + 1] - attr.array[j * 3 + 1];
+          const dz = attr.array[i * 3 + 2] - attr.array[j * 3 + 2];
+          if (dx * dx + dy * dy + dz * dz < LINK_D2) {
+            lp.array[n * 6] = attr.array[i * 3];
+            lp.array[n * 6 + 1] = attr.array[i * 3 + 1];
+            lp.array[n * 6 + 2] = attr.array[i * 3 + 2];
+            lp.array[n * 6 + 3] = attr.array[j * 3];
+            lp.array[n * 6 + 4] = attr.array[j * 3 + 1];
+            lp.array[n * 6 + 5] = attr.array[j * 3 + 2];
+            if (++n >= MAX_LINKS) break outer;
+          }
+        }
+      }
+      linkGeo.setDrawRange(0, n * 2);
+      lp.needsUpdate = true;
+    }
 
     const bigAttr = bigGeo.getAttribute('position');
     for (let i = 0; i < BIG; i++) {

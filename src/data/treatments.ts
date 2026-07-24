@@ -286,6 +286,76 @@ export const featured: Record<'for-him' | 'for-her' | 'longevity' | 'treatments'
   treatments: 'p-shot',
 };
 
+/**
+ * Condition "systems" — the diagnostic-console grouping for the finder.
+ * With a catalogue heading past 100 treatments, a flat chip wall does not
+ * scale; conditions are indexed under the body system patients think in.
+ * Unmapped conditions fall back to Longevity & Recovery.
+ */
+export interface ConditionSystem {
+  id: string;
+  label: string;
+}
+
+export const SYSTEMS: ConditionSystem[] = [
+  { id: 'sexual-function', label: 'Sexual Function' },
+  { id: 'hormones', label: 'Hormones & Vitality' },
+  { id: 'pelvic', label: 'Pelvic & Urinary' },
+  { id: 'intimate', label: 'Intimate Health' },
+  { id: 'metabolic', label: 'Weight & Metabolic' },
+  { id: 'longevity', label: 'Longevity & Recovery' },
+];
+
+const SYSTEM_OF: Record<string, string> = {
+  'Erectile dysfunction': 'sexual-function',
+  'Peyronie’s disease': 'sexual-function',
+  'Loss of sensitivity': 'sexual-function',
+  'Post-prostatectomy rehabilitation': 'sexual-function',
+  'Vasculogenic ED': 'sexual-function',
+  'Premature ejaculation': 'sexual-function',
+  'Performance-related physical causes': 'sexual-function',
+  'Anorgasmia': 'sexual-function',
+  'Low arousal': 'sexual-function',
+  'Andropause / low testosterone': 'hormones',
+  'Hormonal imbalance': 'hormones',
+  'Low libido': 'hormones',
+  'Unexplained fatigue': 'hormones',
+  'Menopause & perimenopause': 'hormones',
+  'Brain fog': 'hormones',
+  'Urinary incontinence': 'pelvic',
+  'Mild urinary incontinence': 'pelvic',
+  'Pelvic floor weakness': 'pelvic',
+  'Vaginal dryness': 'intimate',
+  'Vaginal laxity': 'intimate',
+  'Vulvovaginal discomfort': 'intimate',
+  'Genitourinary syndrome of menopause': 'intimate',
+  'Vaginal atrophy': 'intimate',
+  'Post-natal changes': 'intimate',
+  'External skin laxity': 'intimate',
+  'Vulval volume loss': 'intimate',
+  'Skin laxity': 'intimate',
+  'Post-menopausal changes': 'intimate',
+  'Weight gain / metabolic slowdown': 'metabolic',
+  'Insulin resistance': 'metabolic',
+  'Hormonal weight gain': 'metabolic',
+  'Chronic fatigue': 'longevity',
+  'Nutritional deficiency': 'longevity',
+  'Post-illness recovery': 'longevity',
+  'Tissue degeneration': 'longevity',
+  'Suboptimal performance': 'longevity',
+  'Stress & burnout': 'longevity',
+  'Healthy ageing': 'longevity',
+};
+
+/** Conditions grouped by system, in SYSTEMS order; empty systems dropped */
+export function conditionsBySystem(): (ConditionSystem & { conditions: Condition[] })[] {
+  const all = allConditions();
+  return SYSTEMS.map((s) => ({
+    ...s,
+    conditions: all.filter((c) => (SYSTEM_OF[c.clinical] ?? 'longevity') === s.id),
+  })).filter((g) => g.conditions.length > 0);
+}
+
 /** Flat, de-duplicated list of conditions for chips & search */
 export function allConditions(): Condition[] {
   const seen = new Set<string>();

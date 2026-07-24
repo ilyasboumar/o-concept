@@ -1,12 +1,23 @@
 ---
 /**
- * "Find Your Treatment" — start from the CONDITION, get routed to the
- * TREATMENT. Chips + free-text search; matching runs client-side in
- * main.js against src/data/treatments.ts. Instant, nothing stored.
+ * "Find Your Treatment" — the diagnostic console. Start from the CONDITION,
+ * get routed to the TREATMENT.
+ *
+ * Conditions are indexed under body systems (data: conditionsBySystem) and
+ * presented behind HUD-style tabs — a flat chip wall does not scale to a
+ * catalogue of 100+ protocols. Each condition chip carries the clinical
+ * term AND the plain-language phrase patients actually type.
+ *
+ * Free-text search (top) matches across everything regardless of the
+ * active system. Matching runs client-side in main.js against
+ * src/data/treatments.ts. Instant, nothing stored.
  */
-import { allConditions } from '../data/treatments';
+import { withBase } from '../lib/url';
+import { conditionsBySystem, treatments } from '../data/treatments';
 
-const conditions = allConditions();
+const groups = conditionsBySystem();
+const txCount = treatments.length;
+const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
 ---
 
 <section id="finder" class="hairline-teal-t relative overflow-hidden bg-ink2 py-24 md:py-32" aria-labelledby="finder-heading">
@@ -17,6 +28,7 @@ const conditions = allConditions();
     aria-hidden="true"
   >
   </div>
+  <div class="grid-overlay" aria-hidden="true"></div>
 
   <div class="wrap relative">
     <div class="mx-auto max-w-2xl text-center" data-reveal>
@@ -25,8 +37,16 @@ const conditions = allConditions();
         Find your treatment.
       </h2>
       <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
-        Describe your concern in your own words — or choose it below. We&rsquo;ll show you the treatments that address
-        it, instantly and privately. Nothing you type is stored or sent.
+        Describe your concern in your own words — or explore by system below. We&rsquo;ll show you the treatments that
+        address it, instantly and privately. Nothing you type is stored or sent.
+      </p>
+      <!-- diagnostic readout -->
+      <p class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[9.5px] font-semibold tracking-[0.3em] text-teal/70 uppercase" aria-hidden="true">
+        <span>{condCount} conditions indexed</span>
+        <span class="h-[3px] w-[3px] rounded-full bg-teal/50"></span>
+        <span>{txCount} signature protocols</span>
+        <span class="h-[3px] w-[3px] rounded-full bg-teal/50"></span>
+        <span>3 pathways</span>
       </p>
     </div>
 
@@ -46,17 +66,44 @@ const conditions = allConditions();
           </svg>
         </span>
       </div>
-
-      <div class="mt-7 flex flex-wrap justify-center gap-2.5" data-finder-chips>
-        {
-          conditions.map((c) => (
-            <button type="button" class="chip" data-condition={c.clinical} title={c.plain}>
-              {c.clinical}
-            </button>
-          ))
-        }
-      </div>
     </div>
+
+    <!-- system tabs — the console selector -->
+    <div class="mt-10 flex flex-wrap justify-center gap-2" data-finder-systems role="tablist" aria-label="Condition systems" data-reveal data-delay="0.2">
+      {
+        groups.map((g, i) => (
+          <button type="button" class:list={['sys-tab', i === 0 && 'active']} data-system={g.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+            {g.label}
+            <span class="sys-count" aria-hidden="true">{g.conditions.length}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- condition panels, one per system -->
+    <div class="mx-auto mt-7 max-w-5xl" data-finder-chips>
+      {
+        groups.map((g, i) => (
+          <div
+            class:list={['sys-panel grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3', i !== 0 && 'hidden']}
+            data-system-panel={g.id}
+            role="tabpanel"
+          >
+            {g.conditions.map((c) => (
+              <button type="button" class="chip cond-chip" data-condition={c.clinical}>
+                <span class="cond-name">{c.clinical}</span>
+                <span class="cond-plain">“{c.plain}”</span>
+              </button>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-center text-[10px] font-semibold tracking-[0.25em] text-cream/40 uppercase" data-reveal>
+      Part of a catalogue of 100+ protocols —
+      <a href={withBase('treatments')} class="text-teal transition-colors duration-300 hover:text-cream">browse the full treatment index →</a>
+    </p>
 
     <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-finder-results aria-live="polite">
       <!-- matching treatment cards are rendered here by main.js -->

@@ -59,6 +59,10 @@ const panels = [
   <div class="wrap relative grid grid-cols-1 gap-10 pt-14 pb-24 md:pb-32 lg:grid-cols-2 lg:gap-16 lg:pt-6">
     <!-- LEFT — pinned visual -->
     <div>
+      <!-- sticky boundary: the pin must release at the end of the spacer,
+           BEFORE the handover figure — otherwise the pinned block slides
+           down over the figure and the two overlap -->
+      <div>
       <div class="science-sticky flex flex-col justify-center py-10 lg:py-0">
         <div class="hairline-teal relative overflow-hidden bg-ink2">
           <img
@@ -97,6 +101,7 @@ const panels = [
 
       <!-- spacer keeps the visual pinned through the right column's panels (desktop only) -->
       <div class="hidden lg:block lg:h-[260vh]" aria-hidden="true"></div>
+      </div>
 
       <!-- handover content — scrolls through while the right panel freezes -->
       <figure class="relative mt-10 hidden overflow-hidden lg:block lg:min-h-[90vh]">
