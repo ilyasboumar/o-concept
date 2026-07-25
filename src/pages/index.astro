@@ -14,6 +14,7 @@ import LongevityTeaser from '../components/LongevityTeaser.astro';
 import VideoTestimonials from '../components/VideoTestimonials.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
 import ScienceInterlude from '../components/ScienceInterlude.astro';
+import CellField from '../components/CellField.astro';
 
 const authorityBar = [
   'Global Excellence Awards 2025 — The O Concept™ Protocol',
@@ -368,6 +369,11 @@ const testimonials = [
   <!-- ============ CLINICIAN-LED DIGITAL CARE ============ -->
   <section class="hairline-t relative overflow-hidden bg-ink2 py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
+    <!-- stem-cell ambience — drifts behind the assessment, edges fade to ink -->
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <CellField count={130} opacity={0.26} size={0.32} />
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse 78% 68% at 50% 46%, transparent 32%, var(--color-ink2) 92%);"></div>
+    </div>
     <div class="wrap relative">
       <div class="max-w-2xl" data-reveal>
         <p class="eyebrow-teal">Intelligent care</p>
