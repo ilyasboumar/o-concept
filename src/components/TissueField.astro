@@ -1,0 +1,34 @@
+---
+/**
+ * Bioluminescent "living tissue" field — a distinct full-viewport
+ * fragment-shader plane, mounted client-side by scripts/three-fx.js
+ * (data-three="tissue"). Domain-warped fbm plasma with glinting nuclei,
+ * a diagnostic scan bar (boot-up sweep on load, then scroll-driven), and
+ * pointer ripples. Always behind content, pointer-events: none.
+ *
+ * Distinct from DnaHelix and CellField — it does not merge with or replace
+ * either. Reduced-motion renders one still frame; the CSS-gradient fallback
+ * below shows wherever WebGL never mounts.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['three-host pointer-events-none h-full w-full', className]}
+  data-three="tissue"
+  aria-hidden="true"
+>
+  <!-- no-WebGL / pre-mount fallback — same gold + teal palette -->
+  <div
+    class="three-fallback absolute inset-0"
+    style="background:
+      radial-gradient(ellipse 60% 55% at 78% 42%, rgba(45,212,191,0.14), transparent 62%),
+      radial-gradient(ellipse 55% 50% at 22% 78%, rgba(201,169,110,0.10), transparent 65%),
+      radial-gradient(ellipse 90% 80% at 50% 50%, transparent 40%, #0a0a0b 96%),
+      #0a0a0b;"
+  >
+  </div>
+</div>

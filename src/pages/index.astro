@@ -15,6 +15,7 @@ import VideoTestimonials from '../components/VideoTestimonials.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
 import ScienceInterlude from '../components/ScienceInterlude.astro';
 import CellField from '../components/CellField.astro';
+import TissueField from '../components/TissueField.astro';
 
 const authorityBar = [
   'Global Excellence Awards 2025 — The O Concept™ Protocol',
@@ -84,6 +85,18 @@ const testimonials = [
 >
   <!-- ============ HERO — Dr Wakil-centric, instant market-leader read ============ -->
   <section class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink">
+    <!-- bioluminescent living-tissue shader field — deepest ambient layer,
+         boots up with a diagnostic scan sweep, then scroll-driven -->
+    <div class="absolute inset-0" aria-hidden="true">
+      <TissueField />
+    </div>
+    <!-- readability scrim — keeps the headline WCAG AA over the field -->
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 62% 72% at 32% 52%, rgba(10,10,11,0.5), transparent 62%);"
+      aria-hidden="true"
+    >
+    </div>
     <!-- subtle gold particle drift — the helix now lives in its own showpiece section below -->
     <div class="absolute inset-0" aria-hidden="true">
       <span class="particle" style="top:24%; left:14%; animation-delay:0s"></span>

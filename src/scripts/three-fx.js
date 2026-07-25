@@ -20,6 +20,7 @@
  *    section-level) and hosts are pre-sized — no layout shift
  */
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 const GOLD = new THREE.Color('#C9A96E');
 const TEAL = new THREE.Color('#2DD4BF');
@@ -690,6 +691,235 @@ function mountCells(host) {
   }
 }
 
+/* ------------------------------------------------------------------
+   Bioluminescent "living tissue" field — a distinct full-viewport
+   fragment-shader plane behind the hero. Not the helix, not the
+   THREE.Points cell field: one fullscreen quad, the whole look lives
+   in GLSL. Domain-warped fbm plasma, glinting nuclei, a diagnostic
+   scan bar (boot-up sweep on load, then scroll-driven), pointer
+   ripples, vignette + grain. Palette is read from the site's CSS vars.
+   ------------------------------------------------------------------ */
+
+const TISSUE_VERT = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position.xy, 0.0, 1.0);
+  }
+`;
+
+const TISSUE_FRAG = /* glsl */ `
+  varying vec2 vUv;
+  uniform float uTime;
+  uniform vec2  uResolution;
+  uniform float uDpr;
+  uniform vec2  uMouse;
+  uniform float uRipple;
+  uniform float uScanY;
+  uniform float uScanBoost;
+  uniform vec3  uColorBase;
+  uniform vec3  uColorTeal;
+  uniform vec3  uColorGold;
+  uniform float uReducedMotion;
+  uniform float uIntensity;
+
+  float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    float a = hash(i);
+    float b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0));
+    float d = hash(i + vec2(1.0, 1.0));
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+  }
+  float fbm(vec2 p) {
+    float v = 0.0;
+    float a = 0.5;
+    for (int i = 0; i < FBM_OCTAVES; i++) {
+      v += a * noise(p);
+      p = p * 2.0 + 17.0;
+      a *= 0.5;
+    }
+    return v;
+  }
+
+  void main() {
+    vec2 uv = vUv;
+    float aspect = uResolution.x / max(1.0, uResolution.y);
+    vec2 p = vec2(uv.x * aspect, uv.y);
+
+    float t = uReducedMotion > 0.5 ? 8.0 : uTime;
+
+    /* pointer ripple — expanding displacement in the flow */
+    vec2 m = vec2(uMouse.x * aspect, uMouse.y);
+    float md = distance(p, m);
+    float ripple = uRipple * exp(-md * 6.0) * sin(md * 22.0 - t * 3.0);
+    vec2 rip = ripple * 0.06 * normalize(p - m + 1e-4);
+
+    /* domain-warped fbm — the field flows like living fluid */
+    float tt = t * 0.04;
+    vec2 q = vec2(
+      fbm(p * 1.6 + vec2(0.0, tt)),
+      fbm(p * 1.6 + vec2(5.2, -tt))
+    );
+    vec2 r2 = vec2(
+      fbm(p * 1.6 + 3.0 * q + vec2(1.7, 9.2) + tt),
+      fbm(p * 1.6 + 3.0 * q + vec2(8.3, 2.8) - tt)
+    );
+    float f = fbm(p * 1.6 + 2.2 * r2 + rip);
+
+    /* cellular plasma + glinting nuclei at the peaks */
+    float field = smoothstep(0.35, 0.95, f);
+    float nuclei = pow(smoothstep(0.72, 1.0, f), 3.0);
+    float glint = uReducedMotion > 0.5 ? 1.0 : (0.6 + 0.4 * sin(t * 1.5 + f * 20.0));
+    nuclei *= glint;
+
+    /* diagnostic scan bar — thin gaussian band + chromatic leading edge */
+    float scan = 0.0;
+    float chroma = 0.0;
+    if (uScanY >= 0.0) {
+      float dsy = uv.y - (1.0 - uScanY);
+      scan = exp(-dsy * dsy * 900.0);
+      float lead = dsy + 0.012;
+      chroma = exp(-lead * lead * 2500.0);
+    }
+
+    vec3 col = uColorBase;
+
+    /* teal-dominant tissue with gold veins from a slower noise */
+    float goldMix = smoothstep(0.55, 0.9, fbm(p * 0.9 - r2 - vec2(tt)));
+    vec3 tissue = mix(uColorTeal, uColorGold, goldMix * 0.5);
+    col += tissue * field * 0.5 * uIntensity;
+    col += uColorTeal * nuclei * 0.9 * uIntensity;
+
+    /* scan reveal — intensify field + finer caustic detail in its wake */
+    float caustic = pow(fbm(p * 4.0 + r2 * 2.0 + vec2(t * 0.1)), 2.0);
+    col += uColorTeal * scan * uScanBoost * (0.35 + 0.8 * caustic) * uIntensity;
+    col += vec3(0.0, 0.15, 0.12) * scan * uScanBoost;
+    col.r += chroma * uScanBoost * 0.10;
+    col.b += chroma * uScanBoost * 0.14;
+
+    /* vignette */
+    float vig = smoothstep(1.15, 0.35, length((uv - 0.5) * vec2(aspect, 1.0) * 1.2));
+    col *= mix(0.55, 1.0, vig);
+
+    /* film grain — kills banding, reads cinematic */
+    float grain = (hash(uv * uResolution.xy * 0.5 + t) - 0.5) * 0.04;
+    col += grain * (uReducedMotion > 0.5 ? 0.5 : 1.0);
+
+    gl_FragColor = vec4(max(col, 0.0), 1.0);
+  }
+`;
+
+/* read a hex CSS custom property into an sRGB vec3 (written straight to
+   the framebuffer, so no colour-management conversion is wanted) */
+function cssColorVec(name, fallback) {
+  const raw = (getComputedStyle(document.documentElement).getPropertyValue(name) || '').trim() || fallback;
+  let h = raw.replace('#', '');
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  const n = parseInt(h, 16);
+  return new THREE.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+}
+
+function mountTissue(host) {
+  const uniforms = {
+    uTime: { value: 0 },
+    uResolution: { value: new THREE.Vector2(1, 1) },
+    uDpr: { value: 1 },
+    uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+    uRipple: { value: 0 },
+    uScanY: { value: 0 },
+    uScanBoost: { value: 1 },
+    uColorBase: { value: cssColorVec('--color-ink', '#0a0a0b') },
+    uColorTeal: { value: cssColorVec('--color-teal', '#2dd4bf') },
+    uColorGold: { value: cssColorVec('--color-gold', '#c9a96e') },
+    uReducedMotion: { value: reduced ? 1 : 0 },
+    uIntensity: { value: 0.85 },
+  };
+
+  const material = new THREE.ShaderMaterial({
+    vertexShader: TISSUE_VERT,
+    fragmentShader: TISSUE_FRAG,
+    uniforms,
+    defines: { FBM_OCTAVES: isMobile ? 4 : 6 },
+    depthTest: false,
+    depthWrite: false,
+    fog: false,
+  });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+
+  const hero = host.closest('section') || host.parentElement || host;
+
+  /* pointer ripple — throttled to frame rate via a shared latch, read in
+     tick(); listener on window (the canvas stays pointer-events: none) */
+  const mouse = { x: 0.5, y: 0.5 };
+  let ripple = 0;
+  if (finePointer && !reduced) {
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        const nx = e.clientX / window.innerWidth;
+        const ny = 1 - e.clientY / window.innerHeight;
+        ripple = Math.min(1, ripple + Math.hypot(nx - mouse.x, ny - mouse.y) * 2.6);
+        mouse.x = nx;
+        mouse.y = ny;
+      },
+      { passive: true }
+    );
+  }
+
+  /* boot-up sweep — one-shot GSAP tween of the scan bar, then scroll takes
+     over (driven by the shared Lenis via native scrollY through this host) */
+  let booting = !reduced;
+  const boot = { v: 0 };
+  if (!reduced) {
+    gsap.to(boot, { v: 1, duration: 2.4, ease: 'power2.inOut', delay: 0.15, onComplete: () => (booting = false) });
+  }
+
+  const rec = createScene(host, tick);
+  rec.scene.add(mesh);
+
+  const tmp = new THREE.Vector2();
+  const syncSize = () => {
+    if (rec.disposed) return;
+    rec.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    rec.renderer.setSize(host.clientWidth || 1, host.clientHeight || 1);
+    rec.renderer.getDrawingBufferSize(tmp);
+    uniforms.uResolution.value.set(tmp.x, tmp.y);
+    uniforms.uDpr.value = rec.renderer.getPixelRatio();
+    if (reduced) rec.renderer.render(rec.scene, rec.camera);
+  };
+  window.addEventListener('resize', syncSize, { passive: true });
+  syncSize();
+
+  function tick(t) {
+    uniforms.uTime.value = t * 0.001;
+
+    ripple *= 0.94;
+    uniforms.uRipple.value = ripple;
+    uniforms.uMouse.value.set(mouse.x, mouse.y);
+
+    if (reduced) {
+      uniforms.uScanY.value = -1;
+      uniforms.uScanBoost.value = 0;
+    } else if (booting) {
+      uniforms.uScanY.value = boot.v;
+      uniforms.uScanBoost.value = 1;
+    } else {
+      const rect = hero.getBoundingClientRect();
+      const prog = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+      uniforms.uScanY.value = -0.05 + prog * 1.15; // faint at rest, sweeps down on scroll
+      uniforms.uScanBoost.value = 0.5;
+    }
+  }
+}
+
 /* ------------------------------------------------------------------ */
 
 export function initThree() {
@@ -700,6 +930,7 @@ export function initThree() {
     try {
       if (host.dataset.three === 'helix') mountHelix(host);
       else if (host.dataset.three === 'cells') mountCells(host);
+      else if (host.dataset.three === 'tissue') mountTissue(host);
       host.dataset.threeMounted = '1';
       host.classList.add('three-active');
     } catch {
