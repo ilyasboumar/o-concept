@@ -692,281 +692,200 @@ function mountCells(host) {
 }
 
 /* ------------------------------------------------------------------
-   "Perfused living microvasculature" — the hero background. This is
-   literally The O Concept's mechanism of action: platelet-rich plasma
-   and growth factors driving angiogenesis, microcirculation and tissue
-   regeneration. So the field is a branching capillary tree perfused
-   with warm gold PRP, pulsing at a resting heart rate, growing new
-   vessels toward the cursor (the injection site) and regenerating as
-   you scroll.
+   Hero helix — a DNA double helix rendered as a precision technical
+   instrument, not an atmosphere. Crisp 1px hairline strands + base-pair
+   rungs + sharp node dots, depth read purely by opacity, mostly empty
+   black around one composed object in the negative space between the
+   headline and the portrait.
 
-   Colour is inverted from the old teal system: GOLD is the biology
-   (plasma / lumen), oxblood is the vessel wall, obsidian is the void,
-   and the instrument overlay (TissueField.astro) is restrained pale
-   champagne. Palette comes from the site's CSS vars — no new tokens.
+   Deliberately a DIFFERENT treatment from the glowing 3D DnaHelix in the
+   science section — this is instrument-grade wireframe. The cursor is a
+   transcription read-head that locally unwinds the strands (never a burst).
+   Palette: bright champagne gold + pale platinum on obsidian. No new tokens.
    ------------------------------------------------------------------ */
 
-const TISSUE_VERT = /* glsl */ `
-  varying vec2 vUv;
+const HX_VERT = /* glsl */ `
+  uniform float uReadY;
+  uniform float uSep;
+  varying float vDepth;
+  varying float vBand;
   void main() {
-    vUv = uv;
-    gl_Position = vec4(position.xy, 0.0, 1.0);
+    vec3 tp = position;
+    float band = exp(-pow((position.y - uReadY) * 0.8, 2.0));
+    float rl = length(position.xz);
+    if (rl > 0.0001) tp.xz += (position.xz / rl) * band * uSep;  // strands unwind at the read-head
+    vBand = band;
+    vec4 mv = modelViewMatrix * vec4(tp, 1.0);
+    vDepth = -mv.z;
+    gl_Position = projectionMatrix * mv;
   }
 `;
 
-const TISSUE_FRAG = /* glsl */ `
-  varying vec2 vUv;
-  uniform float uTime;
-  uniform vec2  uResolution;
+const HX_LINE_FRAG = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uAlpha;
+  uniform float uNear;
+  uniform float uFar;
+  varying float vDepth;
+  varying float vBand;
+  void main() {
+    float f = smoothstep(uFar, uNear, vDepth);       // near = bright, far = dim
+    float a = uAlpha * mix(0.3, 1.0, f);
+    a *= 1.0 + vBand * 0.6;                            // brighten inside the read-head band
+    gl_FragColor = vec4(uColor, a);
+  }
+`;
+
+const HX_NODE_VERT = /* glsl */ `
+  uniform float uReadY;
+  uniform float uSep;
   uniform float uDpr;
-  uniform float uReducedMotion;
-  uniform float uIntensity;
-
-  uniform vec2  uLensPos;      // injection site — trails the cursor
-  uniform float uLensActive;
-  uniform float uLensR;
-  uniform float uLensBloom;    // growth-factor bloom on movement (decays)
-
-  uniform float uScrollProg;   // 0..1 treatment timeline (baseline→regenerated)
-  uniform float uBoot;         // 0..1 boot: first systole floods the tree
-
-  uniform vec2  uHeadCenter;
-  uniform vec2  uHeadRadius;
-  uniform vec2  uPortCenter;
-  uniform vec2  uPortHalf;
-  uniform vec2  uCtaCenter;
-  uniform float uCtaPulse;
-
-  uniform vec3  uColorBase;
-  uniform vec3  uColorGold;    // plasma
-  uniform vec3  uColorAmber;   // hotter plasma
-  uniform vec3  uColorWall;    // oxblood vessel wall
-  uniform vec3  uColorBloom;   // growth-factor / hot cores (warm white-gold)
-  uniform vec3  uColorInstr;   // champagne instrument rim
-
-  float hash1(vec2 p) { return fract(sin(dot(p, vec2(41.3, 289.1))) * 43758.5453); }
-  vec2 hash2(vec2 p) {
-    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-    return fract(sin(p) * 43758.5453);
-  }
-  float vnoise(vec2 p) {
-    vec2 i = floor(p), f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    float a = hash1(i), b = hash1(i + vec2(1.0, 0.0)), c = hash1(i + vec2(0.0, 1.0)), d = hash1(i + vec2(1.0, 1.0));
-    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-  }
-  float fbm(vec2 p) {
-    float v = 0.0, a = 0.5;
-    for (int i = 0; i < 4; i++) { v += a * vnoise(p); p = p * 2.0 + 11.0; a *= 0.5; }
-    return v;
-  }
-
-  /* systolic surge — sharp pulse propagating outward from the origin */
-  float systole(float t, float d) {
-    float s = 0.5 + 0.5 * sin((t - d * 0.5) * 6.2831);
-    return pow(max(s, 0.0), 6.0);
-  }
-
-  /* branching vessel network: flow-warped ridged noise reads as tapered
-     capillaries. Returns (lumen intensity, flow phase along the branch). */
-  vec2 vessels(vec2 pin, float scale, float thresh, float t) {
-    /* flow-warp so the capillary bed branches organically, not on a grid */
-    vec2 pw = pin;
-    pw += 0.45 * vec2(vnoise(pin * 1.3 + t), vnoise(pin * 1.3 + 7.0 - t));
-    vec2 x = pw * scale;
-    vec2 n = floor(x), f = fract(x);
-    float f1 = 8.0, f2 = 8.0, flow = 0.0;
-    for (int j = -1; j <= 1; j++) {
-      for (int i = -1; i <= 1; i++) {
-        vec2 g = vec2(float(i), float(j));
-        vec2 o = hash2(n + g);
-        vec2 r = g + o - f;
-        float d = dot(r, r);
-        if (d < f1) { f2 = f1; f1 = d; flow = (n + g + o).x; }
-        else if (d < f2) { f2 = d; }
-      }
-    }
-    /* cell borders (F2-F1 → 0) are the vessels; lower threshold = wider,
-       fuller lumen — arterioles thick, capillaries hair-thin */
-    float edge = sqrt(f2) - sqrt(f1);
-    float w = clamp(0.60 - thresh, 0.02, 0.30);
-    float lumen = 1.0 - smoothstep(0.0, w, edge);
-    return vec2(lumen, flow);
-  }
-
+  uniform float uSize;
+  varying float vDepth;
+  varying float vBand;
   void main() {
-    vec2 uv = vUv;
-    float aspect = uResolution.x / max(1.0, uResolution.y);
-    vec2 ac = vec2(aspect, 1.0);
-    float T = uReducedMotion > 0.5 ? 6.0 : uTime;
-    float anim = 1.0 - uReducedMotion;
-
-    /* cursor = injection site: magnify tissue toward it */
-    vec2 uvM = uv;
-    float lensMask = 0.0;
-    if (uLensActive > 0.5) {
-      vec2 tol = uv - uLensPos;
-      float ld = length(tol * ac);
-      float m = 1.0 - smoothstep(uLensR * 0.6, uLensR, ld);
-      uvM = uv - tol * m * 0.35;
-      lensMask = m;
-    }
-    vec2 p = vec2(uvM.x * aspect, uvM.y);
-
-    /* scroll timeline — density + perfusion build from baseline to regenerated */
-    float dens = mix(0.52, 0.34, uScrollProg);
-    float perfBase = mix(0.4, 1.0, uScrollProg);
-
-    /* heartbeat — systole from centre, forced once during boot */
-    float dctr = length((uv - 0.5) * ac);
-    float beat = anim > 0.5 ? systole(T, dctr * 1.4) : 0.6;
-    float bootSurge = smoothstep(0.0, 0.55, uBoot) * (1.0 - smoothstep(0.55, 1.0, uBoot));
-    beat = max(beat, bootSurge * 1.2);
-
-    float lumenT = 0.0, flowGlow = 0.0, plate = 0.0;
-    for (int k = 0; k < DEPTH; k++) {
-      float fk = float(k);
-      float depth = float(DEPTH) > 1.0 ? fk / float(DEPTH - 1) : 0.0;
-      float scale = mix(4.5, 13.0, depth);
-      /* angiogenesis — fine branches breathe in over time; the cursor
-         accelerates growth toward it by lowering the threshold nearby */
-      float th = dens + depth * 0.05 + 0.03 * sin(T * 0.15 + fk * 2.0) * anim;
-      if (uLensActive > 0.5) {
-        float ld = length((uv - uLensPos) * ac);
-        th -= (1.0 - smoothstep(0.0, uLensR * 2.2, ld)) * 0.10;
-      }
-      vec2 par = vec2(T * 0.01 * (0.2 + 0.15 * fk) * anim, -uScrollProg * (0.1 + 0.2 * fk));
-      vec2 v = vessels(p + par, scale, th, T * anim * 0.4);
-      float att = mix(1.0, 0.4, depth);
-      float flow = 0.5 + 0.5 * sin(v.y * 2.0 - T * 3.0 * anim);
-      float perf = perfBase * (0.5 + 0.6 * beat) * (0.55 + 0.45 * flow);
-      lumenT += v.x * att;
-      flowGlow += v.x * att * perf;
-      if (k == 0) {
-        float sp = hash1(floor(vec2(v.y * 3.0 - T * 2.0 * anim, 7.0)));
-        plate += v.x * att * smoothstep(0.93, 1.0, sp);
-      }
-    }
-
-    /* growth-factor bloom where the probe moves */
-    float bloom = 0.0;
-    if (uLensActive > 0.5) {
-      float ld = length((uv - uLensPos) * ac);
-      bloom = uLensBloom * exp(-ld * ld * 22.0);
-    }
-    /* CTA perfusion surge */
-    float cd = length((uv - uCtaCenter) * ac);
-    float cta = uCtaPulse * exp(-cd * cd * 10.0);
-
-    /* ---- compose (warm gold biology) ---- */
-    vec3 col = uColorBase;
-    col = mix(col, uColorWall * 0.5, smoothstep(0.0, 0.6, lumenT) * 0.25); // oxblood walls
-    float heat = clamp(flowGlow * 0.6 + beat * 0.4 + cta, 0.0, 1.0);
-    vec3 plasma = mix(uColorGold, uColorAmber, heat);
-    col += plasma * flowGlow * uIntensity;
-    col += uColorBloom * clamp(flowGlow - 0.8, 0.0, 1.0) * 0.6;   // hot cores
-    col += uColorAmber * plate * 0.8;                            // platelets
-    col += uColorBloom * bloom * 0.9;                            // growth-factor bloom
-    col += uColorGold * cta * 0.7;
-
-    /* ---- anchoring ---- */
-    vec2 hd = (uv - uHeadCenter) / max(uHeadRadius, vec2(0.001));
-    float quiet = 1.0 - smoothstep(0.75, 1.25, length(hd));
-    col = mix(col, uColorBase + (col - uColorBase) * 0.3, quiet);
-    {
-      vec2 d = abs(uv - uPortCenter) - uPortHalf;
-      float sd = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
-      float excl = 1.0 - smoothstep(0.0, 0.05, sd);
-      col = mix(col, uColorBase, excl * 0.85);
-      float rim = exp(-abs(sd) * 55.0) * smoothstep(-0.008, 0.012, sd);
-      col += uColorGold * rim * 0.6;
-    }
-
-    /* boot ignition — plasma floods the tree from the centre outward */
-    float bootFront = uBoot * 1.9;
-    float bootMask = 1.0 - smoothstep(bootFront - 0.3, bootFront, dctr);
-    col = mix(uColorBase, col, bootMask);
-
-    /* cursor instrument rim — restrained champagne ring + fine ticks */
-    if (uLensActive > 0.5) {
-      float ld = length((uv - uLensPos) * ac);
-      float ring = exp(-pow(ld - uLensR, 2.0) * 1700.0);
-      float ang = atan(uv.y - uLensPos.y, (uv.x - uLensPos.x) * aspect);
-      float ticks = smoothstep(0.75, 1.0, abs(sin(ang * 30.0)));
-      col += uColorInstr * ring * (0.4 + 0.35 * ticks);
-    }
-
-    /* vignette + film grain */
-    float vig = smoothstep(1.25, 0.35, length((uv - 0.5) * ac * 1.15));
-    col *= mix(0.5, 1.0, vig);
-    float grain = (hash1(uv * uResolution.xy * 0.5 + T) - 0.5) * 0.03;
-    col += grain * (uReducedMotion > 0.5 ? 0.5 : 1.0);
-
-    gl_FragColor = vec4(max(col, 0.0), 1.0);
+    vec3 tp = position;
+    float band = exp(-pow((position.y - uReadY) * 0.8, 2.0));
+    float rl = length(position.xz);
+    if (rl > 0.0001) tp.xz += (position.xz / rl) * band * uSep;
+    vBand = band;
+    vec4 mv = modelViewMatrix * vec4(tp, 1.0);
+    vDepth = -mv.z;
+    gl_Position = projectionMatrix * mv;
+    gl_PointSize = uSize * uDpr * (1.0 + vBand * 0.9);
   }
 `;
 
-/* read a hex CSS custom property into an sRGB vec3 (written straight to
-   the framebuffer, so no colour-management conversion is wanted) */
-function cssColorVec(name, fallback) {
+const HX_NODE_FRAG = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uNear;
+  uniform float uFar;
+  varying float vDepth;
+  varying float vBand;
+  void main() {
+    vec2 c = gl_PointCoord - 0.5;
+    float d = length(c);
+    float aa = fwidth(d);
+    float m = 1.0 - smoothstep(0.5 - aa, 0.5, d);      // crisp disc, anti-aliased
+    if (m <= 0.0) discard;
+    float f = smoothstep(uFar, uNear, vDepth);
+    float a = m * mix(0.4, 1.0, f) * (0.7 + vBand * 0.7);
+    gl_FragColor = vec4(uColor, a);
+  }
+`;
+
+function cssColorHex(name, fallback) {
   const raw = (getComputedStyle(document.documentElement).getPropertyValue(name) || '').trim() || fallback;
-  let h = raw.replace('#', '');
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const n = parseInt(h, 16);
-  return new THREE.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+  return new THREE.Color(raw);
 }
 
 function mountTissue(host) {
-  const uniforms = {
-    uTime: { value: 0 },
-    uResolution: { value: new THREE.Vector2(1, 1) },
-    uDpr: { value: 1 },
-    uReducedMotion: { value: reduced ? 1 : 0 },
-    uIntensity: { value: 0.95 },
-    uLensPos: { value: new THREE.Vector2(0.5, 0.5) },
-    uLensActive: { value: 0 },
-    uLensR: { value: 0.16 },
-    uLensBloom: { value: 0 },
-    uScrollProg: { value: 0 },
-    uBoot: { value: reduced ? 1 : 0 },
-    uHeadCenter: { value: new THREE.Vector2(0.32, 0.6) },
-    uHeadRadius: { value: new THREE.Vector2(0.32, 0.24) },
-    uPortCenter: { value: new THREE.Vector2(0.82, 0.52) },
-    uPortHalf: { value: new THREE.Vector2(0.12, 0.24) },
-    uCtaCenter: { value: new THREE.Vector2(0.26, 0.2) },
-    uCtaPulse: { value: 0 },
-    uColorBase: { value: cssColorVec('--color-ink', '#0a0a0b') },
-    uColorGold: { value: cssColorVec('--color-gold', '#c9a96e') },
-    uColorAmber: { value: cssColorVec('--color-goldlight', '#e3c992') },
-    uColorWall: { value: cssColorVec('--color-oxblood', '#6e1e2b') },
-    uColorBloom: { value: cssColorVec('--color-cream', '#f4f1ec') },
-    uColorInstr: { value: cssColorVec('--color-cream', '#f4f1ec') },
+  const SEG = isMobile ? 360 : 560;
+  const TURNS = 5;
+  const H = 16.0;
+  const R = 1.3;
+  const CAM_Z = 9.0;
+
+  const GOLDL = cssColorHex('--color-goldlight', '#e3c992'); // bright champagne — primary strand
+  const CREAM = cssColorHex('--color-cream', '#f4f1ec'); // platinum — rungs / nodes
+
+  /* strand hairline curve (SEG+1 points) */
+  const strandGeo = (phase) => {
+    const pos = new Float32Array((SEG + 1) * 3);
+    for (let i = 0; i <= SEG; i++) {
+      const t = i / SEG;
+      const a = t * Math.PI * 2 * TURNS + phase;
+      pos[i * 3] = Math.cos(a) * R;
+      pos[i * 3 + 1] = (t - 0.5) * H;
+      pos[i * 3 + 2] = Math.sin(a) * R;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    return g;
   };
 
-  const material = new THREE.ShaderMaterial({
-    vertexShader: TISSUE_VERT,
-    fragmentShader: TISSUE_FRAG,
-    uniforms,
-    defines: { DEPTH: isMobile ? 2 : 3 },
+  /* base-pair rungs at regular intervals + node dots at each terminal */
+  const rungStep = Math.max(4, Math.round(SEG / (TURNS * 11)));
+  const rn = Math.floor(SEG / rungStep) + 1;
+  const rpos = new Float32Array(rn * 2 * 3);
+  const npos = new Float32Array(rn * 2 * 3);
+  let ri = 0;
+  for (let r = 0; r <= SEG; r += rungStep) {
+    const t = r / SEG;
+    const a = t * Math.PI * 2 * TURNS;
+    const y = (t - 0.5) * H;
+    const ax = Math.cos(a) * R, az = Math.sin(a) * R;
+    const bx = Math.cos(a + Math.PI) * R, bz = Math.sin(a + Math.PI) * R;
+    rpos.set([ax, y, az, bx, y, bz], ri * 6);
+    npos.set([ax, y, az, bx, y, bz], ri * 6);
+    ri++;
+  }
+  const rungGeo = new THREE.BufferGeometry();
+  rungGeo.setAttribute('position', new THREE.BufferAttribute(rpos.subarray(0, ri * 6), 3));
+  const nodeGeo = new THREE.BufferGeometry();
+  nodeGeo.setAttribute('position', new THREE.BufferAttribute(npos.subarray(0, ri * 6), 3));
+
+  const NEAR = CAM_Z - R - 0.7;
+  const FAR = CAM_Z + R + 0.7;
+  const dynMats = [];
+
+  const lineMat = (color, alpha) => {
+    const m = new THREE.ShaderMaterial({
+      vertexShader: HX_VERT,
+      fragmentShader: HX_LINE_FRAG,
+      uniforms: {
+        uReadY: { value: 0 },
+        uSep: { value: 0 },
+        uColor: { value: color },
+        uAlpha: { value: alpha },
+        uNear: { value: NEAR },
+        uFar: { value: FAR },
+      },
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+      depthWrite: false,
+    });
+    dynMats.push(m);
+    return m;
+  };
+
+  const nodeMat = new THREE.ShaderMaterial({
+    vertexShader: HX_NODE_VERT,
+    fragmentShader: HX_NODE_FRAG,
+    uniforms: {
+      uReadY: { value: 0 },
+      uSep: { value: 0 },
+      uDpr: { value: 1 },
+      uSize: { value: 2.4 },
+      uColor: { value: CREAM },
+      uNear: { value: NEAR },
+      uFar: { value: FAR },
+    },
+    transparent: true,
+    blending: THREE.AdditiveBlending,
     depthTest: false,
     depthWrite: false,
-    fog: false,
   });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+  dynMats.push(nodeMat);
+
+  const group = new THREE.Group();
+  group.add(new THREE.Line(strandGeo(0), lineMat(GOLDL, 1.0)));          // primary strand
+  group.add(new THREE.Line(strandGeo(Math.PI), lineMat(GOLDL, 0.5)));   // secondary strand @50%
+  group.add(new THREE.LineSegments(rungGeo, lineMat(CREAM, 0.32)));      // pale rungs
+  group.add(new THREE.Points(nodeGeo, nodeMat));                        // sharp node dots
+  group.position.x = 1.7; // sit in the gap between headline and portrait
 
   const hero = host.closest('section') || host.parentElement || host;
-  const headEl = hero.querySelector('[data-hero-headline]');
-  const portEl = hero.querySelector('[data-hero-portrait]');
-  const ctaEl = hero.querySelector('[data-hero-cta]');
+  const readhead = host.closest('[data-tissue]')?.querySelector('[data-readhead]');
 
-  /* cursor = injection site — lerped so it trails with weight; movement
-     spawns a decaying growth-factor bloom. Desktop fine-pointer only. */
-  const lensTarget = new THREE.Vector2(0.5, 0.5);
-  const lens = new THREE.Vector2(0.5, 0.5);
-  let lensActive = 0;
-  let lensBloom = 0;
-  let lastPx = 0.5, lastPy = 0.5;
+  /* transcription read-head — follows the cursor, heavily damped, over the
+     helix band only. Desktop fine-pointer only. */
+  let active = 0;
+  let readYTarget = 0;
+  let readClientTop = 0;
   if (finePointer && !isMobile && !reduced) {
+    const visHalf = Math.tan((42 * Math.PI) / 180 / 2) * CAM_Z;
     window.addEventListener(
       'pointermove',
       (e) => {
@@ -974,86 +893,87 @@ function mountTissue(host) {
         if (!r.width || !r.height) return;
         const nx = (e.clientX - r.left) / r.width;
         const ny = 1 - (e.clientY - r.top) / r.height;
-        lensBloom = Math.min(1, lensBloom + Math.hypot(nx - lastPx, ny - lastPy) * 3.0);
-        lastPx = nx;
-        lastPy = ny;
-        lensActive = nx > -0.15 && nx < 1.15 && ny > -0.15 && ny < 1.15 ? 1 : 0;
-        lensTarget.set(nx, ny);
+        active = nx > 0.46 && nx < 0.84 && ny > -0.1 && ny < 1.1 ? 1 : 0;
+        readYTarget = camY + (ny - 0.5) * 2 * visHalf;
+        readClientTop = e.clientY - r.top;
       },
       { passive: true }
     );
   }
 
-  let ctaPulse = 0;
-  if (ctaEl && !reduced) {
-    ctaEl.querySelectorAll('a, button').forEach((b) => b.addEventListener('mouseenter', () => (ctaPulse = 1)));
-  }
-
-  /* boot — instrument powers on (DOM/CSS), then the first systole floods
-     the vessel tree with gold from the centre outward */
   const boot = { v: 0 };
   if (!reduced) {
     host.closest('[data-tissue]')?.classList.add('tissue-booting');
-    gsap.to(boot, { v: 1, duration: 1.6, ease: 'power2.out' });
+    gsap.to(boot, { v: 1, duration: 1.4, ease: 'power2.out' });
   }
 
   const rec = createScene(host, tick);
-  rec.scene.add(mesh);
+  rec.camera.position.set(0, 0, CAM_Z);
+  rec.scene.add(group);
 
-  const tmp = new THREE.Vector2();
   const syncSize = () => {
     if (rec.disposed) return;
     rec.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     rec.renderer.setSize(host.clientWidth || 1, host.clientHeight || 1);
-    rec.renderer.getDrawingBufferSize(tmp);
-    uniforms.uResolution.value.set(tmp.x, tmp.y);
-    uniforms.uDpr.value = rec.renderer.getPixelRatio();
+    nodeMat.uniforms.uDpr.value = rec.renderer.getPixelRatio();
     if (reduced) rec.renderer.render(rec.scene, rec.camera);
   };
   window.addEventListener('resize', syncSize, { passive: true });
   syncSize();
 
-  const anchor = (el, hostR, cOut, hOut) => {
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    if (!hostR.width || !hostR.height) return;
-    cOut.set((r.left + r.width / 2 - hostR.left) / hostR.width, 1 - (r.top + r.height / 2 - hostR.top) / hostR.height);
-    hOut.set(r.width / 2 / hostR.width, r.height / 2 / hostR.height);
-  };
-  const headHalf = new THREE.Vector2();
+  let sep = 0;
+  let readY = 0;
+  let camY = 0;
+  let tiltX = 0;
+  let tiltZ = 0;
+  const baseSpeed = (Math.PI * 2) / (isMobile ? 60 : 48); // one revolution ~48–60s
 
   function tick(t) {
-    uniforms.uTime.value = t * 0.001;
+    const time = t * 0.001;
 
-    const hostR = host.getBoundingClientRect();
-    anchor(headEl, hostR, uniforms.uHeadCenter.value, headHalf);
-    if (headEl) uniforms.uHeadRadius.value.set(headHalf.x * 1.15, headHalf.y * 1.4);
-    anchor(portEl, hostR, uniforms.uPortCenter.value, uniforms.uPortHalf.value);
-    if (ctaEl) {
-      const r = ctaEl.getBoundingClientRect();
-      uniforms.uCtaCenter.value.set(
-        (r.left + r.width / 2 - hostR.left) / hostR.width,
-        1 - (r.top + r.height / 2 - hostR.top) / hostR.height
-      );
+    /* slow weighted rotation, gently accelerated by scroll velocity */
+    const spin = baseSpeed * (1 + 0.6 * Math.min(1, scrollBoost));
+    group.rotation.y = reduced ? 0.6 : time * spin;
+
+    /* pointer parallax — a few degrees, heavily damped */
+    if (!reduced && finePointer && !isMobile) {
+      tiltX = lerp(tiltX, cursor.y * 0.12, 0.04);
+      tiltZ = lerp(tiltZ, cursor.x * 0.06, 0.04);
+    }
+    group.rotation.x = tiltX;
+    group.rotation.z = tiltZ;
+
+    /* scroll travels the camera down the molecule */
+    if (!reduced) {
+      const prog = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, host.clientHeight || 1)));
+      camY = lerp(camY, (0.5 - prog) * 5.0, 0.08);
+    }
+    rec.camera.position.y = camY;
+
+    /* read-head separation — damped in and out */
+    sep = lerp(sep, active ? 0.62 : 0, active ? 0.12 : 0.08);
+    readY = lerp(readY, readYTarget, 0.12);
+    const bootSep = (1 - Math.abs(boot.v * 2 - 1)) * 0.0; // (boot handled by opacity, keep sep from cursor only)
+    for (const m of dynMats) {
+      m.uniforms.uReadY.value = readY;
+      m.uniforms.uSep.value = sep + bootSep;
     }
 
-    if (lensActive || uniforms.uLensActive.value) {
-      lens.lerp(lensTarget, 0.12);
-      uniforms.uLensPos.value.copy(lens);
-    }
-    uniforms.uLensActive.value = lensActive;
-    lensBloom *= 0.93;
-    uniforms.uLensBloom.value = lensBloom;
-    ctaPulse *= 0.96;
-    uniforms.uCtaPulse.value = ctaPulse;
+    /* boot: strands fade/ignite in */
+    const bootA = reduced ? 1 : boot.v;
+    group.children[0].material.uniforms.uAlpha.value = 1.0 * bootA;
+    group.children[1].material.uniforms.uAlpha.value = 0.62 * bootA;
+    group.children[2].material.uniforms.uAlpha.value = 0.55 * bootA; // rungs — the ladder that reads as DNA
 
-    if (reduced) {
-      uniforms.uBoot.value = 1;
-      uniforms.uScrollProg.value = 0.5;
-      return;
+    /* DOM read-head bracket follows the cursor while over the helix */
+    if (readhead && !reduced) {
+      if (sep > 0.02) {
+        readhead.style.opacity = String(Math.min(1, sep / 0.5));
+        readhead.style.transform = `translateY(${readClientTop}px)`;
+      } else {
+        readhead.style.opacity = '0';
+      }
     }
-    uniforms.uBoot.value = boot.v;
-    uniforms.uScrollProg.value = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, hostR.height)));
   }
 }
 

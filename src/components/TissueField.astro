@@ -1,44 +1,35 @@
 ---
 /**
- * "Perfused living microvasculature" — the hero background.
+ * Hero helix instrument — the WebGL host + its crisp champagne instrument
+ * furniture. The shader (three-fx.js, data-three="tissue") renders a DNA
+ * double helix as a hairline technical drawing in the negative space
+ * between the headline and the portrait; this file supplies the pixel-crisp,
+ * screen-space instrument frame (reticle brackets, calibration scale,
+ * micro-readout) and the transcription read-head bracket.
  *
- * TWO layers, hard-separated by the colour rule (biology = warm gold PRP,
- * instrument = restrained champagne):
- *   1. A WebGL shader plane (data-three="tissue", mounted by three-fx.js)
- *      that owns the GOLD biology — a branching capillary tree perfused
- *      with platelet-rich plasma, pulsing at a resting heart rate, growing
- *      new vessels toward the cursor (the injection site) and regenerating
- *      as you scroll. It is literally The O Concept's mechanism of action.
- *   2. A crisp, screen-space CHAMPAGNE instrument overlay (this file) —
- *      graticule, reticle corners, calibration scale, readout. Pale and
- *      low-opacity so it frames the gold biology without competing.
- *
- * Distinct from DnaHelix and CellField. Reduced-motion: the shader freezes
- * to a still frame and the instrument shows statically (no boot animation).
- * No-WebGL: the warm CSS-gradient fallback below stands in.
+ * Distinct from the glowing DnaHelix in the science section. Reduced-motion:
+ * static helix + static instrument. No-WebGL: clean near-black fallback.
  */
 interface Props {
   class?: string;
 }
 const { class: className = '' } = Astro.props;
 
-/* calibration scale — long tick every 5th, a few incremental labels */
+/* calibration scale — long tick every 5th, a few incremental labels (bp) */
 const ticks = Array.from({ length: 21 }, (_, i) => ({
   major: i % 5 === 0,
-  label: i % 5 === 0 ? String(100 - i * 5) : null,
+  label: i % 5 === 0 ? String((20 - i) * 12) : null,
 }));
 ---
 
 <div class:list={['tissue-stage absolute inset-0', className]} data-tissue aria-hidden="true">
-  <!-- gold biology — WebGL shader plane -->
+  <!-- helix — WebGL hairline instrument -->
   <div class="three-host pointer-events-none h-full w-full" data-three="tissue">
-    <!-- no-WebGL / pre-mount fallback — warm perfused tissue -->
+    <!-- no-WebGL / pre-mount fallback — clean near-black -->
     <div
       class="three-fallback absolute inset-0"
       style="background:
-        radial-gradient(ellipse 55% 50% at 60% 42%, rgba(201,169,110,0.20), transparent 60%),
-        radial-gradient(ellipse 48% 44% at 30% 74%, rgba(110,30,43,0.18), transparent 64%),
-        radial-gradient(ellipse 90% 80% at 50% 50%, transparent 38%, #0a0a0b 96%),
+        radial-gradient(ellipse 30% 62% at 60% 50%, rgba(227,201,146,0.06), transparent 70%),
         #0a0a0b;"
     >
     </div>
@@ -46,14 +37,13 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
 
   <!-- champagne instrument furniture — crisp, screen-space, restrained -->
   <div class="tissue-instrument">
-    <div class="ti-graticule"></div>
     <span class="ti-corner ti-tl"></span>
     <span class="ti-corner ti-tr"></span>
     <span class="ti-corner ti-bl"></span>
     <span class="ti-corner ti-br"></span>
 
     <div class="ti-readout">
-      <span class="ti-dot"></span>PRP&nbsp;·&nbsp;PERFUSION&nbsp;&nbsp;|&nbsp;&nbsp;MICROVASCULAR DENSITY 98.7%
+      <span class="ti-dot"></span>TRANSCRIPTION&nbsp;·&nbsp;ACTIVE&nbsp;&nbsp;|&nbsp;&nbsp;PDGF · VEGF · TGF-β
     </div>
 
     <div class="ti-scale">
@@ -65,7 +55,13 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
           </span>
         ))
       }
-      <span class="ti-unit">µm</span>
+      <span class="ti-unit">bp</span>
+    </div>
+
+    <!-- transcription read-head bracket — positioned by three-fx.js -->
+    <div class="ti-readhead" data-readhead>
+      <span class="rh-l"></span>
+      <span class="rh-r"></span>
     </div>
   </div>
 </div>
@@ -78,29 +74,17 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     z-index: 1;
   }
 
-  /* ultra-fine measurement graticule — pale champagne, very low opacity */
-  .ti-graticule {
-    position: absolute;
-    inset: 0;
-    opacity: 0.05;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(244, 241, 236, 0.9) 0 1px, transparent 1px 46px),
-      repeating-linear-gradient(90deg, rgba(244, 241, 236, 0.9) 0 1px, transparent 1px 46px);
-    -webkit-mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
-    mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
-  }
-
   /* reticle corner brackets */
   .ti-corner {
     position: absolute;
-    width: 26px;
-    height: 26px;
-    border: 1px solid rgba(244, 241, 236, 0.42);
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(244, 241, 236, 0.34);
   }
-  .ti-tl { top: 20px; left: 20px; border-right: 0; border-bottom: 0; }
-  .ti-tr { top: 20px; right: 20px; border-left: 0; border-bottom: 0; }
-  .ti-bl { bottom: 20px; left: 20px; border-right: 0; border-top: 0; }
-  .ti-br { bottom: 20px; right: 20px; border-left: 0; border-top: 0; }
+  .ti-tl { top: 22px; left: 22px; border-right: 0; border-bottom: 0; }
+  .ti-tr { top: 22px; right: 22px; border-left: 0; border-bottom: 0; }
+  .ti-bl { bottom: 22px; left: 22px; border-right: 0; border-top: 0; }
+  .ti-br { bottom: 22px; right: 22px; border-left: 0; border-top: 0; }
 
   /* readout cluster */
   .ti-readout {
@@ -122,15 +106,15 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     width: 5px;
     height: 5px;
     border-radius: 9999px;
-    background: var(--color-gold);
-    box-shadow: 0 0 8px rgba(201, 169, 110, 0.8);
-    animation: tiPulse 1s ease-in-out infinite;
+    background: var(--color-goldlight);
+    box-shadow: 0 0 8px rgba(227, 201, 146, 0.8);
+    animation: tiPulse 3.2s ease-in-out infinite;
   }
 
   /* calibration scale down the right edge */
   .ti-scale {
     position: absolute;
-    right: 18px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -139,11 +123,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     gap: 8px;
     opacity: 0.5;
   }
-  .ti-tick-row {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
+  .ti-tick-row { display: flex; align-items: center; gap: 7px; }
   .ti-label {
     font-family: var(--font-sans);
     font-size: 7.5px;
@@ -151,15 +131,8 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     letter-spacing: 0.1em;
     color: rgba(244, 241, 236, 0.7);
   }
-  .ti-tick {
-    display: block;
-    width: 7px;
-    height: 1px;
-    background: rgba(244, 241, 236, 0.65);
-  }
-  .ti-tick-major {
-    width: 13px;
-  }
+  .ti-tick { display: block; width: 7px; height: 1px; background: rgba(244, 241, 236, 0.6); }
+  .ti-tick-major { width: 13px; }
   .ti-unit {
     margin-top: 3px;
     font-family: var(--font-sans);
@@ -168,50 +141,52 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     color: rgba(244, 241, 236, 0.55);
   }
 
-  /* the readout dot pulses at the resting heart rate (~60bpm) */
+  /* transcription read-head bracket — a bracket, never a ring */
+  .ti-readhead {
+    position: absolute;
+    top: -22px;
+    left: 56%;
+    width: 92px;
+    height: 44px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    will-change: transform;
+  }
+  .ti-readhead .rh-l,
+  .ti-readhead .rh-r {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    border: 1px solid rgba(227, 201, 146, 0.85);
+  }
+  .ti-readhead .rh-l { left: 0; border-right: 0; }
+  .ti-readhead .rh-r { right: 0; border-left: 0; }
+
   @keyframes tiPulse {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    12% { opacity: 1; transform: scale(1.35); }
-    40% { opacity: 0.4; transform: scale(1); }
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
   }
 
-  /* boot: the instrument powers on — graticule draws in first, then the
-     furniture. Only while the stage is in its booting state. */
-  .tissue-booting .ti-graticule {
-    animation: tiGrid 0.5s ease 0.05s both;
-  }
+  /* boot: the instrument frame powers on */
   .tissue-booting .ti-corner,
   .tissue-booting .ti-readout,
   .tissue-booting .ti-scale {
-    animation: tiFurniture 0.6s ease 0.28s both;
-  }
-  @keyframes tiGrid {
-    from { opacity: 0; transform: scale(1.05); }
-    to { opacity: 0.05; transform: none; }
+    animation: tiFurniture 0.7s ease 0.25s both;
   }
   @keyframes tiFurniture {
     from { opacity: 0; }
   }
 
-  /* small screens: keep graticule + reticle, drop the finer furniture */
   @media (max-width: 640px) {
-    .ti-scale,
-    .ti-readout {
-      display: none;
-    }
-    .ti-corner {
-      width: 18px;
-      height: 18px;
-    }
+    .ti-scale, .ti-readout { display: none; }
+    .ti-corner { width: 18px; height: 18px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ti-dot { animation: none; }
-    .tissue-booting .ti-graticule,
     .tissue-booting .ti-corner,
     .tissue-booting .ti-readout,
-    .tissue-booting .ti-scale {
-      animation: none;
-    }
+    .tissue-booting .ti-scale { animation: none; }
   }
 </style>
