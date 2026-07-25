@@ -869,6 +869,44 @@ html:not(.js) .award-static {
 }
 
 /* ============================================================
+   Persistent helix backdrop — one fixed canvas behind the whole site
+
+   These rules sit outside @layer on purpose: unlayered declarations win
+   over Tailwind's utilities layer, so the section fills (bg-ink, bg-ink2,
+   bg-[#070708]) drop away and the molecule reads through. Panels, cards
+   and images keep their own fills and stay fully opaque.
+   ============================================================ */
+
+.helix-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.helix-backdrop canvas,
+.helix-backdrop .three-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* content rides above the molecule; the body colour stays behind it */
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+main > section,
+main > div > section,
+footer {
+  background-color: transparent;
+}
+
+/* ============================================================
    3D layer hosts
    ============================================================ */
 
@@ -884,54 +922,12 @@ html:not(.js) .award-static {
   display: block;
 }
 
-/* Showpiece interaction hint — pointer-type variants, fades on first use */
-[data-helix-hint] {
-  transition: opacity 1.2s ease;
-}
-[data-helix-hint].faded {
-  opacity: 0;
-}
-.hint-coarse {
-  display: none;
-}
-@media (pointer: coarse) {
-  .hint-fine {
-    display: none;
-  }
-  .hint-coarse {
-    display: inline;
-  }
-}
-/* no live canvas (WebGL missing) or reduced motion → the hint is a lie */
-[data-helix-stage]:not(:has(.three-active)) [data-helix-hint] {
-  opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-helix-hint] {
-    opacity: 0 !important;
-  }
-}
-
-/* Mobile FPS fallback — the static SVG takes over with a slow, gentle sway */
-.svg-sway {
-  animation: svgSway 26s ease-in-out infinite alternate;
-  transform-origin: center;
-}
-@keyframes svgSway {
-  from {
-    transform: perspective(900px) rotateY(-14deg);
-  }
-  to {
-    transform: perspective(900px) rotateY(14deg);
-  }
-}
-
 /* ============================================================
    Three.js mounts — the canvas fills its host; the static SVG
    fallback beneath it is shown until (or unless) WebGL mounts.
    ============================================================ */
 
-[data-three] {
+[data-three]:not(.helix-backdrop) {
   position: relative;
 }
 [data-three] canvas {
@@ -1297,7 +1293,7 @@ html:not(.js) .award-static {
 }
 
 /* ============================================================
-   Holographic atmosphere — blueprint grid + scanner sweep
+   Holographic atmosphere — blueprint grid
    ============================================================ */
 
 .grid-overlay {
@@ -1310,37 +1306,6 @@ html:not(.js) .award-static {
   background-size: 54px 54px;
   mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, black, transparent 78%);
   -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, black, transparent 78%);
-}
-
-.scan-sweep {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 140px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(45, 212, 191, 0.045) 45%,
-    rgba(45, 212, 191, 0.09) 50%,
-    rgba(45, 212, 191, 0.045) 55%,
-    transparent
-  );
-  animation: scanSweep 10s linear infinite;
-}
-@keyframes scanSweep {
-  from {
-    transform: translateY(-160px);
-  }
-  to {
-    transform: translateY(110vh);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .scan-sweep {
-    display: none;
-  }
 }
 
 /* ============================================================

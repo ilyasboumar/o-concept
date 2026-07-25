@@ -490,14 +490,15 @@ document.querySelectorAll('[data-award-ring]').forEach((stage) => {
 });
 
 /* ============================================================
-   Three.js — lazy chunk. three-fx.js itself decides per host:
-   mobile hero hosts keep their SVG, reduced-motion renders a
-   single static frame, everything else animates.
+   Three.js — lazy chunk. The shared Lenis instance is handed over
+   so the helix backdrop reads one scroll position, not its own:
+   no second scroller. three-fx.js decides per host — reduced
+   motion renders a single static frame, everything else animates.
    ============================================================ */
 
 if (document.querySelector('[data-three]')) {
   import('./three-fx.js')
-    .then((m) => m.initThree())
+    .then((m) => m.initThree({ lenis }))
     .catch(() => {
       /* chunk failed to load — SVG fallbacks remain */
     });

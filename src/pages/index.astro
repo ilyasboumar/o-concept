@@ -15,7 +15,6 @@ import VideoTestimonials from '../components/VideoTestimonials.astro';
 import ConciergeSection from '../components/ConciergeSection.astro';
 import ScienceInterlude from '../components/ScienceInterlude.astro';
 import CellField from '../components/CellField.astro';
-import TissueField from '../components/TissueField.astro';
 
 const authorityBar = [
   'Global Excellence Awards 2025 — The O Concept™ Protocol',
@@ -84,20 +83,18 @@ const testimonials = [
   description="Created by Dr Sherif Wakil: the world's most awarded sexual rejuvenation and regenerative protocol. Treatment for erectile dysfunction, low libido, vaginal laxity, incontinence, menopause and andropause — confidentially, at 77 Harley Street, London."
 >
   <!-- ============ HERO — Dr Wakil-centric, instant market-leader read ============ -->
-  <section class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink">
-    <!-- bioluminescent living-tissue shader field — deepest ambient layer,
-         boots up with a diagnostic scan sweep, then scroll-driven -->
-    <div class="absolute inset-0" aria-hidden="true">
-      <TissueField />
-    </div>
-    <!-- readability scrim — keeps the headline WCAG AA over the field -->
+  <section
+    class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink"
+    data-helix-state="dormant"
+  >
+    <!-- readability scrim — keeps the headline WCAG AA over the molecule -->
     <div
       class="pointer-events-none absolute inset-0"
-      style="background: radial-gradient(ellipse 62% 72% at 32% 52%, rgba(10,10,11,0.5), transparent 62%);"
+      style="background: radial-gradient(ellipse 54% 62% at 30% 52%, rgba(10,10,11,0.38), transparent 70%);"
       aria-hidden="true"
     >
     </div>
-    <!-- subtle gold particle drift — the helix now lives in its own showpiece section below -->
+    <!-- subtle gold particle drift -->
     <div class="absolute inset-0" aria-hidden="true">
       <span class="particle" style="top:24%; left:14%; animation-delay:0s"></span>
       <span class="particle" style="top:64%; left:8%; animation-delay:-4s"></span>
@@ -120,7 +117,7 @@ const testimonials = [
       aria-hidden="true"
     >
     </div>
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-ink/60" aria-hidden="true"></div>
 
     <div class="wrap relative grid grid-cols-1 items-center gap-10 pt-24 pb-14 md:pt-28 lg:grid-cols-12 lg:gap-10">
       <!-- headline block -->
@@ -272,7 +269,7 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ============ SCIENCE INTERLUDE — the 3D showpiece ============ -->
+  <!-- ============ SCIENCE INTERLUDE — the helix reaches Activation here ============ -->
   <ScienceInterlude />
 
   <!-- ============ THE SCIENCE — split-scroll pinned section ============ -->

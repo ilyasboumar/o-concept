@@ -1,23 +1,14 @@
 ---
 /**
- * Science interlude — the full-viewport 3D showpiece. The DNA helix is the
- * hero of this section: centre-right at 60/40, ~78% of the section height,
- * full opacity, showpiece preset (thicker nodes, fake bloom, ±14° cursor
- * tilt, cursor-proximity glow; drag-to-rotate on touch). Content sits left
- * over a soft dark gradient for legibility.
+ * Science interlude — the statement of the regenerative principle. The
+ * molecule behind it is the site-wide helix backdrop (HelixBackdrop), which
+ * reaches its Activation state around here: the coil loosening, luminance
+ * rising. This section supplies only the copy and the legibility gradient
+ * that keeps it readable over the strand.
  */
-import DnaHelix from './DnaHelix.astro';
 ---
 
-<section class="relative flex min-h-screen items-center overflow-hidden bg-[#070708]" data-helix-stage aria-labelledby="interlude-heading">
-  <!-- helix stage — the hero of the section, not a background -->
-  <div
-    class="absolute top-1/2 right-[-14%] h-[62vh] w-[95%] -translate-y-1/2 sm:right-[-6%] sm:w-[70%] lg:right-0 lg:h-[78vh] lg:w-[58%]"
-    aria-hidden="true"
-  >
-    <DnaHelix preset="showpiece" nodeCount={95} mobileNodes={55} opacity={1} interactive mobile="reduced" />
-  </div>
-
+<section class="relative flex min-h-screen items-center overflow-hidden" data-helix-state="activation" aria-labelledby="interlude-heading">
   <!-- soft teal stage glow -->
   <div
     class="pointer-events-none absolute inset-0"
@@ -25,12 +16,11 @@ import DnaHelix from './DnaHelix.astro';
     aria-hidden="true"
   >
   </div>
-  <!-- holographic lab atmosphere — blueprint grid + scanner sweep -->
+  <!-- holographic lab atmosphere — blueprint grid -->
   <div class="grid-overlay" aria-hidden="true"></div>
-  <div class="scan-sweep" aria-hidden="true"></div>
 
   <!-- legibility gradient behind the copy -->
-  <div class="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-[#070708] via-[#070708]/80 to-transparent lg:w-[68%]" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-ink via-ink/75 to-transparent lg:w-[62%]" aria-hidden="true"></div>
 
   <div class="wrap relative py-28 md:py-36">
     <div class="max-w-xl">
@@ -48,14 +38,4 @@ import DnaHelix from './DnaHelix.astro';
       </div>
     </div>
   </div>
-
-  <!-- interaction hint — fades after first interaction; variant per pointer type -->
-  <p
-    data-helix-hint
-    class="pointer-events-none absolute bottom-10 right-[6%] text-[9px] font-semibold tracking-[0.4em] text-gold/70 uppercase"
-    aria-hidden="true"
-  >
-    <span class="hint-fine">Move your cursor — explore the strand</span>
-    <span class="hint-coarse">Drag to rotate</span>
-  </p>
 </section>

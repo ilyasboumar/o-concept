@@ -11,6 +11,7 @@ import '../styles/global.css';
 
 import { withBase } from '../lib/url';
 import AwardsStrip from '../components/AwardsStrip.astro';
+import HelixBackdrop from '../components/HelixBackdrop.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WelcomePopup from '../components/WelcomePopup.astro';
@@ -112,6 +113,8 @@ const globalSchema = [
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body class="min-h-screen">
+    <!-- the molecule: one fixed canvas behind every section, on every page -->
+    <HelixBackdrop />
     <AwardsStrip />
     <Header />
     <main>

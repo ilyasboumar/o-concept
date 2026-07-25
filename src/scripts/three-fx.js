@@ -1,26 +1,27 @@
 /**
- * Three.js layer — DNA helix + stem-cell particle field.
+ * Three.js layer — the persistent helix backdrop + the stem-cell particle field.
  * Lazily imported from main.js whenever a [data-three] host exists.
  *
- * Helix presets:
- *  - 'ambient'   background presence (science split-section)
- *  - 'showpiece' the homepage interlude: thicker nodes (~1.5×), wider
- *    radius, brighter rungs, fake-bloom halo pass, ±14° cursor tilt,
- *    cursor-proximity glow (O(n) projected-distance check, no raycasting),
- *    drag-to-rotate with momentum on touch, and a mobile FPS guard that
- *    falls back to the static SVG if frames run slow.
+ * The backdrop (data-three="helix-bg") is mounted once, at the layout level, on
+ * a fixed full-viewport canvas behind every section. It is the site's single
+ * signature object: one enormous horizontal DNA helix, cropped at both edges,
+ * that tells the story of the protocol as the visitor descends —
+ *
+ *   dormant → activation → separation → replication → renewed
+ *
+ * States are anchored to real [data-helix-state] sections and interpolated
+ * against global scroll, so the transformation is felt, never stepped.
  *
  * Non-negotiables:
  *  - pixel ratio capped at 2
+ *  - geometry is built once; every frame updates uniforms only
  *  - loops pause offscreen (IntersectionObserver) and on hidden tabs
- *  - prefers-reduced-motion: one static frame, no loop
+ *  - prefers-reduced-motion: one static frame in the dormant state, no loop
  *  - full geometry/material/texture disposal on pagehide
- *  - one shared soft-glow sprite texture across both components
- *  - canvases never intercept pointer events (cursor input is window- or
- *    section-level) and hosts are pre-sized — no layout shift
+ *  - canvases never intercept pointer events; hosts are pre-sized (no CLS)
+ *  - the helix attenuates behind text blocks so every section stays WCAG AA
  */
 import * as THREE from 'three';
-import gsap from 'gsap';
 
 const GOLD = new THREE.Color('#C9A96E');
 const TEAL = new THREE.Color('#2DD4BF');
@@ -30,6 +31,10 @@ const INK = 0x0a0a0b;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = !window.matchMedia('(min-width: 1024px)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
+
+/* The shared Lenis instance, handed over by main.js — the single source of
+   scroll truth. Null under reduced motion (Lenis is never constructed). */
+let sharedLenis = null;
 
 /* ------------------------------------------------------------------
    Shared sprite textures (created once, disposed once)
@@ -83,23 +88,6 @@ function makeCellSprite() {
 
 const scenes = [];
 
-/* Global scroll velocity (0..1-ish), eased — drives helix spin boost */
-let scrollBoost = 0;
-let lastScrollY = window.scrollY;
-let lastScrollT = performance.now();
-window.addEventListener(
-  'scroll',
-  () => {
-    const now = performance.now();
-    const dt = Math.max(16, now - lastScrollT);
-    const v = Math.abs(window.scrollY - lastScrollY) / dt; // px per ms
-    scrollBoost = Math.min(1, scrollBoost + v * 0.4);
-    lastScrollY = window.scrollY;
-    lastScrollT = now;
-  },
-  { passive: true }
-);
-
 /* Global cursor position, normalised -0.5..0.5 (window-level: canvases
    themselves stay pointer-events: none) */
 const cursor = { x: 0, y: 0 };
@@ -114,23 +102,31 @@ if (finePointer) {
   );
 }
 
-function createScene(host, tick) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+function createScene(host, tick, opts = {}) {
+  const renderer = new THREE.WebGLRenderer({
+    antialias: opts.antialias !== false,
+    alpha: true,
+    powerPreference: 'low-power',
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(host.clientWidth || 1, host.clientHeight || 1);
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(INK, 8, 16);
+  if (opts.fog !== false) scene.fog = new THREE.Fog(INK, 8, 16);
 
-  const camera = new THREE.PerspectiveCamera(42, (host.clientWidth || 1) / (host.clientHeight || 1), 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(
+    opts.fov || 42,
+    (host.clientWidth || 1) / (host.clientHeight || 1),
+    0.1,
+    opts.far || 100
+  );
 
   const record = { host, renderer, scene, camera, raf: null, visible: true, disposed: false };
 
   const frame = (t) => {
-    scrollBoost = Math.max(0, scrollBoost - 0.012); // ease back to base
     tick(t, record);
-    if (record.disposed) return; // tick may have torn the scene down (FPS guard)
+    if (record.disposed) return; // tick may have torn the scene down
     renderer.render(scene, camera);
     record.raf = requestAnimationFrame(frame);
   };
@@ -183,6 +179,7 @@ function createScene(host, tick) {
   );
 
   record.stop = stop;
+  record.render = () => !record.disposed && renderer.render(scene, camera);
   scenes.push(record);
   return record;
 }
@@ -209,326 +206,741 @@ window.addEventListener('pagehide', () => {
 });
 
 const lerp = (a, b, k) => a + (b - a) * k;
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const smoothstep = (t) => t * t * (3 - 2 * t);
 
-/* ------------------------------------------------------------------
-   DNA helix
-   ------------------------------------------------------------------ */
+function cssColor(name, fallback) {
+  const raw = (getComputedStyle(document.documentElement).getPropertyValue(name) || '').trim() || fallback;
+  return new THREE.Color(raw);
+}
 
-const HELIX_PRESETS = {
-  ambient: {
-    radius: 1.5,
-    dotSizeA: 0.22,
-    dotSizeB: 0.19,
-    rungOpacity: 0.3,
-    backboneOpacity: 0.32,
-    tiltDeg: 8,
-    bloom: false,
-    proximity: false,
-    dragRotate: false,
-    fpsGuard: false,
-  },
-  showpiece: {
-    radius: 2.05,
-    dotSizeA: 0.33, // ~1.5× — thicker, more present
-    dotSizeB: 0.28,
-    rungOpacity: 0.45,
-    backboneOpacity: 0.38,
-    tiltDeg: 14,
-    bloom: true,
-    proximity: true, // fine pointers, desktop only
-    dragRotate: true, // touch devices
-    fpsGuard: true, // mobile: fall back to SVG if frames run slow
-  },
+/* ==================================================================
+   The persistent helix backdrop
+   ================================================================== */
+
+/* The five scroll states. Every value is interpolated between the
+   neighbouring stops, so the molecule is never caught mid-step.
+
+   pitch    coil tightness (× base); higher = tighter wind
+   sep      strand separation, in radii — the unzip
+   amp      helix radius (× base)
+   lum      strand luminance
+   rung     base-pair rung opacity — falls away as the strands release
+   detach   fraction of node drift — free-floating bases
+   ignite   replication sweep intensity
+   spin     rotation rate (× base) */
+const HELIX_STATES = {
+  dormant: { pitch: 1.0, sep: 0.0, amp: 1.0, lum: 0.8, rung: 1.0, detach: 0.0, ignite: 0.0, spin: 1.0 },
+  activation: { pitch: 0.74, sep: 0.06, amp: 1.06, lum: 0.95, rung: 0.94, detach: 0.02, ignite: 0.0, spin: 1.3 },
+  separation: { pitch: 0.54, sep: 0.62, amp: 1.02, lum: 1.05, rung: 0.22, detach: 1.0, ignite: 0.0, spin: 0.8 },
+  replication: { pitch: 0.86, sep: 0.08, amp: 1.04, lum: 1.55, rung: 0.9, detach: 0.22, ignite: 1.0, spin: 1.45 },
+  renewed: { pitch: 1.32, sep: 0.0, amp: 0.98, lum: 1.25, rung: 1.0, detach: 0.0, ignite: 0.16, spin: 1.12 },
 };
+const STATE_ORDER = ['dormant', 'activation', 'separation', 'replication', 'renewed'];
+const STATE_KEYS = Object.keys(HELIX_STATES.dormant);
 
-function mountHelix(host) {
-  const preset = HELIX_PRESETS[host.dataset.preset === 'showpiece' ? 'showpiece' : 'ambient'];
-  const interactive = host.dataset.interactive === '1' && finePointer && !isMobile;
-  const useProximity = preset.proximity && finePointer && !isMobile && !reduced;
-  const useDrag = preset.dragRotate && (isMobile || !finePointer) && !reduced;
-  const nodeCount = isMobile
-    ? parseInt(host.dataset.mobileNodes || '40', 10)
-    : parseInt(host.dataset.nodeCount || '70', 10);
+/* ---- shared GLSL: one analytic definition of the molecule ---------
+   Every vertex shader below places itself with helixAt(), so strands,
+   rungs and nodes can never disagree about where the helix is. */
+const HB_COMMON = /* glsl */ `
+  #define PI 3.141592653589793
 
-  const TURNS = 3;
-  const HEIGHT = 10;
-  const RADIUS = preset.radius;
+  uniform float uLength;
+  uniform float uTravel;
+  uniform float uPitch;
+  uniform float uRadius;
+  uniform float uSep;
+  uniform float uCurve;
+  uniform float uSpin;
+  uniform float uZSquash;
+  uniform vec4  uPluck[4];
+  uniform float uWaveSpeed;
+  uniform float uWaveWidth;
 
-  const group = new THREE.Group();
-
-  /* strand geometry + per-node base colors; local positions kept for the
-     O(n) proximity pass */
-  const strand = (phase, color) => {
-    const pos = new Float32Array(nodeCount * 3);
-    const col = new Float32Array(nodeCount * 3);
-    const base = new Float32Array(nodeCount * 3);
-    for (let i = 0; i < nodeCount; i++) {
-      const t = i / (nodeCount - 1);
-      const a = t * Math.PI * 2 * TURNS + phase;
-      pos[i * 3] = Math.cos(a) * RADIUS;
-      pos[i * 3 + 1] = (t - 0.5) * HEIGHT;
-      pos[i * 3 + 2] = Math.sin(a) * RADIUS;
-      const c = color.clone().lerp(TEAL_DEEP, t * 0.25);
-      base[i * 3] = c.r;
-      base[i * 3 + 1] = c.g;
-      base[i * 3 + 2] = c.b;
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
+  /* Sum of the live plucks — each a pulse travelling outward along the
+     axis from its origin, decaying in time like a wave on a string. */
+  float pluckAt(float s) {
+    float d = 0.0;
+    for (int i = 0; i < 4; i++) {
+      vec4 pk = uPluck[i];
+      float dt = pk.y;
+      float dist = abs(s - pk.x);
+      float e = (dist - uWaveSpeed * dt) / uWaveWidth;
+      d += pk.z * exp(-e * e) * exp(-dt * 1.5) * (1.0 + 0.22 * sin(dist * 0.7 - dt * 7.0));
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    return { geo, base, pos, glow: new Float32Array(nodeCount) };
+    return d;
+  }
+
+  /* xyz of the strand at axis position x; .w is the depth cue (-1 far, +1 near).
+     uCurve bends the ends away from the camera, so the molecule recedes toward
+     a vanishing point past each edge of the frame. */
+  vec4 helixAt(float x, float strand) {
+    float s = x + uTravel;
+    float ph = s * uPitch + strand * PI + uSpin;
+    float y = cos(ph) * uRadius + (strand * 2.0 - 1.0) * uSep + pluckAt(s);
+    /* The coil is flattened along the view axis: depth is read from opacity
+       (uZSquash keeps base-pair rungs near-vertical instead of splaying into
+       a web), while uCurve still bends the ends away toward the edges. */
+    float z = sin(ph) * uRadius * uZSquash - uCurve * x * x;
+    return vec4(x, y, z, sin(ph));
+  }
+`;
+
+/* Screen-space ribbon expansion — gives exact pixel line widths at any DPR,
+   which THREE.Line (always 1px) cannot. */
+const HB_RIBBON = /* glsl */ `
+  uniform vec2 uRes;
+  uniform float uHalfW;
+
+  vec4 ribbon(vec3 here, vec3 ahead, float side) {
+    vec4 c0 = projectionMatrix * modelViewMatrix * vec4(here, 1.0);
+    vec4 c1 = projectionMatrix * modelViewMatrix * vec4(ahead, 1.0);
+    vec2 s0 = c0.xy / c0.w;
+    vec2 d = (c1.xy / c1.w - s0) * uRes;
+    float l = length(d);
+    vec2 dir = l > 0.0001 ? d / l : vec2(1.0, 0.0);
+    vec2 nrm = vec2(-dir.y, dir.x);
+    return vec4((s0 + nrm * side * uHalfW * 2.0 / uRes) * c0.w, c0.z, c0.w);
+  }
+`;
+
+/* Text-legibility attenuation: the helix ducks behind the text blocks that
+   are actually on screen, so contrast is never compromised. */
+const HB_TEXTDIM = /* glsl */ `
+  uniform vec4 uRects[10];
+  uniform vec2 uRes;
+  uniform float uDpr;
+  uniform float uTextDim;
+
+  float textDim() {
+    vec2 p = gl_FragCoord.xy / uDpr;
+    p.y = uRes.y - p.y;              // to CSS pixels, origin top-left
+    const float F = 30.0;            // feather, px
+    float inside = 0.0;
+    for (int i = 0; i < 10; i++) {
+      vec4 r = uRects[i];
+      float ix = smoothstep(r.x - F, r.x + F, p.x) * (1.0 - smoothstep(r.z - F, r.z + F, p.x));
+      float iy = smoothstep(r.y - F, r.y + F, p.y) * (1.0 - smoothstep(r.w - F, r.w + F, p.y));
+      inside = max(inside, ix * iy);
+    }
+    return mix(1.0, uTextDim, inside);
+  }
+`;
+
+const HB_STRAND_VERT =
+  HB_COMMON +
+  HB_RIBBON +
+  /* glsl */ `
+  attribute float aU;
+  attribute float aSide;
+  attribute float aStrand;
+  varying float vDepth;
+  varying float vEdge;
+  varying float vS;
+
+  void main() {
+    float x = (aU - 0.5) * uLength;
+    float du = uLength * 0.0016;
+    vec4 h = helixAt(x, aStrand);
+    vDepth = h.w;
+    vEdge = aSide;
+    vS = x + uTravel;
+    gl_Position = ribbon(h.xyz, helixAt(x + du, aStrand).xyz, aSide);
+  }
+`;
+
+const HB_RUNG_VERT =
+  HB_COMMON +
+  HB_RIBBON +
+  /* glsl */ `
+  attribute float aIdx;
+  attribute float aEnd;
+  attribute float aSide;
+  uniform float uRungSpacing;
+  varying float vDepth;
+  varying float vEdge;
+  varying float vS;
+
+  void main() {
+    /* wrap the base pair into the drawn window; the seam sits off-screen */
+    float x = mod(aIdx * uRungSpacing - uTravel + uLength * 0.5, uLength) - uLength * 0.5;
+    vec4 h = helixAt(x, aEnd);
+    vec4 o = helixAt(x, 1.0 - aEnd);
+    vDepth = h.w;
+    vEdge = aSide;
+    vS = x + uTravel;
+    gl_Position = ribbon(h.xyz, o.xyz, aSide);
+  }
+`;
+
+const HB_LINE_FRAG =
+  HB_TEXTDIM +
+  /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uAlpha;
+  uniform float uLineW;
+  uniform float uHalfW;
+  uniform float uLum;
+  uniform float uIgnite;
+  uniform float uFront;
+  uniform float uFrontW;
+  varying float vDepth;
+  varying float vEdge;
+  varying float vS;
+
+  void main() {
+    float dpx = abs(vEdge) * uHalfW;
+    float a = 1.0 - smoothstep(uLineW * 0.5 - 0.5, uLineW * 0.5 + 0.5, dpx);
+    if (a <= 0.001) discard;
+    a *= uAlpha * mix(0.35, 1.0, smoothstep(-1.0, 1.0, vDepth));   // depth by opacity, never blur
+    float e = (vS - uFront) / uFrontW;
+    float ig = uIgnite * exp(-e * e);
+    /* luminance rides the alpha, never the hue: quiet gold is still gold,
+       never brown. Past full it overdrives the colour instead. */
+    float lum = uLum + ig * 0.8;
+    a *= min(1.0, lum) * textDim();
+    gl_FragColor = vec4(uColor * max(1.0, lum), clamp(a, 0.0, 1.0));
+  }
+`;
+
+const HB_NODE_VERT =
+  HB_COMMON +
+  /* glsl */ `
+  attribute float aIdx;
+  attribute float aEnd;
+  attribute vec3 aRand;
+  uniform float uRungSpacing;
+  uniform float uDetach;
+  uniform float uNodeSize;
+  uniform float uDpr;
+  uniform float uCamZ;
+  varying float vDepth;
+  varying float vS;
+  varying float vWave;
+
+  void main() {
+    float x = mod(aIdx * uRungSpacing - uTravel + uLength * 0.5, uLength) - uLength * 0.5;
+    vec4 h = helixAt(x, aEnd);
+    vS = x + uTravel;
+    vDepth = h.w;
+    vWave = abs(pluckAt(vS));
+    /* a share of the bases break loose and drift while the strands are open */
+    vec3 p = h.xyz + (aRand - 0.5) * 2.0 * uDetach * step(0.62, aRand.x) * uRadius * 0.9;
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * mv;
+    gl_PointSize = uNodeSize * uDpr * (uCamZ / max(1.0, -mv.z));
+  }
+`;
+
+const HB_NODE_FRAG =
+  HB_TEXTDIM +
+  /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uAlpha;
+  uniform float uLum;
+  uniform float uIgnite;
+  uniform float uFront;
+  uniform float uFrontW;
+  uniform float uWaveGain;
+  varying float vDepth;
+  varying float vS;
+  varying float vWave;
+
+  void main() {
+    vec2 c = gl_PointCoord - 0.5;
+    float d = length(c);
+    float m = 1.0 - smoothstep(0.5 - fwidth(d) * 1.5, 0.5, d);   // crisp disc, anti-aliased
+    if (m <= 0.001) discard;
+    float e = (vS - uFront) / uFrontW;
+    float ig = uIgnite * exp(-e * e);
+    float w = vWave * uWaveGain;                       // the pluck passing through
+    float a = m * uAlpha * mix(0.35, 1.0, smoothstep(-1.0, 1.0, vDepth));
+    float lum = uLum * 1.25 + ig * 0.9 + w;
+    a *= min(1.0, lum) * textDim();
+    gl_FragColor = vec4(uColor * max(1.0, lum), clamp(a, 0.0, 1.0));
+  }
+`;
+
+function mountHelixBackdrop(host) {
+  const SEG = isMobile ? 420 : 900; // strand samples across the frame
+  const RUNGS = isMobile ? 34 : 60; // base pairs in the drawn window (~10 per turn)
+  const CAM_Z = 60;
+  const FOV = 45;
+  const canPluck = finePointer && !isMobile && !reduced;
+
+  const GOLDL = cssColor('--color-goldlight', '#e3c992'); // strands — bright champagne
+  const CREAM = cssColor('--color-cream', '#f4f1ec'); // rungs — pale platinum
+  const NODE = new THREE.Color('#fdfaf3'); // nodes — near-white hot points
+
+  /* ---- geometry: built once, never rebuilt. Everything moves in the
+     vertex shaders, driven by uniforms. ---- */
+
+  const strandGeo = () => {
+    const n = SEG + 1;
+    const verts = n * 2 * 2; // 2 strands × 2 ribbon edges
+    const aU = new Float32Array(verts);
+    const aSide = new Float32Array(verts);
+    const aStrand = new Float32Array(verts);
+    const idx = new Uint32Array(SEG * 6 * 2);
+    let v = 0;
+    let q = 0;
+    for (let s = 0; s < 2; s++) {
+      const base = v;
+      for (let i = 0; i < n; i++) {
+        const u = i / SEG;
+        aU[v] = u;
+        aSide[v] = -1;
+        aStrand[v] = s;
+        v++;
+        aU[v] = u;
+        aSide[v] = 1;
+        aStrand[v] = s;
+        v++;
+      }
+      for (let i = 0; i < SEG; i++) {
+        const a = base + i * 2;
+        idx[q++] = a;
+        idx[q++] = a + 1;
+        idx[q++] = a + 2;
+        idx[q++] = a + 1;
+        idx[q++] = a + 3;
+        idx[q++] = a + 2;
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('aU', new THREE.BufferAttribute(aU, 1));
+    g.setAttribute('aSide', new THREE.BufferAttribute(aSide, 1));
+    g.setAttribute('aStrand', new THREE.BufferAttribute(aStrand, 1));
+    g.setIndex(new THREE.BufferAttribute(idx, 1));
+    // positions are computed in the shader; keep three from culling the mesh
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts * 3), 3));
+    return g;
   };
 
-  const A = strand(0, GOLD); // strand A — champagne gold
-  const B = strand(Math.PI, TEAL); // strand B — bioluminescent teal
+  const rungGeo = () => {
+    const verts = RUNGS * 4; // 2 ends × 2 ribbon edges
+    const aIdx = new Float32Array(verts);
+    const aEnd = new Float32Array(verts);
+    const aSide = new Float32Array(verts);
+    const idx = new Uint32Array(RUNGS * 6);
+    let v = 0;
+    let q = 0;
+    for (let r = 0; r < RUNGS; r++) {
+      const base = v;
+      for (let e = 0; e < 2; e++) {
+        for (let sd = -1; sd <= 1; sd += 2) {
+          aIdx[v] = r;
+          aEnd[v] = e;
+          aSide[v] = sd;
+          v++;
+        }
+      }
+      idx[q++] = base;
+      idx[q++] = base + 1;
+      idx[q++] = base + 2;
+      idx[q++] = base + 1;
+      idx[q++] = base + 3;
+      idx[q++] = base + 2;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('aIdx', new THREE.BufferAttribute(aIdx, 1));
+    g.setAttribute('aEnd', new THREE.BufferAttribute(aEnd, 1));
+    g.setAttribute('aSide', new THREE.BufferAttribute(aSide, 1));
+    g.setIndex(new THREE.BufferAttribute(idx, 1));
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts * 3), 3));
+    return g;
+  };
 
-  const dotMat = (size, opacity = 1) =>
-    new THREE.PointsMaterial({
-      size,
-      map: makeGlowSprite(),
-      vertexColors: true,
-      transparent: true,
-      opacity,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: true,
-    });
+  const nodeGeo = () => {
+    const n = RUNGS * 2;
+    const aIdx = new Float32Array(n);
+    const aEnd = new Float32Array(n);
+    const aRand = new Float32Array(n * 3);
+    for (let r = 0; r < RUNGS; r++) {
+      for (let e = 0; e < 2; e++) {
+        const i = r * 2 + e;
+        aIdx[i] = r;
+        aEnd[i] = e;
+        aRand[i * 3] = Math.random();
+        aRand[i * 3 + 1] = Math.random();
+        aRand[i * 3 + 2] = Math.random();
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('aIdx', new THREE.BufferAttribute(aIdx, 1));
+    g.setAttribute('aEnd', new THREE.BufferAttribute(aEnd, 1));
+    g.setAttribute('aRand', new THREE.BufferAttribute(aRand, 3));
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+    return g;
+  };
 
-  group.add(new THREE.Points(A.geo, dotMat(preset.dotSizeA)));
-  group.add(new THREE.Points(B.geo, dotMat(preset.dotSizeB)));
+  /* ---- uniforms: one shared set, so the three materials cannot drift ---- */
+  // (x, y, z, w) = (origin along the axis, age in seconds, signed amplitude,
+  // in use). Vector4 defaults w to 1, so spell the empty slots out.
+  const pluckSlots = Array.from({ length: 4 }, () => new THREE.Vector4(0, 0, 0, 0));
+  const rects = Array.from({ length: 10 }, () => new THREE.Vector4(-9999, -9999, -9999, -9999));
 
-  /* fake bloom — a second, larger, softer sprite pass sharing the same
-     geometry (so it inherits breathing + proximity modulation for free) */
-  if (preset.bloom) {
-    group.add(new THREE.Points(A.geo, dotMat(preset.dotSizeA * 2.3, 0.22)));
-    group.add(new THREE.Points(B.geo, dotMat(preset.dotSizeB * 2.3, 0.2)));
-  }
+  const shared = {
+    uLength: { value: 100 },
+    uTravel: { value: 0 },
+    uPitch: { value: 0.5 },
+    uRadius: { value: 10 },
+    uSep: { value: 0 },
+    uCurve: { value: 0 },
+    uSpin: { value: 0 },
+    uZSquash: { value: 0.4 },
+    uPluck: { value: pluckSlots },
+    uWaveSpeed: { value: 46 },
+    uWaveWidth: { value: 9 },
+    uRes: { value: new THREE.Vector2(1, 1) },
+    uDpr: { value: 1 },
+    uRects: { value: rects },
+    /* Sized against the worst case on the page: a strand pixel landing on a
+       glyph of the dimmest body copy (cream/60, 15px). At 0.2 that pixel
+       still clears 4.5:1, so AA holds even where the molecule crosses text.
+       The near-white nodes are brighter again, so they duck harder still. */
+    uTextDim: { value: 0.2 },
+    uLum: { value: 1 },
+    uIgnite: { value: 0 },
+    uFront: { value: 0 },
+    uFrontW: { value: 26 },
+    uRungSpacing: { value: 1 },
+    uDetach: { value: 0 },
+  };
+  const withShared = (extra) => Object.assign({}, shared, extra);
 
-  /* thin backbone lines along each strand */
-  const lineMat = (opacity) =>
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity, blending: THREE.AdditiveBlending });
-  group.add(new THREE.Line(A.geo.clone(), lineMat(preset.backboneOpacity)));
-  group.add(new THREE.Line(B.geo.clone(), lineMat(preset.backboneOpacity - 0.04)));
+  const STRAND_W = isMobile ? 1.9 : 2.3; // CSS px at any DPR
+  const RUNG_W = isMobile ? 1.1 : 1.35;
+  const feather = 1.0;
 
-  /* rung lines every few steps — gold/teal blend */
-  const step = Math.max(2, Math.round(nodeCount / 22));
-  const rungCount = Math.floor(nodeCount / step);
-  const rungPos = new Float32Array(rungCount * 2 * 3);
-  const rungCol = new Float32Array(rungCount * 2 * 3);
-  for (let r = 0; r < rungCount; r++) {
-    const i = r * step;
-    const t = i / (nodeCount - 1);
-    const a = t * Math.PI * 2 * TURNS;
-    const y = (t - 0.5) * HEIGHT;
-    rungPos.set([Math.cos(a) * RADIUS, y, Math.sin(a) * RADIUS, Math.cos(a + Math.PI) * RADIUS, y, Math.sin(a + Math.PI) * RADIUS], r * 6);
-    rungCol.set([GOLD.r, GOLD.g, GOLD.b, TEAL.r, TEAL.g, TEAL.b], r * 6);
-  }
-  const rungGeo = new THREE.BufferGeometry();
-  rungGeo.setAttribute('position', new THREE.BufferAttribute(rungPos, 3));
-  rungGeo.setAttribute('color', new THREE.BufferAttribute(rungCol, 3));
-  group.add(
-    new THREE.LineSegments(
-      rungGeo,
-      new THREE.LineBasicMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: preset.rungOpacity,
-        blending: THREE.AdditiveBlending,
-      })
-    )
-  );
-
-  /* diagnostic scan ring — a thin teal halo sweeping the strand like a
-     sequencer read-head; nodes brighten as it passes (medical sci-fi) */
-  const RING_SEG = 64;
-  const ringPts = new Float32Array(RING_SEG * 3);
-  for (let i = 0; i < RING_SEG; i++) {
-    const a = (i / RING_SEG) * Math.PI * 2;
-    ringPts[i * 3] = Math.cos(a) * RADIUS * 1.5;
-    ringPts[i * 3 + 2] = Math.sin(a) * RADIUS * 1.5;
-  }
-  const ringGeo = new THREE.BufferGeometry();
-  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPts, 3));
-  const ringBaseOpacity = preset.bloom ? 0.42 : 0.22;
-  const ringMat = new THREE.LineBasicMaterial({
-    color: TEAL,
+  const strandMat = new THREE.ShaderMaterial({
+    vertexShader: HB_STRAND_VERT,
+    fragmentShader: HB_LINE_FRAG,
+    uniforms: withShared({
+      uColor: { value: GOLDL },
+      uAlpha: { value: 1 },
+      uLineW: { value: STRAND_W },
+      uHalfW: { value: STRAND_W * 0.5 + feather },
+    }),
     transparent: true,
-    opacity: ringBaseOpacity,
     blending: THREE.AdditiveBlending,
+    depthTest: false,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+
+  const rungMat = new THREE.ShaderMaterial({
+    vertexShader: HB_RUNG_VERT,
+    fragmentShader: HB_LINE_FRAG,
+    uniforms: withShared({
+      uColor: { value: CREAM },
+      uAlpha: { value: 0.44 },
+      uLineW: { value: RUNG_W },
+      uHalfW: { value: RUNG_W * 0.5 + feather },
+    }),
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthTest: false,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+
+  const nodeMat = new THREE.ShaderMaterial({
+    vertexShader: HB_NODE_VERT,
+    fragmentShader: HB_NODE_FRAG,
+    uniforms: withShared({
+      uColor: { value: NODE },
+      uAlpha: { value: 0.95 },
+      uNodeSize: { value: isMobile ? 4.2 : 5.2 },
+      uCamZ: { value: CAM_Z },
+      uWaveGain: { value: 0 },
+      uTextDim: { value: 0.12 }, // near-white: ducks harder than the strands
+    }),
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthTest: false,
     depthWrite: false,
   });
-  const scanRing = new THREE.LineLoop(ringGeo, ringMat);
-  const echoMat = new THREE.LineBasicMaterial({
-    color: TEAL_DEEP,
-    transparent: true,
-    opacity: ringBaseOpacity * 0.35,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
+
+  const group = new THREE.Group();
+  const strands = new THREE.Mesh(strandGeo(), strandMat);
+  const rungs = new THREE.Mesh(rungGeo(), rungMat);
+  const nodes = new THREE.Points(nodeGeo(), nodeMat);
+  // shader-placed geometry: bounding volumes are meaningless, so never cull
+  [strands, rungs, nodes].forEach((o) => {
+    o.frustumCulled = false;
+    o.renderOrder = 1;
   });
-  const scanEcho = new THREE.LineLoop(ringGeo.clone(), echoMat);
-  group.add(scanRing, scanEcho);
-  const SCAN_SPAN = HEIGHT + 3;
-  let scanY = 0;
+  rungs.renderOrder = 0;
+  nodes.renderOrder = 2;
+  group.add(rungs, strands, nodes);
 
-  /* section-level cursor in canvas NDC — for the proximity glow */
-  const localCursor = { x: 0, y: 0, active: false };
-  if (useProximity) {
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        const r = host.getBoundingClientRect();
-        if (!r.width || !r.height) return;
-        localCursor.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-        localCursor.y = -(((e.clientY - r.top) / r.height) * 2 - 1);
-        localCursor.active =
-          e.clientX > r.left - 120 && e.clientX < r.right + 120 && e.clientY > r.top - 120 && e.clientY < r.bottom + 120;
-        fadeHint();
-      },
-      { passive: true }
-    );
-  }
-
-  /* drag-to-rotate with momentum (touch) — listeners on the parent
-     section, never the canvas */
-  let spinOffset = 0;
-  let spinVel = 0;
-  if (useDrag) {
-    const surface = host.closest('section') || host.parentElement || host;
-    surface.style.touchAction = 'pan-y';
-    let dragOn = false;
-    let lastDragX = 0;
-    surface.addEventListener(
-      'pointerdown',
-      (e) => {
-        dragOn = true;
-        lastDragX = e.clientX;
-        spinVel = 0;
-      },
-      { passive: true }
-    );
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        if (!dragOn) return;
-        const dx = e.clientX - lastDragX;
-        lastDragX = e.clientX;
-        spinOffset += dx * 0.006;
-        spinVel = dx * 0.006;
-        if (Math.abs(dx) > 3) fadeHint();
-      },
-      { passive: true }
-    );
-    const end = () => (dragOn = false);
-    window.addEventListener('pointerup', end, { passive: true });
-    window.addEventListener('pointercancel', end, { passive: true });
-  }
-
-  /* hint micro-copy — fade after first interaction */
-  let hintFaded = false;
-  function fadeHint() {
-    if (hintFaded) return;
-    hintFaded = true;
-    host.closest('[data-helix-stage]')?.querySelector('[data-helix-hint]')?.classList.add('faded');
-  }
-
-  const rec = createScene(host, tick);
-  rec.camera.position.set(0, 0, 9.5 + (preset.radius - 1.5) * 1.6);
+  const rec = createScene(host, tick, { antialias: false, fog: false, fov: FOV, far: 400 });
+  rec.camera.position.set(0, 0, CAM_Z);
   rec.scene.add(group);
 
+  /* ---- viewport-derived scale: recomputed on resize, never per frame ---- */
+  let halfH = 1;
+  let halfW = 1;
+  let basePitch = 1;
+  let baseRadius = 1;
+
+  const syncSize = () => {
+    if (rec.disposed) return;
+    const w = host.clientWidth || window.innerWidth;
+    const h = host.clientHeight || window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    rec.renderer.setPixelRatio(dpr);
+    rec.renderer.setSize(w, h);
+    rec.camera.aspect = w / h;
+    rec.camera.updateProjectionMatrix();
+
+    halfH = Math.tan((FOV * Math.PI) / 180 / 2) * CAM_Z;
+    halfW = halfH * rec.camera.aspect;
+
+    const L = halfW * 3.2; // overruns the frame — the molecule is clearly cropped
+    shared.uLength.value = L;
+    shared.uRungSpacing.value = L / RUNGS;
+    // ends pushed back ~45% of the camera distance: real recession toward
+    // a vanishing point past each edge
+    shared.uCurve.value = (0.45 * CAM_Z) / ((L * 0.5) * (L * 0.5));
+    baseRadius = halfH * 0.6; // ≈62% of viewport height, peak to peak
+    basePitch = (4 * Math.PI) / halfW; // four turns across the frame when dormant
+    shared.uWaveSpeed.value = halfW * 1.1;
+    shared.uWaveWidth.value = halfW * 0.22;
+    shared.uFrontW.value = halfW * 0.6;
+    shared.uRes.value.set(w, h);
+    shared.uDpr.value = dpr;
+    // normalises the pluck displacement (world units) into a 0..1 node flare
+    nodeMat.uniforms.uWaveGain.value = 1 / Math.max(0.001, baseRadius * 0.45);
+    if (reduced) {
+      applyState(0, 0);
+      updateRects();
+      rec.render();
+    }
+  };
+  window.addEventListener('resize', syncSize, { passive: true });
+
+  /* ---- scroll narrative: anchored to the real sections on the page ---- */
+  let stops = null; // document offsets, one per state, ascending
+
+  const measureStops = () => {
+    /* Each state peaks when its section is centred in the viewport, so a long
+       section (the protocol runs to nearly 4000px) reaches its state in the
+       middle of the reading, not at its first pixel. */
+    const els = [...document.querySelectorAll('[data-helix-state]')]
+      .map((el) => {
+        const r = el.getBoundingClientRect();
+        return { name: el.dataset.helixState, top: r.top + window.scrollY + r.height * 0.5 - window.innerHeight * 0.5 };
+      })
+      .filter((s) => STATE_ORDER.includes(s.name))
+      .sort((a, b) => a.top - b.top);
+    const limit = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    if (els.length < 3) {
+      // no narrative markup on this page — spread the story over its length
+      stops = STATE_ORDER.map((_, i) => (i / (STATE_ORDER.length - 1)) * limit);
+      return;
+    }
+    const byName = new Map(els.map((s) => [s.name, s.top]));
+    let prev = 0;
+    stops = STATE_ORDER.map((name, i) => {
+      const raw = byName.has(name) ? Math.max(0, byName.get(name)) : (i / (STATE_ORDER.length - 1)) * limit;
+      prev = Math.max(prev + 1, Math.min(raw, limit));
+      return prev;
+    });
+  };
+  measureStops();
+  window.addEventListener('resize', measureStops, { passive: true });
+  window.addEventListener('load', measureStops);
+  setTimeout(measureStops, 1200); // after lazy images and ScrollTrigger settle
+
+  /* Interpolate the state parameters at a document scroll offset. */
+  const state = {};
+  function sampleState(y) {
+    if (!stops) measureStops();
+    let i = 0;
+    while (i < stops.length - 2 && y > stops[i + 1]) i++;
+    const a = HELIX_STATES[STATE_ORDER[i]];
+    const b = HELIX_STATES[STATE_ORDER[i + 1]];
+    const k = smoothstep(clamp01((y - stops[i]) / Math.max(1, stops[i + 1] - stops[i])));
+    for (const key of STATE_KEYS) state[key] = a[key] + (b[key] - a[key]) * k;
+    return i + k; // fractional state index, for the axis drift
+  }
+
+  /* ---- the pluck: the cursor catches the strand and lets it go ---- */
+  let slot = 0;
+  if (canPluck) {
+    let lastAt = 0;
+    let lastY = null;
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        const dy = lastY === null ? 0 : e.clientY - lastY;
+        lastY = e.clientY;
+        const now = performance.now();
+        if (now - lastAt < 110) return;
+        // world Y under the cursor (screen Y runs down, world Y runs up)
+        const wy = -(e.clientY / window.innerHeight - 0.5) * 2 * halfH;
+        // only while the pointer is over the band the molecule occupies
+        if (Math.abs(wy - group.position.y) > baseRadius * 1.4 + shared.uSep.value) return;
+        const speed = Math.min(1, Math.abs(dy) / 34);
+        if (speed < 0.12) return;
+        lastAt = now;
+        const p = pluckSlots[slot];
+        slot = (slot + 1) % pluckSlots.length;
+        // material coordinate of the strand under the cursor
+        p.x = (e.clientX / window.innerWidth - 0.5) * 2 * halfW + shared.uTravel.value;
+        p.y = 0; // age, seconds
+        p.z = -Math.sign(dy) * (0.45 + speed) * baseRadius * 0.4; // the strand follows the hand
+        p.w = 1;
+      },
+      { passive: true }
+    );
+  }
+
+  /* ---- per-frame state application ---- */
+  let spin = 0;
+  let travel = 0;
+  let axisY = 0;
   let tiltX = 0;
   let tiltY = 0;
-  const MAX_TILT = (preset.tiltDeg * Math.PI) / 180;
+  let smoothLum = 0;
 
-  /* mobile FPS guard (showpiece): if sustained frames run slow, tear the
-     scene down and let the SVG fallback take over with a slow CSS sway */
-  const guard = preset.fpsGuard && isMobile && !reduced ? { frames: 0, slow: 0, done: false } : null;
-  let lastFrameT = 0;
+  function applyState(y, time) {
+    const idx = sampleState(y);
+    shared.uPitch.value = basePitch * state.pitch;
+    shared.uRadius.value = baseRadius * state.amp;
+    shared.uSep.value = baseRadius * state.sep;
+    shared.uDetach.value = state.detach;
+    shared.uIgnite.value = state.ignite;
+    rungMat.uniforms.uAlpha.value = 0.44 * state.rung;
+    smoothLum = reduced ? state.lum : lerp(smoothLum, state.lum, 0.08);
+    shared.uLum.value = smoothLum;
 
-  const proxV = new THREE.Vector3();
+    // the whole molecule slides along its own axis as the page moves
+    travel = y * 0.55 + time * 4.0;
+    shared.uTravel.value = travel;
+    // the replication front runs the axis, reigniting bases in sequence
+    const L = shared.uLength.value;
+    shared.uFront.value = travel + ((time * 42) % (L * 1.6)) - L * 0.3;
+    // never pinned: the axis drifts gently as the story advances
+    axisY = reduced ? 0 : lerp(axisY, Math.sin(idx * 0.9) * halfH * 0.09, 0.05);
+    group.position.y = axisY;
+  }
+
+  /* ---- text-legibility rects: only the blocks actually on screen ---- */
+  const TEXT_SEL = 'h1,h2,h3,h4,p,li,blockquote,dd,dt,figcaption,label,summary';
+  const blocks = new Map(); // section element → cached text descendants
+  const onScreen = new Set();
+  let rectObserver = null;
+
+  const initRects = () => {
+    const sections = document.querySelectorAll('main > section, main > div > section, footer');
+    if (!sections.length) return;
+    rectObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target);
+      },
+      { rootMargin: '10% 0px' }
+    );
+    sections.forEach((s) => {
+      blocks.set(s, [...s.querySelectorAll(TEXT_SEL)]);
+      rectObserver.observe(s);
+    });
+  };
+  initRects();
+
+  /* Group the on-screen text into columns: a block joins a group when it
+     shares most of its width with it and sits close below. A whole-section
+     bounding box would blanket the viewport and put the molecule out entirely;
+     this keeps the dimming to the copy itself, so the helix visibly ducks
+     behind a paragraph and stays bright in the margins around it. */
+  const GAP = 60; // px of vertical slack that still counts as one column
+  const groups = [];
+
+  const updateRects = () => {
+    const vh = window.innerHeight;
+    groups.length = 0;
+    for (const sec of onScreen) {
+      for (const el of blocks.get(sec) || []) {
+        const r = el.getBoundingClientRect();
+        if (r.width < 8 || r.height < 6 || r.bottom < 0 || r.top > vh) continue;
+        let merged = false;
+        for (const g of groups) {
+          const overlap = Math.min(g[2], r.right) - Math.max(g[0], r.left);
+          if (overlap < 0.45 * Math.min(g[2] - g[0], r.width)) continue;
+          if (r.top > g[3] + GAP || r.bottom < g[1] - GAP) continue;
+          g[0] = Math.min(g[0], r.left);
+          g[1] = Math.min(g[1], r.top);
+          g[2] = Math.max(g[2], r.right);
+          g[3] = Math.max(g[3], r.bottom);
+          merged = true;
+          break;
+        }
+        if (!merged && groups.length < rects.length) groups.push([r.left, r.top, r.right, r.bottom]);
+      }
+    }
+    for (let i = 0; i < rects.length; i++) {
+      const g = groups[i];
+      if (g) rects[i].set(g[0], g[1], g[2], g[3]);
+      else rects[i].set(-9999, -9999, -9999, -9999);
+    }
+  };
+
+  /* ---- the loop ---- */
+  const scrollY = () => (sharedLenis ? sharedLenis.scroll : window.scrollY);
+  let last = 0;
+  let frames = 0;
 
   function tick(t) {
     const time = t * 0.001;
 
-    if (guard && !guard.done && lastFrameT) {
-      guard.frames++;
-      if (t - lastFrameT > 33) guard.slow++;
-      if (guard.frames >= 90) {
-        guard.done = true;
-        if (guard.slow / guard.frames > 0.5) {
-          host.classList.remove('three-active');
-          host.querySelector('.three-fallback')?.classList.add('svg-sway');
-          disposeRecord(rec);
-          return;
-        }
-      }
+    if (reduced) {
+      // one composed frame in the dormant state — no rotation, no story
+      shared.uSpin.value = 0.55;
+      applyState(0, 0);
+      updateRects();
+      return;
     }
-    lastFrameT = t;
 
-    /* one revolution every ~24s, +30% max with scroll velocity, plus any
-       drag spin with decaying momentum */
-    const speed = ((Math.PI * 2) / 24) * (1 + 0.3 * Math.min(1, scrollBoost));
-    if (Math.abs(spinVel) > 0.0004) {
-      spinOffset += spinVel * 16;
-      spinVel *= 0.95;
+    const dt = last ? Math.min(0.05, (t - last) * 0.001) : 0.016;
+    last = t;
+
+    applyState(scrollY(), time);
+
+    spin += dt * 0.28 * state.spin;
+    shared.uSpin.value = spin;
+
+    // age the live plucks; a spent slot zeroes out and drops from the sum
+    for (const p of pluckSlots) {
+      if (p.w === 0) continue;
+      p.y += dt;
+      if (p.y > 3.2) p.set(0, 0, 0, 0);
     }
-    group.rotation.y = time * speed + spinOffset;
 
-    /* cursor tilt (weighted lerp) or gentle touch-device sway */
-    if (interactive) {
-      tiltX = lerp(tiltX, cursor.y * 2 * MAX_TILT, 0.05);
-      tiltY = lerp(tiltY, cursor.x * 2 * MAX_TILT, 0.05);
-    } else {
-      tiltX = Math.sin(time * 0.22) * MAX_TILT * 0.45;
-      tiltY = Math.cos(time * 0.17) * MAX_TILT * 0.45;
+    // heavily damped parallax tilt
+    if (finePointer && !isMobile) {
+      tiltX = lerp(tiltX, cursor.y * 0.09, 0.03);
+      tiltY = lerp(tiltY, cursor.x * 0.03, 0.03);
+      group.rotation.x = tiltX;
+      group.rotation.y = tiltY;
     }
-    group.rotation.x = tiltX;
-    group.rotation.z = 0.08 + tiltY * 0.5;
 
-    group.updateMatrixWorld();
-
-    /* scan sweep — bottom to top, looping; opacity gently pulses */
-    scanY = reduced ? 0 : ((time * 1.15) % SCAN_SPAN) - SCAN_SPAN / 2;
-    scanRing.position.y = scanY;
-    scanEcho.position.y = scanY - 0.5;
-    ringMat.opacity = ringBaseOpacity * (0.7 + 0.3 * Math.sin(time * 2.6));
-
-    /* per-node brightness: idle breathing (±10%, phase travelling up the
-       strand) × cursor-proximity glow (O(n) projected-distance check) */
-    for (const s of [A, B]) {
-      const col = s.geo.getAttribute('color');
-      for (let i = 0; i < nodeCount; i++) {
-        let target = 0;
-        if (useProximity && localCursor.active) {
-          proxV.set(s.pos[i * 3], s.pos[i * 3 + 1], s.pos[i * 3 + 2]);
-          proxV.applyMatrix4(group.matrixWorld).project(rec.camera);
-          const dx = proxV.x - localCursor.x;
-          const dy = proxV.y - localCursor.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          target = Math.max(0, 1 - d / 0.32);
-        }
-        /* eased glow value — liquid, never snappy */
-        s.glow[i] = lerp(s.glow[i], target, 0.1);
-
-        const pulse = 1 + 0.1 * Math.sin(time * 1.4 + (i / nodeCount) * Math.PI * 4);
-        const wave = useDrag ? 1 + 0.12 * Math.sin(time * 0.9 - (i / nodeCount) * Math.PI * 2) : 1;
-        const dyScan = s.pos[i * 3 + 1] - scanY;
-        const scanBoost = Math.exp(-dyScan * dyScan * 2.4);
-        const b = pulse * wave * (1 + 0.32 * s.glow[i] + 0.5 * scanBoost);
-        col.array[i * 3] = s.base[i * 3] * b;
-        col.array[i * 3 + 1] = s.base[i * 3 + 1] * b;
-        col.array[i * 3 + 2] = s.base[i * 3 + 2] * b;
-      }
-      col.needsUpdate = true;
-    }
+    if ((frames++ & 3) === 0) updateRects();
   }
+
+  /* Everything the loop reads now exists. Measure, then place the molecule
+     before anything is painted — otherwise the first frame would show the
+     uniforms' construction-time defaults rather than this viewport's helix. */
+  syncSize();
+  applyState(scrollY(), 0);
+  updateRects();
+  window.addEventListener('pagehide', () => rectObserver?.disconnect());
 }
 
-/* ------------------------------------------------------------------
+/* ==================================================================
    Stem-cell particle field
-   ------------------------------------------------------------------ */
+   ================================================================== */
 
 function mountCells(host) {
   const COUNT = isMobile ? 80 : parseInt(host.dataset.count || '200', 10);
@@ -691,307 +1103,20 @@ function mountCells(host) {
   }
 }
 
-/* ------------------------------------------------------------------
-   Hero helix — a DNA double helix rendered as a precision technical
-   instrument, not an atmosphere. Crisp 1px hairline strands + base-pair
-   rungs + sharp node dots, depth read purely by opacity, mostly empty
-   black around one composed object in the negative space between the
-   headline and the portrait.
-
-   Deliberately a DIFFERENT treatment from the glowing 3D DnaHelix in the
-   science section — this is instrument-grade wireframe. The cursor is a
-   transcription read-head that locally unwinds the strands (never a burst).
-   Palette: bright champagne gold + pale platinum on obsidian. No new tokens.
-   ------------------------------------------------------------------ */
-
-const HX_VERT = /* glsl */ `
-  uniform float uReadY;
-  uniform float uSep;
-  varying float vDepth;
-  varying float vBand;
-  void main() {
-    vec3 tp = position;
-    float band = exp(-pow((position.y - uReadY) * 0.8, 2.0));
-    float rl = length(position.xz);
-    if (rl > 0.0001) tp.xz += (position.xz / rl) * band * uSep;  // strands unwind at the read-head
-    vBand = band;
-    vec4 mv = modelViewMatrix * vec4(tp, 1.0);
-    vDepth = -mv.z;
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-
-const HX_LINE_FRAG = /* glsl */ `
-  uniform vec3 uColor;
-  uniform float uAlpha;
-  uniform float uNear;
-  uniform float uFar;
-  varying float vDepth;
-  varying float vBand;
-  void main() {
-    float f = smoothstep(uFar, uNear, vDepth);       // near = bright, far = dim
-    float a = uAlpha * mix(0.3, 1.0, f);
-    a *= 1.0 + vBand * 0.6;                            // brighten inside the read-head band
-    gl_FragColor = vec4(uColor, a);
-  }
-`;
-
-const HX_NODE_VERT = /* glsl */ `
-  uniform float uReadY;
-  uniform float uSep;
-  uniform float uDpr;
-  uniform float uSize;
-  varying float vDepth;
-  varying float vBand;
-  void main() {
-    vec3 tp = position;
-    float band = exp(-pow((position.y - uReadY) * 0.8, 2.0));
-    float rl = length(position.xz);
-    if (rl > 0.0001) tp.xz += (position.xz / rl) * band * uSep;
-    vBand = band;
-    vec4 mv = modelViewMatrix * vec4(tp, 1.0);
-    vDepth = -mv.z;
-    gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * uDpr * (1.0 + vBand * 0.9);
-  }
-`;
-
-const HX_NODE_FRAG = /* glsl */ `
-  uniform vec3 uColor;
-  uniform float uNear;
-  uniform float uFar;
-  varying float vDepth;
-  varying float vBand;
-  void main() {
-    vec2 c = gl_PointCoord - 0.5;
-    float d = length(c);
-    float aa = fwidth(d);
-    float m = 1.0 - smoothstep(0.5 - aa, 0.5, d);      // crisp disc, anti-aliased
-    if (m <= 0.0) discard;
-    float f = smoothstep(uFar, uNear, vDepth);
-    float a = m * mix(0.4, 1.0, f) * (0.7 + vBand * 0.7);
-    gl_FragColor = vec4(uColor, a);
-  }
-`;
-
-function cssColorHex(name, fallback) {
-  const raw = (getComputedStyle(document.documentElement).getPropertyValue(name) || '').trim() || fallback;
-  return new THREE.Color(raw);
-}
-
-function mountTissue(host) {
-  const SEG = isMobile ? 360 : 560;
-  const TURNS = 5;
-  const H = 16.0;
-  const R = 1.3;
-  const CAM_Z = 9.0;
-
-  const GOLDL = cssColorHex('--color-goldlight', '#e3c992'); // bright champagne — primary strand
-  const CREAM = cssColorHex('--color-cream', '#f4f1ec'); // platinum — rungs / nodes
-
-  /* strand hairline curve (SEG+1 points) */
-  const strandGeo = (phase) => {
-    const pos = new Float32Array((SEG + 1) * 3);
-    for (let i = 0; i <= SEG; i++) {
-      const t = i / SEG;
-      const a = t * Math.PI * 2 * TURNS + phase;
-      pos[i * 3] = Math.cos(a) * R;
-      pos[i * 3 + 1] = (t - 0.5) * H;
-      pos[i * 3 + 2] = Math.sin(a) * R;
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    return g;
-  };
-
-  /* base-pair rungs at regular intervals + node dots at each terminal */
-  const rungStep = Math.max(4, Math.round(SEG / (TURNS * 11)));
-  const rn = Math.floor(SEG / rungStep) + 1;
-  const rpos = new Float32Array(rn * 2 * 3);
-  const npos = new Float32Array(rn * 2 * 3);
-  let ri = 0;
-  for (let r = 0; r <= SEG; r += rungStep) {
-    const t = r / SEG;
-    const a = t * Math.PI * 2 * TURNS;
-    const y = (t - 0.5) * H;
-    const ax = Math.cos(a) * R, az = Math.sin(a) * R;
-    const bx = Math.cos(a + Math.PI) * R, bz = Math.sin(a + Math.PI) * R;
-    rpos.set([ax, y, az, bx, y, bz], ri * 6);
-    npos.set([ax, y, az, bx, y, bz], ri * 6);
-    ri++;
-  }
-  const rungGeo = new THREE.BufferGeometry();
-  rungGeo.setAttribute('position', new THREE.BufferAttribute(rpos.subarray(0, ri * 6), 3));
-  const nodeGeo = new THREE.BufferGeometry();
-  nodeGeo.setAttribute('position', new THREE.BufferAttribute(npos.subarray(0, ri * 6), 3));
-
-  const NEAR = CAM_Z - R - 0.7;
-  const FAR = CAM_Z + R + 0.7;
-  const dynMats = [];
-
-  const lineMat = (color, alpha) => {
-    const m = new THREE.ShaderMaterial({
-      vertexShader: HX_VERT,
-      fragmentShader: HX_LINE_FRAG,
-      uniforms: {
-        uReadY: { value: 0 },
-        uSep: { value: 0 },
-        uColor: { value: color },
-        uAlpha: { value: alpha },
-        uNear: { value: NEAR },
-        uFar: { value: FAR },
-      },
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthTest: false,
-      depthWrite: false,
-    });
-    dynMats.push(m);
-    return m;
-  };
-
-  const nodeMat = new THREE.ShaderMaterial({
-    vertexShader: HX_NODE_VERT,
-    fragmentShader: HX_NODE_FRAG,
-    uniforms: {
-      uReadY: { value: 0 },
-      uSep: { value: 0 },
-      uDpr: { value: 1 },
-      uSize: { value: 2.4 },
-      uColor: { value: CREAM },
-      uNear: { value: NEAR },
-      uFar: { value: FAR },
-    },
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthTest: false,
-    depthWrite: false,
-  });
-  dynMats.push(nodeMat);
-
-  const group = new THREE.Group();
-  group.add(new THREE.Line(strandGeo(0), lineMat(GOLDL, 1.0)));          // primary strand
-  group.add(new THREE.Line(strandGeo(Math.PI), lineMat(GOLDL, 0.5)));   // secondary strand @50%
-  group.add(new THREE.LineSegments(rungGeo, lineMat(CREAM, 0.32)));      // pale rungs
-  group.add(new THREE.Points(nodeGeo, nodeMat));                        // sharp node dots
-  group.position.x = 1.7; // sit in the gap between headline and portrait
-
-  const hero = host.closest('section') || host.parentElement || host;
-  const readhead = host.closest('[data-tissue]')?.querySelector('[data-readhead]');
-
-  /* transcription read-head — follows the cursor, heavily damped, over the
-     helix band only. Desktop fine-pointer only. */
-  let active = 0;
-  let readYTarget = 0;
-  let readClientTop = 0;
-  if (finePointer && !isMobile && !reduced) {
-    const visHalf = Math.tan((42 * Math.PI) / 180 / 2) * CAM_Z;
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        const r = host.getBoundingClientRect();
-        if (!r.width || !r.height) return;
-        const nx = (e.clientX - r.left) / r.width;
-        const ny = 1 - (e.clientY - r.top) / r.height;
-        active = nx > 0.46 && nx < 0.84 && ny > -0.1 && ny < 1.1 ? 1 : 0;
-        readYTarget = camY + (ny - 0.5) * 2 * visHalf;
-        readClientTop = e.clientY - r.top;
-      },
-      { passive: true }
-    );
-  }
-
-  const boot = { v: 0 };
-  if (!reduced) {
-    host.closest('[data-tissue]')?.classList.add('tissue-booting');
-    gsap.to(boot, { v: 1, duration: 1.4, ease: 'power2.out' });
-  }
-
-  const rec = createScene(host, tick);
-  rec.camera.position.set(0, 0, CAM_Z);
-  rec.scene.add(group);
-
-  const syncSize = () => {
-    if (rec.disposed) return;
-    rec.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
-    rec.renderer.setSize(host.clientWidth || 1, host.clientHeight || 1);
-    nodeMat.uniforms.uDpr.value = rec.renderer.getPixelRatio();
-    if (reduced) rec.renderer.render(rec.scene, rec.camera);
-  };
-  window.addEventListener('resize', syncSize, { passive: true });
-  syncSize();
-
-  let sep = 0;
-  let readY = 0;
-  let camY = 0;
-  let tiltX = 0;
-  let tiltZ = 0;
-  const baseSpeed = (Math.PI * 2) / (isMobile ? 60 : 48); // one revolution ~48–60s
-
-  function tick(t) {
-    const time = t * 0.001;
-
-    /* slow weighted rotation, gently accelerated by scroll velocity */
-    const spin = baseSpeed * (1 + 0.6 * Math.min(1, scrollBoost));
-    group.rotation.y = reduced ? 0.6 : time * spin;
-
-    /* pointer parallax — a few degrees, heavily damped */
-    if (!reduced && finePointer && !isMobile) {
-      tiltX = lerp(tiltX, cursor.y * 0.12, 0.04);
-      tiltZ = lerp(tiltZ, cursor.x * 0.06, 0.04);
-    }
-    group.rotation.x = tiltX;
-    group.rotation.z = tiltZ;
-
-    /* scroll travels the camera down the molecule */
-    if (!reduced) {
-      const prog = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, host.clientHeight || 1)));
-      camY = lerp(camY, (0.5 - prog) * 5.0, 0.08);
-    }
-    rec.camera.position.y = camY;
-
-    /* read-head separation — damped in and out */
-    sep = lerp(sep, active ? 0.62 : 0, active ? 0.12 : 0.08);
-    readY = lerp(readY, readYTarget, 0.12);
-    const bootSep = (1 - Math.abs(boot.v * 2 - 1)) * 0.0; // (boot handled by opacity, keep sep from cursor only)
-    for (const m of dynMats) {
-      m.uniforms.uReadY.value = readY;
-      m.uniforms.uSep.value = sep + bootSep;
-    }
-
-    /* boot: strands fade/ignite in */
-    const bootA = reduced ? 1 : boot.v;
-    group.children[0].material.uniforms.uAlpha.value = 1.0 * bootA;
-    group.children[1].material.uniforms.uAlpha.value = 0.62 * bootA;
-    group.children[2].material.uniforms.uAlpha.value = 0.55 * bootA; // rungs — the ladder that reads as DNA
-
-    /* DOM read-head bracket follows the cursor while over the helix */
-    if (readhead && !reduced) {
-      if (sep > 0.02) {
-        readhead.style.opacity = String(Math.min(1, sep / 0.5));
-        readhead.style.transform = `translateY(${readClientTop}px)`;
-      } else {
-        readhead.style.opacity = '0';
-      }
-    }
-  }
-}
-
 /* ------------------------------------------------------------------ */
 
-export function initThree() {
+export function initThree(opts = {}) {
+  sharedLenis = opts.lenis || null;
   document.querySelectorAll('[data-three]').forEach((host) => {
     if (host.dataset.threeMounted) return;
-    /* hero-style hosts keep their static SVG on mobile */
-    if (isMobile && host.dataset.mobile === 'svg') return;
     try {
-      if (host.dataset.three === 'helix') mountHelix(host);
+      if (host.dataset.three === 'helix-bg') mountHelixBackdrop(host);
       else if (host.dataset.three === 'cells') mountCells(host);
-      else if (host.dataset.three === 'tissue') mountTissue(host);
+      else return;
       host.dataset.threeMounted = '1';
       host.classList.add('three-active');
     } catch {
-      /* WebGL unavailable — the SVG fallback stays visible */
+      /* WebGL unavailable — the static fallback stays visible */
     }
   });
 }

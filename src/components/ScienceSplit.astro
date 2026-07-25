@@ -1,5 +1,4 @@
 ---
-import DnaHelix from './DnaHelix.astro';
 /**
  * "The Science of The O Concept™" — split-scroll pinned section.
  *
@@ -40,7 +39,7 @@ const panels = [
 ];
 ---
 
-<section id="science" class="hairline-teal-t relative bg-ink" aria-labelledby="science-heading">
+<section id="science" class="hairline-teal-t relative bg-ink" data-helix-state="separation" aria-labelledby="science-heading">
   <div class="pointer-events-none absolute inset-x-0 top-0 h-[60vh] glow-teal" aria-hidden="true"></div>
 
   <div class="wrap relative pt-24 md:pt-32">
@@ -72,12 +71,6 @@ const panels = [
             loading="lazy"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
-          <!-- dark panel gradient so the helix reads clearly without fighting the photo -->
-          <div class="absolute inset-y-0 right-0 w-[55%] bg-gradient-to-l from-ink/90 via-ink/45 to-transparent" aria-hidden="true"></div>
-          <!-- interactive DNA helix — persistent in the pinned column while panels scroll -->
-          <div class="absolute inset-y-0 right-0 w-[52%]" aria-hidden="true">
-            <DnaHelix nodeCount={82} opacity={1} interactive mobile="reduced" mobileNodes={40} />
-          </div>
           <div class="absolute bottom-5 left-6 right-6">
             <p class="text-[9px] font-semibold tracking-[0.3em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
           </div>
