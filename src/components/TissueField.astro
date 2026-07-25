@@ -1,21 +1,21 @@
 ---
 /**
- * "Living tissue under a diagnostic instrument" — the hero background.
+ * "Perfused living microvasculature" — the hero background.
  *
- * TWO layers, hard-separated by the governing rule (biology = teal,
- * instrument = gold):
+ * TWO layers, hard-separated by the colour rule (biology = warm gold PRP,
+ * instrument = restrained champagne):
  *   1. A WebGL shader plane (data-three="tissue", mounted by three-fx.js)
- *      that owns all TEAL biology — Voronoi tissue over depth planes with
- *      focus-racking, an acquisition sweep, mitosis blooms, and a cursor
- *      probe lens that magnifies and reveals sub-cellular detail.
- *   2. A crisp, screen-space GOLD instrument overlay (this file) — graticule,
- *      reticle corners, calibration scale, readout. Never domain-warped,
- *      pixel-sharp; that sharp gold-against-soft-teal contrast is the whole
- *      clinical read. It powers on during the boot sequence.
+ *      that owns the GOLD biology — a branching capillary tree perfused
+ *      with platelet-rich plasma, pulsing at a resting heart rate, growing
+ *      new vessels toward the cursor (the injection site) and regenerating
+ *      as you scroll. It is literally The O Concept's mechanism of action.
+ *   2. A crisp, screen-space CHAMPAGNE instrument overlay (this file) —
+ *      graticule, reticle corners, calibration scale, readout. Pale and
+ *      low-opacity so it frames the gold biology without competing.
  *
  * Distinct from DnaHelix and CellField. Reduced-motion: the shader freezes
  * to a still frame and the instrument shows statically (no boot animation).
- * No-WebGL: the CSS-gradient fallback below stands in.
+ * No-WebGL: the warm CSS-gradient fallback below stands in.
  */
 interface Props {
   class?: string;
@@ -30,21 +30,21 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
 ---
 
 <div class:list={['tissue-stage absolute inset-0', className]} data-tissue aria-hidden="true">
-  <!-- teal biology — WebGL shader plane -->
+  <!-- gold biology — WebGL shader plane -->
   <div class="three-host pointer-events-none h-full w-full" data-three="tissue">
-    <!-- no-WebGL / pre-mount fallback -->
+    <!-- no-WebGL / pre-mount fallback — warm perfused tissue -->
     <div
       class="three-fallback absolute inset-0"
       style="background:
-        radial-gradient(ellipse 55% 50% at 74% 40%, rgba(45,212,191,0.16), transparent 60%),
-        radial-gradient(ellipse 50% 45% at 24% 74%, rgba(14,165,233,0.10), transparent 64%),
+        radial-gradient(ellipse 55% 50% at 60% 42%, rgba(201,169,110,0.20), transparent 60%),
+        radial-gradient(ellipse 48% 44% at 30% 74%, rgba(110,30,43,0.18), transparent 64%),
         radial-gradient(ellipse 90% 80% at 50% 50%, transparent 38%, #0a0a0b 96%),
         #0a0a0b;"
     >
     </div>
   </div>
 
-  <!-- gold instrument furniture — crisp, screen-space, never warped -->
+  <!-- champagne instrument furniture — crisp, screen-space, restrained -->
   <div class="tissue-instrument">
     <div class="ti-graticule"></div>
     <span class="ti-corner ti-tl"></span>
@@ -53,7 +53,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     <span class="ti-corner ti-br"></span>
 
     <div class="ti-readout">
-      <span class="ti-dot"></span>OCT&nbsp;·&nbsp;LIVE&nbsp;&nbsp;|&nbsp;&nbsp;TISSUE VIABILITY 98.7%
+      <span class="ti-dot"></span>PRP&nbsp;·&nbsp;PERFUSION&nbsp;&nbsp;|&nbsp;&nbsp;MICROVASCULAR DENSITY 98.7%
     </div>
 
     <div class="ti-scale">
@@ -78,14 +78,14 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     z-index: 1;
   }
 
-  /* ultra-fine measurement graticule — gold, very low opacity, edge-faded */
+  /* ultra-fine measurement graticule — pale champagne, very low opacity */
   .ti-graticule {
     position: absolute;
     inset: 0;
-    opacity: 0.055;
+    opacity: 0.05;
     background-image:
-      repeating-linear-gradient(0deg, var(--color-gold) 0 1px, transparent 1px 46px),
-      repeating-linear-gradient(90deg, var(--color-gold) 0 1px, transparent 1px 46px);
+      repeating-linear-gradient(0deg, rgba(244, 241, 236, 0.9) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(244, 241, 236, 0.9) 0 1px, transparent 1px 46px);
     -webkit-mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
     mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
   }
@@ -95,7 +95,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     position: absolute;
     width: 26px;
     height: 26px;
-    border: 1px solid rgba(201, 169, 110, 0.5);
+    border: 1px solid rgba(244, 241, 236, 0.42);
   }
   .ti-tl { top: 20px; left: 20px; border-right: 0; border-bottom: 0; }
   .ti-tr { top: 20px; right: 20px; border-left: 0; border-bottom: 0; }
@@ -115,7 +115,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     font-weight: 600;
     letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: rgba(201, 169, 110, 0.6);
+    color: rgba(244, 241, 236, 0.5);
     white-space: nowrap;
   }
   .ti-dot {
@@ -123,8 +123,8 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     height: 5px;
     border-radius: 9999px;
     background: var(--color-gold);
-    box-shadow: 0 0 8px rgba(201, 169, 110, 0.7);
-    animation: tiPulse 2.4s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(201, 169, 110, 0.8);
+    animation: tiPulse 1s ease-in-out infinite;
   }
 
   /* calibration scale down the right edge */
@@ -137,7 +137,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
-    opacity: 0.55;
+    opacity: 0.5;
   }
   .ti-tick-row {
     display: flex;
@@ -149,13 +149,13 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     font-size: 7.5px;
     font-style: normal;
     letter-spacing: 0.1em;
-    color: rgba(201, 169, 110, 0.75);
+    color: rgba(244, 241, 236, 0.7);
   }
   .ti-tick {
     display: block;
     width: 7px;
     height: 1px;
-    background: rgba(201, 169, 110, 0.7);
+    background: rgba(244, 241, 236, 0.65);
   }
   .ti-tick-major {
     width: 13px;
@@ -165,12 +165,14 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
     font-family: var(--font-sans);
     font-size: 7px;
     letter-spacing: 0.14em;
-    color: rgba(201, 169, 110, 0.6);
+    color: rgba(244, 241, 236, 0.55);
   }
 
+  /* the readout dot pulses at the resting heart rate (~60bpm) */
   @keyframes tiPulse {
-    0%, 100% { opacity: 0.45; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    12% { opacity: 1; transform: scale(1.35); }
+    40% { opacity: 0.4; transform: scale(1); }
   }
 
   /* boot: the instrument powers on — graticule draws in first, then the
@@ -185,7 +187,7 @@ const ticks = Array.from({ length: 21 }, (_, i) => ({
   }
   @keyframes tiGrid {
     from { opacity: 0; transform: scale(1.05); }
-    to { opacity: 0.055; transform: none; }
+    to { opacity: 0.05; transform: none; }
   }
   @keyframes tiFurniture {
     from { opacity: 0; }
