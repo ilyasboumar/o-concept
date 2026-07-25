@@ -692,12 +692,19 @@ function mountCells(host) {
 }
 
 /* ------------------------------------------------------------------
-   Bioluminescent "living tissue" field — a distinct full-viewport
-   fragment-shader plane behind the hero. Not the helix, not the
-   THREE.Points cell field: one fullscreen quad, the whole look lives
-   in GLSL. Domain-warped fbm plasma, glinting nuclei, a diagnostic
-   scan bar (boot-up sweep on load, then scroll-driven), pointer
-   ripples, vignette + grain. Palette is read from the site's CSS vars.
+   "Living tissue under a diagnostic instrument" — a distinct
+   full-viewport fragment-shader plane behind the hero. Not the helix,
+   not the THREE.Points cell field.
+
+   Biology is TEAL, the instrument is GOLD, the void is obsidian — a
+   hard separation. The shader owns the teal biology (Voronoi tissue
+   substrate over depth planes with focus-racking, an acquisition
+   sweep that resolves tissue, occasional mitosis blooms, a cursor
+   "probe lens" that magnifies and reveals sub-cellular detail) and
+   the single gold element that must track the moving probe (its lens
+   rim). The crisp gold instrument furniture (graticule, reticle,
+   calibration scale, readout) is a separate DOM overlay in
+   TissueField.astro. Palette comes from the site's CSS vars.
    ------------------------------------------------------------------ */
 
 const TISSUE_VERT = /* glsl */ `
@@ -713,104 +720,212 @@ const TISSUE_FRAG = /* glsl */ `
   uniform float uTime;
   uniform vec2  uResolution;
   uniform float uDpr;
-  uniform vec2  uMouse;
-  uniform float uRipple;
-  uniform float uScanY;
-  uniform float uScanBoost;
-  uniform vec3  uColorBase;
-  uniform vec3  uColorTeal;
-  uniform vec3  uColorGold;
   uniform float uReducedMotion;
   uniform float uIntensity;
 
-  float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
+  uniform vec2  uLensPos;      // uv, lerped — trails the cursor
+  uniform float uLensActive;
+  uniform float uLensR;        // lens radius (aspect-corrected units)
+  uniform float uLensVel;      // pointer speed → fluid wake
+
+  uniform float uScrollProg;   // 0..1 through the hero — parallax
+  uniform float uFocusDepth;   // 0..1 — which depth plane is sharp
+  uniform float uSweepY;       // acquisition sweep position
+  uniform float uSweepBoost;   // sweep strength (boot vs scroll)
+  uniform float uScrollBoost;  // scroll velocity → mitosis cascades
+  uniform float uBoot;         // 0..1 boot ignition front
+
+  uniform vec2  uHeadCenter;   // headline quieting mask
+  uniform vec2  uHeadRadius;
+  uniform vec2  uPortCenter;   // portrait exclusion + rim glow
+  uniform vec2  uPortHalf;
+  uniform vec2  uCtaCenter;    // CTA regeneration ripple
+  uniform float uCtaPulse;
+
+  uniform vec3  uColorBase;
+  uniform vec3  uColorTeal;
+  uniform vec3  uColorCyan;
+  uniform vec3  uColorGold;
+
+  float hash1(vec2 p) { return fract(sin(dot(p, vec2(41.3, 289.1))) * 43758.5453); }
+  vec2 hash2(vec2 p) {
+    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+    return fract(sin(p) * 43758.5453);
   }
-  float noise(vec2 p) {
+  float vnoise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    float a = hash(i);
-    float b = hash(i + vec2(1.0, 0.0));
-    float c = hash(i + vec2(0.0, 1.0));
-    float d = hash(i + vec2(1.0, 1.0));
-    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+    f = f * f * (3.0 - 2.0 * f);
+    float a = hash1(i);
+    float b = hash1(i + vec2(1.0, 0.0));
+    float c = hash1(i + vec2(0.0, 1.0));
+    float d = hash1(i + vec2(1.0, 1.0));
+    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
-  float fbm(vec2 p) {
-    float v = 0.0;
-    float a = 0.5;
-    for (int i = 0; i < FBM_OCTAVES; i++) {
-      v += a * noise(p);
-      p = p * 2.0 + 17.0;
-      a *= 0.5;
+  /* Voronoi → (F1, F2, cellRandom). Feature points drift on a slow
+     phase so the tissue flexes without dissolving. */
+  vec3 voronoi(vec2 x, float t) {
+    vec2 n = floor(x);
+    vec2 f = fract(x);
+    float f1 = 8.0, f2 = 8.0, cr = 0.0;
+    for (int j = -1; j <= 1; j++) {
+      for (int i = -1; i <= 1; i++) {
+        vec2 g = vec2(float(i), float(j));
+        vec2 h = hash2(n + g);
+        vec2 o = 0.5 + 0.35 * sin(t * 0.6 + 6.2831 * h);
+        vec2 r = g + o - f;
+        float d = dot(r, r);
+        if (d < f1) { f2 = f1; f1 = d; cr = hash1(n + g); }
+        else if (d < f2) { f2 = d; }
+      }
     }
-    return v;
+    return vec3(sqrt(f1), sqrt(f2), cr);
   }
 
   void main() {
     vec2 uv = vUv;
     float aspect = uResolution.x / max(1.0, uResolution.y);
-    vec2 p = vec2(uv.x * aspect, uv.y);
+    float T = uReducedMotion > 0.5 ? 4.0 : uTime;
+    float anim = 1.0 - uReducedMotion;
 
-    float t = uReducedMotion > 0.5 ? 8.0 : uTime;
+    /* gentle domain warp — keeps structure legible */
+    vec2 wp = vec2(uv.x * aspect, uv.y) * 2.0;
+    vec2 warp = (vec2(vnoise(wp + T * 0.05), vnoise(wp + 11.0 - T * 0.05)) - 0.5) * 0.22 * (0.55 + 0.45 * anim);
 
-    /* pointer ripple — expanding displacement in the flow */
-    vec2 m = vec2(uMouse.x * aspect, uMouse.y);
-    float md = distance(p, m);
-    float ripple = uRipple * exp(-md * 6.0) * sin(md * 22.0 - t * 3.0);
-    vec2 rip = ripple * 0.06 * normalize(p - m + 1e-4);
-
-    /* domain-warped fbm — the field flows like living fluid */
-    float tt = t * 0.04;
-    vec2 q = vec2(
-      fbm(p * 1.6 + vec2(0.0, tt)),
-      fbm(p * 1.6 + vec2(5.2, -tt))
-    );
-    vec2 r2 = vec2(
-      fbm(p * 1.6 + 3.0 * q + vec2(1.7, 9.2) + tt),
-      fbm(p * 1.6 + 3.0 * q + vec2(8.3, 2.8) - tt)
-    );
-    float f = fbm(p * 1.6 + 2.2 * r2 + rip);
-
-    /* cellular plasma + glinting nuclei at the peaks */
-    float field = smoothstep(0.35, 0.95, f);
-    float nuclei = pow(smoothstep(0.72, 1.0, f), 3.0);
-    float glint = uReducedMotion > 0.5 ? 1.0 : (0.6 + 0.4 * sin(t * 1.5 + f * 20.0));
-    nuclei *= glint;
-
-    /* diagnostic scan bar — thin gaussian band + chromatic leading edge */
-    float scan = 0.0;
-    float chroma = 0.0;
-    if (uScanY >= 0.0) {
-      float dsy = uv.y - (1.0 - uScanY);
-      scan = exp(-dsy * dsy * 900.0);
-      float lead = dsy + 0.012;
-      chroma = exp(-lead * lead * 2500.0);
+    /* probe lens — magnify by pulling sample coords toward the lens */
+    vec2 uvM = uv;
+    float lensMask = 0.0;
+    if (uLensActive > 0.5) {
+      vec2 tol = uv - uLensPos;
+      float ldc = length(tol * vec2(aspect, 1.0));
+      float m = 1.0 - smoothstep(uLensR * 0.55, uLensR, ldc);
+      uvM = uv - tol * m * 0.55;
+      lensMask = m;
+      warp += tol * uLensVel * 0.14 * m; // velocity wake
     }
 
+    /* CTA regeneration ripple folded into the flow */
+    {
+      vec2 tc = (uv - uCtaCenter) * vec2(aspect, 1.0);
+      float cd = length(tc);
+      float rip = uCtaPulse * exp(-cd * 3.5) * sin(cd * 26.0 - T * 6.0);
+      warp += normalize(tc + 1e-4) * rip * 0.03;
+    }
+
+    vec2 p = vec2(uvM.x * aspect, uvM.y);
+
+    /* Layer 1 + 2 — multi-scale Voronoi tissue across depth planes,
+       each racked in/out of focus by uFocusDepth */
+    float tissue = 0.0, nucleus = 0.0;
+    for (int k = 0; k < PLANES; k++) {
+      float fk = float(k);
+      float depth = float(PLANES) > 1.0 ? fk / float(PLANES - 1) : 0.0;
+      float scale = mix(3.5, 9.0, depth);
+      vec2 par = warp + vec2(T * 0.012 * (0.3 + 0.2 * fk) * anim, -uScrollProg * (0.15 + 0.28 * fk));
+      vec3 vor = voronoi(p * scale + par * scale, T * anim);
+      float f1 = vor.x, f2 = vor.y, cid = vor.z;
+      float focus = 1.0 - smoothstep(0.0, 0.55, abs(depth - uFocusDepth));
+      float memW = mix(0.16, 0.028, focus);
+      float mem = 1.0 - smoothstep(0.0, memW, f2 - f1);
+      float pulse = 0.55 + 0.45 * sin(T * 0.8 + cid * 18.8) * anim + 0.45 * (1.0 - anim);
+      float nuc = exp(-f1 * f1 * mix(26.0, 90.0, focus)) * pulse;
+      float planeAtt = mix(1.0, 0.4, depth);
+      float sharp = mix(0.45, 1.0, focus);
+      tissue += mem * planeAtt * sharp;
+      nucleus += nuc * planeAtt * sharp;
+    }
+    tissue *= 0.55;
+
+    /* lens reveals a finer octave that doesn't exist outside it */
+    if (uLensActive > 0.5 && lensMask > 0.001) {
+      vec3 fine = voronoi(p * 16.0 + warp * 3.0, T * anim);
+      float fmem = 1.0 - smoothstep(0.0, 0.045, fine.y - fine.x);
+      float fnuc = exp(-fine.x * fine.x * 110.0);
+      tissue += fmem * lensMask * 1.0;
+      nucleus += fnuc * lensMask * 2.0;
+      tissue *= 1.0 + lensMask * 0.6;  // membranes sharpen + brighten under the probe
+      nucleus *= 1.0 + lensMask * 1.0;
+    }
+
+    /* Layer 4 — acquisition sweep: resolves tissue under the bar and
+       leaves a fading "captured" trail behind it */
+    float barY = 1.0 - uSweepY;
+    float band = exp(-pow(uv.y - barY, 2.0) * 1100.0);
+    float trailD = uv.y - barY;
+    float trail = trailD > 0.0 ? exp(-trailD * 7.0) : 0.0;
+    float acq = (band + trail * 0.55) * uSweepBoost * anim;
+    tissue *= 1.0 + acq * 1.2;
+    nucleus *= 1.0 + acq * 2.4;
+
+    /* Layer 5 — mitosis: rare per-cell blooms, cascaded by scroll */
+    float mit = 0.0;
+    if (anim > 0.5) {
+      vec3 mc = voronoi(p * 5.0 + 13.0, T * 0.4);
+      float phase = fract(T * 0.11 + mc.z * 9.0);
+      float flash = exp(-phase * phase * 300.0);
+      float atCenter = exp(-mc.x * mc.x * 40.0);
+      mit = flash * atCenter * (0.6 + 1.2 * uScrollBoost);
+    }
+
+    /* ---- compose biology (teal only) ---- */
     vec3 col = uColorBase;
+    vec3 memCol = mix(uColorTeal, uColorCyan, 0.25);
+    col += memCol * tissue * uIntensity;
+    col += mix(uColorCyan, uColorTeal, 0.4) * nucleus * 0.95 * uIntensity;
+    col += uColorTeal * mit * 1.4;
+    col += uColorCyan * band * uSweepBoost * 0.5 * anim;
+    float lead = uv.y - (barY - 0.006);
+    float chroma = exp(-lead * lead * 3000.0) * uSweepBoost * anim;
+    col.r += chroma * 0.10;
+    col.b += chroma * 0.16;
 
-    /* teal-dominant tissue with gold veins from a slower noise */
-    float goldMix = smoothstep(0.55, 0.9, fbm(p * 0.9 - r2 - vec2(tt)));
-    vec3 tissue = mix(uColorTeal, uColorGold, goldMix * 0.5);
-    col += tissue * field * 0.5 * uIntensity;
-    col += uColorTeal * nuclei * 0.9 * uIntensity;
+    /* ---- anchoring to the layout ---- */
+    /* headline quieting mask — legibility as a designed feature */
+    vec2 hd = (uv - uHeadCenter) / max(uHeadRadius, vec2(0.001));
+    float quiet = 1.0 - smoothstep(0.75, 1.25, length(hd));
+    col = mix(col, uColorBase + (col - uColorBase) * 0.28, quiet);
 
-    /* scan reveal — intensify field + finer caustic detail in its wake */
-    float caustic = pow(fbm(p * 4.0 + r2 * 2.0 + vec2(t * 0.1)), 2.0);
-    col += uColorTeal * scan * uScanBoost * (0.35 + 0.8 * caustic) * uIntensity;
-    col += vec3(0.0, 0.15, 0.12) * scan * uScanBoost;
-    col.r += chroma * uScanBoost * 0.10;
-    col.b += chroma * uScanBoost * 0.14;
+    /* portrait exclusion + teal rim glow onto the edge */
+    {
+      vec2 d = abs(uv - uPortCenter) - uPortHalf;
+      float sd = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+      float excl = 1.0 - smoothstep(0.0, 0.05, sd);
+      col = mix(col, uColorBase, excl * 0.85);
+      float rim = exp(-abs(sd) * 55.0) * smoothstep(-0.008, 0.012, sd);
+      col += uColorTeal * rim * 0.7;
+    }
 
-    /* vignette */
-    float vig = smoothstep(1.15, 0.35, length((uv - 0.5) * vec2(aspect, 1.0) * 1.2));
-    col *= mix(0.55, 1.0, vig);
+    /* CTA ripple ring */
+    {
+      float cd = length((uv - uCtaCenter) * vec2(aspect, 1.0));
+      float ring = uCtaPulse * exp(-pow(cd - (1.0 - uCtaPulse) * 0.4, 2.0) * 70.0);
+      col += uColorCyan * ring * 0.6;
+    }
 
-    /* film grain — kills banding, reads cinematic */
-    float grain = (hash(uv * uResolution.xy * 0.5 + t) - 0.5) * 0.04;
+    /* boot ignition — spreads outward from beneath the headline */
+    float bd = length((uv - uHeadCenter) * vec2(aspect, 1.0));
+    float bootFront = uBoot * 1.9;
+    float bootMask = 1.0 - smoothstep(bootFront - 0.28, bootFront, bd);
+    col = mix(uColorBase, col, bootMask);
+
+    /* the one gold biology-side element: the probe's lens rim (it must
+       track the moving lens, so it lives here rather than in the DOM
+       instrument overlay) — thin ring + tick marks + rim chroma */
+    if (uLensActive > 0.5) {
+      float ld = length((uv - uLensPos) * vec2(aspect, 1.0));
+      float rimRing = exp(-pow(ld - uLensR, 2.0) * 1500.0);
+      float ang = atan(uv.y - uLensPos.y, (uv.x - uLensPos.x) * aspect);
+      float ticks = smoothstep(0.6, 1.0, abs(sin(ang * 36.0)));
+      col += uColorGold * rimRing * (0.7 + 0.5 * ticks);
+      float ca = exp(-pow(ld - uLensR * 0.96, 2.0) * 1200.0) * lensMask;
+      col.r += ca * 0.12;
+      col.b += ca * 0.10;
+    }
+
+    /* vignette + film grain */
+    float vig = smoothstep(1.25, 0.35, length((uv - 0.5) * vec2(aspect, 1.0) * 1.15));
+    col *= mix(0.5, 1.0, vig);
+    float grain = (hash1(uv * uResolution.xy * 0.5 + T) - 0.5) * 0.035;
     col += grain * (uReducedMotion > 0.5 ? 0.5 : 1.0);
 
     gl_FragColor = vec4(max(col, 0.0), 1.0);
@@ -832,22 +947,35 @@ function mountTissue(host) {
     uTime: { value: 0 },
     uResolution: { value: new THREE.Vector2(1, 1) },
     uDpr: { value: 1 },
-    uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-    uRipple: { value: 0 },
-    uScanY: { value: 0 },
-    uScanBoost: { value: 1 },
+    uReducedMotion: { value: reduced ? 1 : 0 },
+    uIntensity: { value: 1.15 },
+    uLensPos: { value: new THREE.Vector2(0.5, 0.5) },
+    uLensActive: { value: 0 },
+    uLensR: { value: 0.17 },
+    uLensVel: { value: 0 },
+    uScrollProg: { value: 0 },
+    uFocusDepth: { value: 0.2 },
+    uSweepY: { value: 0 },
+    uSweepBoost: { value: 1 },
+    uScrollBoost: { value: 0 },
+    uBoot: { value: reduced ? 1 : 0 },
+    uHeadCenter: { value: new THREE.Vector2(0.32, 0.6) },
+    uHeadRadius: { value: new THREE.Vector2(0.32, 0.24) },
+    uPortCenter: { value: new THREE.Vector2(0.82, 0.52) },
+    uPortHalf: { value: new THREE.Vector2(0.12, 0.24) },
+    uCtaCenter: { value: new THREE.Vector2(0.26, 0.2) },
+    uCtaPulse: { value: 0 },
     uColorBase: { value: cssColorVec('--color-ink', '#0a0a0b') },
     uColorTeal: { value: cssColorVec('--color-teal', '#2dd4bf') },
+    uColorCyan: { value: cssColorVec('--color-tealdeep', '#0ea5e9') },
     uColorGold: { value: cssColorVec('--color-gold', '#c9a96e') },
-    uReducedMotion: { value: reduced ? 1 : 0 },
-    uIntensity: { value: 0.85 },
   };
 
   const material = new THREE.ShaderMaterial({
     vertexShader: TISSUE_VERT,
     fragmentShader: TISSUE_FRAG,
     uniforms,
-    defines: { FBM_OCTAVES: isMobile ? 4 : 6 },
+    defines: { PLANES: isMobile ? 2 : 3 },
     depthTest: false,
     depthWrite: false,
     fog: false,
@@ -855,31 +983,55 @@ function mountTissue(host) {
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
 
   const hero = host.closest('section') || host.parentElement || host;
+  const headEl = hero.querySelector('[data-hero-headline]');
+  const portEl = hero.querySelector('[data-hero-portrait]');
+  const ctaEl = hero.querySelector('[data-hero-cta]');
 
-  /* pointer ripple — throttled to frame rate via a shared latch, read in
-     tick(); listener on window (the canvas stays pointer-events: none) */
-  const mouse = { x: 0.5, y: 0.5 };
-  let ripple = 0;
-  if (finePointer && !reduced) {
+  /* probe lens — window pointermove (canvas stays pointer-events:none),
+     lerped so the lens trails the cursor with weight; velocity feeds the
+     fluid wake. Desktop fine-pointer only. */
+  const lensTarget = new THREE.Vector2(0.5, 0.5);
+  const lens = new THREE.Vector2(0.5, 0.5);
+  let lensActive = 0;
+  let lensVel = 0;
+  let lastPx = 0.5, lastPy = 0.5;
+  if (finePointer && !isMobile && !reduced) {
     window.addEventListener(
       'pointermove',
       (e) => {
-        const nx = e.clientX / window.innerWidth;
-        const ny = 1 - e.clientY / window.innerHeight;
-        ripple = Math.min(1, ripple + Math.hypot(nx - mouse.x, ny - mouse.y) * 2.6);
-        mouse.x = nx;
-        mouse.y = ny;
+        const r = host.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const nx = (e.clientX - r.left) / r.width;
+        const ny = 1 - (e.clientY - r.top) / r.height;
+        lensVel = Math.min(1, lensVel + Math.hypot(nx - lastPx, ny - lastPy) * 3.0);
+        lastPx = nx;
+        lastPy = ny;
+        lensActive = nx > -0.15 && nx < 1.15 && ny > -0.15 && ny < 1.15 ? 1 : 0;
+        lensTarget.set(nx, ny);
       },
       { passive: true }
     );
   }
 
-  /* boot-up sweep — one-shot GSAP tween of the scan bar, then scroll takes
-     over (driven by the shared Lenis via native scrollY through this host) */
+  /* CTA hover → regeneration ripple */
+  let ctaPulse = 0;
+  if (ctaEl && !reduced) {
+    ctaEl.querySelectorAll('a, button').forEach((b) => {
+      b.addEventListener('mouseenter', () => (ctaPulse = 1));
+    });
+  }
+
+  /* boot — instrument furniture powers on (DOM/CSS), the sweep sweeps,
+     tissue ignites in its wake; then scroll takes over the sweep+focus */
   let booting = !reduced;
   const boot = { v: 0 };
+  const sweep = { v: 0 };
   if (!reduced) {
-    gsap.to(boot, { v: 1, duration: 2.4, ease: 'power2.inOut', delay: 0.15, onComplete: () => (booting = false) });
+    const stage = host.closest('[data-tissue]');
+    stage?.classList.add('tissue-booting');
+    const tl = gsap.timeline();
+    tl.to(boot, { v: 1, duration: 1.4, ease: 'power2.out' }, 0);
+    tl.to(sweep, { v: 1, duration: 1.5, ease: 'power2.inOut', onComplete: () => (booting = false) }, 0.2);
   }
 
   const rec = createScene(host, tick);
@@ -898,24 +1050,67 @@ function mountTissue(host) {
   window.addEventListener('resize', syncSize, { passive: true });
   syncSize();
 
+  /* map a DOM element's rect into host-relative uv (y up) */
+  const anchor = (el, hostR, cOut, hOut) => {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (!hostR.width || !hostR.height) return;
+    cOut.set((r.left + r.width / 2 - hostR.left) / hostR.width, 1 - (r.top + r.height / 2 - hostR.top) / hostR.height);
+    hOut.set(r.width / 2 / hostR.width, r.height / 2 / hostR.height);
+  };
+
+  const headHalf = new THREE.Vector2();
+
   function tick(t) {
     uniforms.uTime.value = t * 0.001;
+    uniforms.uScrollBoost.value = Math.min(1, scrollBoost);
 
-    ripple *= 0.94;
-    uniforms.uRipple.value = ripple;
-    uniforms.uMouse.value.set(mouse.x, mouse.y);
+    /* re-anchor each frame — robust to scroll, resize, font/image reflow */
+    const hostR = host.getBoundingClientRect();
+    anchor(headEl, hostR, uniforms.uHeadCenter.value, headHalf);
+    if (headEl) uniforms.uHeadRadius.value.set(headHalf.x * 1.15, headHalf.y * 1.4);
+    anchor(portEl, hostR, uniforms.uPortCenter.value, uniforms.uPortHalf.value);
+    if (ctaEl) {
+      const r = ctaEl.getBoundingClientRect();
+      uniforms.uCtaCenter.value.set(
+        (r.left + r.width / 2 - hostR.left) / hostR.width,
+        1 - (r.top + r.height / 2 - hostR.top) / hostR.height
+      );
+    }
+
+    /* probe lens */
+    if (lensActive || uniforms.uLensActive.value) {
+      lens.lerp(lensTarget, 0.12);
+      uniforms.uLensPos.value.copy(lens);
+    }
+    uniforms.uLensActive.value = lensActive;
+    lensVel *= 0.9;
+    uniforms.uLensVel.value = lensVel;
+
+    /* CTA pulse decay */
+    ctaPulse *= 0.96;
+    uniforms.uCtaPulse.value = ctaPulse;
 
     if (reduced) {
-      uniforms.uScanY.value = -1;
-      uniforms.uScanBoost.value = 0;
-    } else if (booting) {
-      uniforms.uScanY.value = boot.v;
-      uniforms.uScanBoost.value = 1;
+      uniforms.uSweepY.value = -1;
+      uniforms.uSweepBoost.value = 0;
+      uniforms.uFocusDepth.value = 0.3;
+      uniforms.uBoot.value = 1;
+      return;
+    }
+
+    uniforms.uBoot.value = boot.v;
+    const prog = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, hostR.height)));
+    uniforms.uScrollProg.value = prog;
+
+    if (booting) {
+      uniforms.uSweepY.value = sweep.v;
+      uniforms.uSweepBoost.value = 1;
+      uniforms.uFocusDepth.value = 0.05 + boot.v * 0.3; // racks to default depth
     } else {
-      const rect = hero.getBoundingClientRect();
-      const prog = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
-      uniforms.uScanY.value = -0.05 + prog * 1.15; // faint at rest, sweeps down on scroll
-      uniforms.uScanBoost.value = 0.5;
+      uniforms.uSweepY.value = -0.05 + prog * 1.15; // scroll drives the sweep
+      uniforms.uSweepBoost.value = 0.5;
+      uniforms.uFocusDepth.value = 0.12 + prog * 0.72; // fine-focus wheel
     }
   }
 }

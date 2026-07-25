@@ -1,34 +1,215 @@
 ---
 /**
- * Bioluminescent "living tissue" field — a distinct full-viewport
- * fragment-shader plane, mounted client-side by scripts/three-fx.js
- * (data-three="tissue"). Domain-warped fbm plasma with glinting nuclei,
- * a diagnostic scan bar (boot-up sweep on load, then scroll-driven), and
- * pointer ripples. Always behind content, pointer-events: none.
+ * "Living tissue under a diagnostic instrument" — the hero background.
  *
- * Distinct from DnaHelix and CellField — it does not merge with or replace
- * either. Reduced-motion renders one still frame; the CSS-gradient fallback
- * below shows wherever WebGL never mounts.
+ * TWO layers, hard-separated by the governing rule (biology = teal,
+ * instrument = gold):
+ *   1. A WebGL shader plane (data-three="tissue", mounted by three-fx.js)
+ *      that owns all TEAL biology — Voronoi tissue over depth planes with
+ *      focus-racking, an acquisition sweep, mitosis blooms, and a cursor
+ *      probe lens that magnifies and reveals sub-cellular detail.
+ *   2. A crisp, screen-space GOLD instrument overlay (this file) — graticule,
+ *      reticle corners, calibration scale, readout. Never domain-warped,
+ *      pixel-sharp; that sharp gold-against-soft-teal contrast is the whole
+ *      clinical read. It powers on during the boot sequence.
+ *
+ * Distinct from DnaHelix and CellField. Reduced-motion: the shader freezes
+ * to a still frame and the instrument shows statically (no boot animation).
+ * No-WebGL: the CSS-gradient fallback below stands in.
  */
 interface Props {
   class?: string;
 }
 const { class: className = '' } = Astro.props;
+
+/* calibration scale — long tick every 5th, a few incremental labels */
+const ticks = Array.from({ length: 21 }, (_, i) => ({
+  major: i % 5 === 0,
+  label: i % 5 === 0 ? String(100 - i * 5) : null,
+}));
 ---
 
-<div
-  class:list={['three-host pointer-events-none h-full w-full', className]}
-  data-three="tissue"
-  aria-hidden="true"
->
-  <!-- no-WebGL / pre-mount fallback — same gold + teal palette -->
-  <div
-    class="three-fallback absolute inset-0"
-    style="background:
-      radial-gradient(ellipse 60% 55% at 78% 42%, rgba(45,212,191,0.14), transparent 62%),
-      radial-gradient(ellipse 55% 50% at 22% 78%, rgba(201,169,110,0.10), transparent 65%),
-      radial-gradient(ellipse 90% 80% at 50% 50%, transparent 40%, #0a0a0b 96%),
-      #0a0a0b;"
-  >
+<div class:list={['tissue-stage absolute inset-0', className]} data-tissue aria-hidden="true">
+  <!-- teal biology — WebGL shader plane -->
+  <div class="three-host pointer-events-none h-full w-full" data-three="tissue">
+    <!-- no-WebGL / pre-mount fallback -->
+    <div
+      class="three-fallback absolute inset-0"
+      style="background:
+        radial-gradient(ellipse 55% 50% at 74% 40%, rgba(45,212,191,0.16), transparent 60%),
+        radial-gradient(ellipse 50% 45% at 24% 74%, rgba(14,165,233,0.10), transparent 64%),
+        radial-gradient(ellipse 90% 80% at 50% 50%, transparent 38%, #0a0a0b 96%),
+        #0a0a0b;"
+    >
+    </div>
+  </div>
+
+  <!-- gold instrument furniture — crisp, screen-space, never warped -->
+  <div class="tissue-instrument">
+    <div class="ti-graticule"></div>
+    <span class="ti-corner ti-tl"></span>
+    <span class="ti-corner ti-tr"></span>
+    <span class="ti-corner ti-bl"></span>
+    <span class="ti-corner ti-br"></span>
+
+    <div class="ti-readout">
+      <span class="ti-dot"></span>OCT&nbsp;·&nbsp;LIVE&nbsp;&nbsp;|&nbsp;&nbsp;TISSUE VIABILITY 98.7%
+    </div>
+
+    <div class="ti-scale">
+      {
+        ticks.map((t) => (
+          <span class="ti-tick-row">
+            {t.label && <em class="ti-label">{t.label}</em>}
+            <i class:list={['ti-tick', t.major && 'ti-tick-major']} />
+          </span>
+        ))
+      }
+      <span class="ti-unit">µm</span>
+    </div>
   </div>
 </div>
+
+<style>
+  .tissue-instrument {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ultra-fine measurement graticule — gold, very low opacity, edge-faded */
+  .ti-graticule {
+    position: absolute;
+    inset: 0;
+    opacity: 0.055;
+    background-image:
+      repeating-linear-gradient(0deg, var(--color-gold) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, var(--color-gold) 0 1px, transparent 1px 46px);
+    -webkit-mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
+    mask-image: radial-gradient(ellipse 82% 76% at 50% 46%, #000, transparent 84%);
+  }
+
+  /* reticle corner brackets */
+  .ti-corner {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgba(201, 169, 110, 0.5);
+  }
+  .ti-tl { top: 20px; left: 20px; border-right: 0; border-bottom: 0; }
+  .ti-tr { top: 20px; right: 20px; border-left: 0; border-bottom: 0; }
+  .ti-bl { bottom: 20px; left: 20px; border-right: 0; border-top: 0; }
+  .ti-br { bottom: 20px; right: 20px; border-left: 0; border-top: 0; }
+
+  /* readout cluster */
+  .ti-readout {
+    position: absolute;
+    top: 104px;
+    right: 26px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(201, 169, 110, 0.6);
+    white-space: nowrap;
+  }
+  .ti-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    background: var(--color-gold);
+    box-shadow: 0 0 8px rgba(201, 169, 110, 0.7);
+    animation: tiPulse 2.4s ease-in-out infinite;
+  }
+
+  /* calibration scale down the right edge */
+  .ti-scale {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    opacity: 0.55;
+  }
+  .ti-tick-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .ti-label {
+    font-family: var(--font-sans);
+    font-size: 7.5px;
+    font-style: normal;
+    letter-spacing: 0.1em;
+    color: rgba(201, 169, 110, 0.75);
+  }
+  .ti-tick {
+    display: block;
+    width: 7px;
+    height: 1px;
+    background: rgba(201, 169, 110, 0.7);
+  }
+  .ti-tick-major {
+    width: 13px;
+  }
+  .ti-unit {
+    margin-top: 3px;
+    font-family: var(--font-sans);
+    font-size: 7px;
+    letter-spacing: 0.14em;
+    color: rgba(201, 169, 110, 0.6);
+  }
+
+  @keyframes tiPulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+
+  /* boot: the instrument powers on — graticule draws in first, then the
+     furniture. Only while the stage is in its booting state. */
+  .tissue-booting .ti-graticule {
+    animation: tiGrid 0.5s ease 0.05s both;
+  }
+  .tissue-booting .ti-corner,
+  .tissue-booting .ti-readout,
+  .tissue-booting .ti-scale {
+    animation: tiFurniture 0.6s ease 0.28s both;
+  }
+  @keyframes tiGrid {
+    from { opacity: 0; transform: scale(1.05); }
+    to { opacity: 0.055; transform: none; }
+  }
+  @keyframes tiFurniture {
+    from { opacity: 0; }
+  }
+
+  /* small screens: keep graticule + reticle, drop the finer furniture */
+  @media (max-width: 640px) {
+    .ti-scale,
+    .ti-readout {
+      display: none;
+    }
+    .ti-corner {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ti-dot { animation: none; }
+    .tissue-booting .ti-graticule,
+    .tissue-booting .ti-corner,
+    .tissue-booting .ti-readout,
+    .tissue-booting .ti-scale {
+      animation: none;
+    }
+  }
+</style>
