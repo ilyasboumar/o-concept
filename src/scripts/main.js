@@ -286,6 +286,7 @@ document.querySelectorAll('[data-recog]').forEach((viewport) => {
   let hovering = false;
   let startX = 0;
   let startTrackX = 0;
+  let dragDistance = 0;
 
   const half = () => track.scrollWidth / 2;
 
@@ -302,23 +303,41 @@ document.querySelectorAll('[data-recog]').forEach((viewport) => {
   viewport.addEventListener('mouseenter', () => (hovering = true));
   viewport.addEventListener('mouseleave', () => (hovering = false));
 
+  /* No pointer capture — capturing would retarget the click to the viewport,
+     so a card's own click (opening a video) would never fire. Window
+     listeners track the drag instead. */
   viewport.addEventListener('pointerdown', (e) => {
     dragging = true;
+    dragDistance = 0;
     startX = e.clientX;
     startTrackX = x;
     viewport.classList.add('dragging');
-    viewport.setPointerCapture(e.pointerId);
   });
-  viewport.addEventListener('pointermove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     if (!dragging) return;
     x = startTrackX + (e.clientX - startX);
+    dragDistance = Math.max(dragDistance, Math.abs(e.clientX - startX));
   });
   const endDrag = () => {
+    if (!dragging) return;
     dragging = false;
     viewport.classList.remove('dragging');
   };
-  viewport.addEventListener('pointerup', endDrag);
-  viewport.addEventListener('pointercancel', endDrag);
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  /* a real drag must not fire a card's click (e.g. opening a video) */
+  viewport.addEventListener(
+    'click',
+    (e) => {
+      if (dragDistance > 8) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragDistance = 0;
+      }
+    },
+    true
+  );
 });
 
 /* ============================================================
@@ -730,6 +749,7 @@ if (finderInput) {
   const chips = document.querySelectorAll('[data-finder-chips] .chip');
   const results = document.querySelector('[data-finder-results]');
   const empty = document.querySelector('[data-finder-empty]');
+  const finderSection = document.getElementById('finder');
 
   const card = (t, query) => {
     const q = query.trim().toLowerCase();
@@ -755,6 +775,9 @@ if (finderInput) {
 
   const render = (query) => {
     const q = query.trim();
+    /* searching collapses the browse-by-system console so results sit
+       directly under the search box instead of far below the grid */
+    finderSection?.classList.toggle('is-searching', q.length > 0);
     chips.forEach((c) => c.classList.toggle('active', c.dataset.condition.toLowerCase() === q.toLowerCase()));
     if (!q) {
       results.innerHTML = '';

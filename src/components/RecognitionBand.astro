@@ -5,6 +5,7 @@
  * Dr Wakil at the left edge. Drag/auto-scroll logic lives in main.js.
  */
 import { withBase } from '../lib/url';
+import { videos } from '../data/videos';
 
 /* Flagship 2025 badge (The O Concept™ Protocol) leads the stream */
 const badges = [
@@ -28,17 +29,19 @@ const quotes = [
 
 const press = ['Channel 4', 'The Times', 'Daily Mail', 'Tatler', 'Harper’s Bazaar', 'GQ', 'Sky News'];
 
-/* Interleave: badge · quote · press · badge · quote … one elegant stream */
+/* Interleave: badge · quote · video · press · … one elegant stream */
 type Cell =
   | { kind: 'badge'; src: string }
   | { kind: 'quote'; text: string; who: string }
-  | { kind: 'press'; name: string };
+  | { kind: 'press'; name: string }
+  | { kind: 'video'; id: string; quote: string; attribution: string };
 
 const stream: Cell[] = [];
-const max = Math.max(badges.length, quotes.length, press.length);
+const max = Math.max(badges.length, quotes.length, press.length, videos.length);
 for (let i = 0; i < max; i++) {
   if (badges[i]) stream.push({ kind: 'badge', src: badges[i] });
   if (quotes[i]) stream.push({ kind: 'quote', text: quotes[i].text, who: quotes[i].who });
+  if (videos[i]) stream.push({ kind: 'video', id: videos[i].id, quote: videos[i].quote, attribution: videos[i].attribution });
   if (press[i]) stream.push({ kind: 'press', name: press[i] });
 }
 ---
@@ -73,7 +76,33 @@ for (let i = 0; i < max; i++) {
           [0, 1].map((copy) => (
             <div class="flex" aria-hidden={copy === 1 ? 'true' : undefined}>
               {stream.map((cell) => (
-                <div class="recog-card" data-tilt>
+                <div class:list={['recog-card', cell.kind === 'video' && '!p-0 overflow-hidden']} data-tilt>
+                  {cell.kind === 'video' && (
+                    <button
+                      type="button"
+                      class="video-facade recog-video group relative block h-full w-full overflow-hidden text-left"
+                      data-video-facade
+                      data-video-id={cell.id}
+                      aria-label={`Play patient testimonial — ${cell.attribution}`}
+                    >
+                      <img
+                        src={`https://i.ytimg.com/vi/${cell.id}/hqdefault.jpg`}
+                        alt=""
+                        class="absolute inset-0 h-full w-full object-cover opacity-60 transition-opacity duration-500 group-hover:opacity-80"
+                        loading="lazy"
+                        draggable="false"
+                      />
+                      <span class="absolute inset-0" style="background:linear-gradient(to top, rgba(7,7,8,0.94), rgba(7,7,8,0.2) 55%, rgba(7,7,8,0.4));" aria-hidden="true" />
+                      <span class="recog-play" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M8 5v14l11-7z" /></svg>
+                      </span>
+                      <span class="absolute inset-x-4 bottom-4">
+                        <span class="block text-[8.5px] font-semibold tracking-[0.3em] text-gold uppercase">Patient story · watch</span>
+                        <span class="mt-1.5 line-clamp-2 font-serif text-[0.95rem] leading-snug text-cream italic">“{cell.quote}”</span>
+                        <span class="mt-2 block text-[9px] font-semibold tracking-[0.25em] text-cream/50 uppercase">{cell.attribution}</span>
+                      </span>
+                    </button>
+                  )}
                   {cell.kind === 'badge' && (
                     <div class="flex h-full min-h-[150px] items-center justify-center">
                       <div class="flex h-[120px] w-full items-center justify-center rounded-md bg-cream/95 p-4">
@@ -105,3 +134,31 @@ for (let i = 0; i < max; i++) {
     </div>
   </div>
 </section>
+
+<style>
+  .recog-video {
+    aspect-ratio: auto; /* fill the card height instead of forcing 16:9 */
+  }
+  .recog-play {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    height: 44px;
+    width: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgba(201, 169, 110, 0.6);
+    background: rgba(10, 10, 11, 0.68);
+    color: var(--color-gold);
+    backdrop-filter: blur(4px);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+  .recog-video:hover .recog-play {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 26px rgba(201, 169, 110, 0.35);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+</style>

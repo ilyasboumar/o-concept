@@ -9,14 +9,52 @@ const marks = [
 ---
 
 <div class="relative z-50 border-b border-gold/12 bg-[#070708]">
-  <div class="wrap flex items-center justify-center gap-5 overflow-x-auto py-2.5 whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-8">
-    {
-      marks.map((mark, i) => (
-        <>
-          {i > 0 && <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" aria-hidden="true" />}
-          <span class="shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase">{mark}</span>
-        </>
-      ))
-    }
+  <div class="awards-marquee overflow-hidden py-2.5">
+    <!-- track is duplicated (group 1 visible, group 2 aria-hidden) so the
+         translateX(-50%) loop is seamless -->
+    <div class="awards-track flex w-max items-center whitespace-nowrap">
+      {
+        marks.map((mark) => (
+          <>
+            <span class="mx-4 shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase md:mx-7">{mark}</span>
+            <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" aria-hidden="true" />
+          </>
+        ))
+      }
+      <span class="contents" aria-hidden="true">
+        {
+          marks.map((mark) => (
+            <>
+              <span class="mx-4 shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase md:mx-7">{mark}</span>
+              <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" />
+            </>
+          ))
+        }
+      </span>
+    </div>
   </div>
 </div>
+
+<style>
+  .awards-marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  }
+  .awards-track {
+    animation: marquee 34s linear infinite;
+    will-change: transform;
+  }
+  .awards-marquee:hover .awards-track {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .awards-track {
+      animation: none;
+    }
+    .awards-marquee {
+      overflow-x: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+</style>

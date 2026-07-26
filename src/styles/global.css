@@ -1037,6 +1037,16 @@ html:not(.js) .award-static {
 
 /* ---------- diagnostic console — system tabs + condition chips ---------- */
 
+/* while searching, hide the browse console so results sit under the box */
+#finder.is-searching [data-finder-systems],
+#finder.is-searching [data-finder-chips],
+#finder.is-searching [data-finder-catalogue] {
+  display: none;
+}
+#finder.is-searching [data-finder-results] {
+  margin-top: 2.5rem;
+}
+
 .sys-tab {
   @apply inline-flex cursor-pointer items-center gap-2.5 border border-cream/12 bg-white/[0.02] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-cream/60 transition-all duration-300;
 }

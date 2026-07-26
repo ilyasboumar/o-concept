@@ -439,6 +439,8 @@ function mountHelix(host) {
 
   let tiltX = 0;
   let tiltY = 0;
+  let spinAngle = 0; // integrated rotation — see tick()
+  let prevT = 0;
   const MAX_TILT = (preset.tiltDeg * Math.PI) / 180;
 
   /* mobile FPS guard (showpiece): if sustained frames run slow, tear the
@@ -467,13 +469,18 @@ function mountHelix(host) {
     lastFrameT = t;
 
     /* one revolution every ~24s, +30% max with scroll velocity, plus any
-       drag spin with decaying momentum */
+       drag spin with decaying momentum. Integrate the angle per-frame:
+       multiplying total elapsed time by a *varying* speed would make every
+       scroll-boost spike leap the whole rotation forward then snap back. */
+    const dtSec = prevT ? Math.min(0.05, (t - prevT) * 0.001) : 0.016;
+    prevT = t;
     const speed = ((Math.PI * 2) / 24) * (1 + 0.3 * Math.min(1, scrollBoost));
     if (Math.abs(spinVel) > 0.0004) {
       spinOffset += spinVel * 16;
       spinVel *= 0.95;
     }
-    group.rotation.y = time * speed + spinOffset;
+    spinAngle += speed * dtSec;
+    group.rotation.y = spinAngle + spinOffset;
 
     /* cursor tilt (weighted lerp) or gentle touch-device sway */
     if (interactive) {

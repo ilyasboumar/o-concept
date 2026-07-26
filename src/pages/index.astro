@@ -1,196 +1,26 @@
 ---
 import { withBase } from '../lib/url';
 import Base from '../layouts/Base.astro';
-import QuizUI from '../components/QuizUI.astro';
-import MembershipTiers from '../components/MembershipTiers.astro';
-import TreatmentPackages from '../components/TreatmentPackages.astro';
-import Journey from '../components/Journey.astro';
-import FinalCTA from '../components/FinalCTA.astro';
+import OPortal from '../components/OPortal.astro';
 import RecognitionBand from '../components/RecognitionBand.astro';
 import ScienceSplit from '../components/ScienceSplit.astro';
 import ConditionFinder from '../components/ConditionFinder.astro';
-import AndropauseSection from '../components/AndropauseSection.astro';
-import LongevityTeaser from '../components/LongevityTeaser.astro';
-import VideoTestimonials from '../components/VideoTestimonials.astro';
-import ConciergeSection from '../components/ConciergeSection.astro';
-import ScienceInterlude from '../components/ScienceInterlude.astro';
-import BioSequence from '../components/BioSequence.astro';
-import WireHero from '../components/WireHero.astro';
-
-const authorityBar = [
-  'Global Excellence Awards 2025 — The O Concept™ Protocol',
-  '2024 World’s Best Sexual Rejuvenation Clinic',
-  'Creator of The O Concept™',
-  '25,000+ cases worldwide',
-  'President & Founder, IAAGSW',
-  'As seen on Channel 4',
-];
-
-/* Real multidisciplinary team — a market leader flanked by a world-class bench */
-const team = [
-  {
-    name: 'Dr Sherif Wakil',
-    role: 'Founder & Medical Director',
-    img: 'https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg',
-    bio: 'Creator of The O Concept™; the first physician to bring the O-Shot® and P-Shot® to the UK. 25,000+ cases worldwide.',
-  },
-  {
-    name: 'Dr Davood Fallahdar',
-    role: 'Plastic & Reconstructive Surgeon',
-    img: withBase('images/team-fallahdar.jpg'),
-    bio: 'Honours graduate in Medicine and Surgery (Milan); on the UK GMC specialist register for Plastic Surgery since 2000; former Consultant at Addenbrooke’s Hospital, Cambridge.',
-  },
-  {
-    name: 'Dr Ralph Rogers',
-    role: 'Consultant, Regenerative Orthopaedics & Sports Medicine',
-    img: withBase('images/team-rogers.jpg'),
-    bio: 'Internationally trained consultant treating chronic pain with innovative regenerative medicine.',
-  },
-  {
-    name: 'Dr Fouad Ghaly',
-    role: 'Regenerative Medicine Specialist',
-    img: withBase('images/team-ghaly.jpg'),
-    bio: 'Board Certified, American Board of Regenerative Medicine; founder of the Ghaly Center for Regenerative Medicine; expert in PRP and bio-identical hormone therapy.',
-  },
-  {
-    name: 'Mr Myutan Kulendran',
-    role: 'Upper GI & Weight Loss Surgeon',
-    img: withBase('images/team-kulendran.jpg'),
-    bio: 'St George’s Hospital London; PhD in weight loss; FRCS (Gen).',
-  },
-];
-
-const testimonials = [
-  {
-    quote:
-      'After two years of avoiding the conversation entirely, one consultation changed everything. The protocol was explained with such clarity and dignity that the decision made itself. Six months on, I feel like myself again.',
-    who: 'Mr A., 54, London',
-  },
-  {
-    quote:
-      'What struck me was the discretion — from the first phone call to the follow-up. Nothing was rushed, nothing was assumed. The results have quietly transformed my confidence, and my marriage.',
-    who: 'Mrs L., 47, Surrey',
-  },
-  {
-    quote:
-      'We came as a couple, each with our own concerns. Dr Wakil treated the cause, not the symptom, for both of us. It is the finest medical care either of us has ever received.',
-    who: 'Mr & Mrs D., Kensington',
-  },
-];
+import MembershipTiers from '../components/MembershipTiers.astro';
+import TreatmentPackages from '../components/TreatmentPackages.astro';
+import FinalCTA from '../components/FinalCTA.astro';
 ---
 
 <Base
   title="The O Concept™ — Sexual Rejuvenation & Longevity, Harley Street | Dr Sherif Wakil"
   description="Created by Dr Sherif Wakil: the world's most awarded sexual rejuvenation and regenerative protocol. Treatment for erectile dysfunction, low libido, vaginal laxity, incontinence, menopause and andropause — confidentially, at 77 Harley Street, London."
 >
-  <!-- ============ HERO — Dr Wakil-centric, instant market-leader read ============ -->
-  <section class="relative -mt-20 flex min-h-screen flex-col justify-center overflow-hidden bg-ink">
-    <!-- subtle gold particle drift — the helix now lives in its own showpiece section below -->
-    <div class="absolute inset-0" aria-hidden="true">
-      <span class="particle" style="top:24%; left:14%; animation-delay:0s"></span>
-      <span class="particle" style="top:64%; left:8%; animation-delay:-4s"></span>
-      <span class="particle" style="top:36%; left:74%; animation-delay:-8s"></span>
-      <span class="particle" style="top:74%; left:60%; animation-delay:-2s"></span>
-      <span class="particle" style="top:16%; left:48%; animation-delay:-11s"></span>
-      <span class="particle" style="top:82%; left:34%; animation-delay:-6s"></span>
-    </div>
+  <!-- 1 · DNA-O PORTAL — landing hero -->
+  <OPortal />
 
-    <!-- holographic blueprint grid — fades out radially -->
-    <div class="grid-overlay" aria-hidden="true"></div>
-
-    <!-- colour lift — teal science glow + gold brand glow -->
-    <div
-      class="pointer-events-none absolute inset-0"
-      style="background:
-        radial-gradient(ellipse 50% 55% at 82% 40%, rgba(45,212,191,0.08), transparent 62%),
-        radial-gradient(ellipse 55% 45% at 10% 85%, rgba(201,169,110,0.09), transparent 65%),
-        radial-gradient(ellipse 40% 30% at 50% 0%, rgba(14,165,233,0.05), transparent 60%);"
-      aria-hidden="true"
-    >
-    </div>
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
-
-    <div class="wrap relative grid grid-cols-1 items-center gap-10 pt-24 pb-14 md:pt-28 lg:grid-cols-12 lg:gap-10">
-      <!-- headline block -->
-      <div class="lg:col-span-7">
-        <p class="eyebrow" data-reveal>The O Concept™ · 77 Harley Street, London</p>
-        <h1 class="mt-5 font-serif text-[2.6rem] leading-[1.05] font-medium tracking-tight text-cream sm:text-6xl md:text-6xl xl:text-[4.7rem]">
-          <span class="hw-line"><span class="hw">We don&rsquo;t follow</span></span>
-          <span class="hw-line"><span class="hw">protocols.</span></span>
-          <span class="hw-line"><span class="hw shimmer-label italic">We create them.</span></span>
-        </h1>
-        <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/70 md:text-lg" data-reveal data-delay="0.7">
-          Dr Sherif Wakil — creator of The&nbsp;O&nbsp;Concept<sup class="text-[0.55em] text-gold">™</sup>. The
-          world&rsquo;s most awarded sexual rejuvenation and regenerative protocol. Harley Street, London.
-        </p>
-
-        <!-- authority bar -->
-        <ul class="mt-6 flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-1.5" data-reveal data-delay="0.85" aria-label="Credentials">
-          {
-            authorityBar.map((item, i) => (
-              <>
-                {i > 0 && <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-teal/60" aria-hidden="true" />}
-                <li class="text-[10px] font-semibold tracking-[0.18em] text-cream/60 uppercase">{item}</li>
-              </>
-            ))
-          }
-        </ul>
-
-        <div class="mt-8 flex flex-col gap-4 sm:flex-row" data-reveal data-delay="1">
-          <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
-          <a href="#finder" class="btn btn-teal" data-magnetic>Find Your Treatment</a>
-        </div>
-      </div>
-
-      <!-- portrait block -->
-      <div class="relative lg:col-span-5" data-reveal data-delay="0.4">
-        <figure class="hairline relative mx-auto max-w-sm p-2 lg:max-w-none">
-          <div class="overflow-hidden">
-            <img
-              src="https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg"
-              alt="Dr Sherif Wakil — creator of The O Concept™, at 77 Harley Street"
-              class="aspect-[4/5] w-full object-cover object-top"
-              fetchpriority="high"
-              data-parallax="-4"
-            />
-          </div>
-          <figcaption class="flex items-baseline justify-between px-2 pt-3 pb-1">
-            <span class="text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Dr Sherif Wakil</span>
-            <span class="text-[9px] font-semibold tracking-[0.3em] text-gold/80 uppercase">The Originator</span>
-          </figcaption>
-        </figure>
-        <!-- floating flagship-award chip -->
-        <div class="gold-glow absolute -bottom-5 left-1/2 flex w-max max-w-[92%] -translate-x-1/2 items-center gap-4 bg-ink px-5 py-3.5 lg:-left-10 lg:translate-x-0">
-          <img
-            src={withBase('images/award-2025-global-excellence.png')}
-            alt="Global Excellence Awards 2025 winner's badge — The O Concept™ Protocol"
-            class="h-14 w-auto shrink-0 rounded-sm bg-cream/95 p-1"
-            loading="lazy"
-          />
-          <div class="text-left">
-            <p class="font-serif text-lg leading-none text-gold">Global Excellence Awards 2025</p>
-            <p class="mt-1.5 text-[8.5px] font-semibold tracking-[0.24em] text-cream/70 uppercase">The O Concept™ Protocol</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3" data-reveal data-delay="1.4" aria-hidden="true">
-      <span class="text-[9px] font-semibold tracking-[0.45em] text-cream/40 uppercase">Scroll</span>
-      <span class="relative block h-12 w-px overflow-hidden bg-cream/10">
-        <span class="scroll-cue-dot absolute top-0 left-0 block h-2 w-px bg-gold"></span>
-      </span>
-    </div>
-  </section>
-
-  <!-- ============ TRIAL — WireHero assemble/disassemble showpiece.
-       Remove this block (and the import) to revert. ============ -->
-  <WireHero />
-
-  <!-- ============ RECOGNITION — awards · testimonials · press, plastered up top ============ -->
+  <!-- 2 · RECOGNITION — awards · testimonials · press -->
   <RecognitionBand />
 
-  <!-- ============ INTRO / POSITIONING ============ -->
+  <!-- 3 · POSITIONING — 25,000 cases + stats -->
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative">
@@ -264,17 +94,11 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ============ SCIENCE INTERLUDE — the 3D showpiece ============ -->
-  <ScienceInterlude />
-
-  <!-- ============ TRIAL — BioSequence particle morph, comparing against
-       the interlude above. Remove this block (and the import) to revert. ============ -->
-  <BioSequence />
-
-  <!-- ============ THE SCIENCE — split-scroll pinned section ============ -->
+  <!-- 4 · THE SCIENCE — split-scroll (its DNA helix drifts over the imagery,
+       continuing the strand from the journey above) -->
   <ScienceSplit />
 
-  <!-- ============ THREE PATHWAYS ============ -->
+  <!-- 6 · THREE PATHWAYS -->
   <section id="pathways" class="hairline-t relative bg-ink">
     <div class="wrap py-24 md:py-32">
       <div class="max-w-2xl" data-reveal>
@@ -363,109 +187,10 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ============ LONGEVITY TEASER — particle field ============ -->
-  <LongevityTeaser />
-
-  <!-- ============ FIND YOUR TREATMENT — condition finder ============ -->
+  <!-- 7 · FIND YOUR TREATMENT — condition finder -->
   <ConditionFinder />
 
-  <!-- ============ ANDROPAUSE LEADERSHIP ============ -->
-  <AndropauseSection />
-
-  <!-- ============ IN HIS WORDS — video testimonials ============ -->
-  <VideoTestimonials />
-
-  <!-- ============ CLINICIAN-LED DIGITAL CARE ============ -->
-  <section class="hairline-t relative overflow-hidden bg-ink2 py-24 md:py-32">
-    <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
-    <div class="wrap relative">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow-teal">Intelligent care</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-          Technology in service of <span class="text-gold italic">doctors.</span> Never replacing them.
-        </h2>
-        <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
-          A preview of the clinician-led digital layer we are building around The O Concept™ — discreet triage that
-          routes you to humans, and a private dashboard for your protocol. Every recommendation is made by Dr
-          Wakil&rsquo;s clinical team.
-        </p>
-      </div>
-
-      <!-- Confidential Self-Assessment — working embedded quiz -->
-      <div class="hairline mt-16 grid grid-cols-1 overflow-hidden bg-ink lg:grid-cols-2" data-reveal>
-        <div class="flex flex-col justify-center p-9 md:p-14">
-          <span class="mb-6 inline-block w-fit border border-gold/40 px-3 py-1 text-[9px] font-bold tracking-[0.3em] text-gold uppercase">Prototype</span>
-          <h3 class="font-serif text-3xl text-cream md:text-4xl">Confidential Self-Assessment</h3>
-          <p class="mt-5 text-sm leading-[1.85] text-cream/60">
-            Answer a few discreet questions. Your responses are reviewed by our clinical team, and Dr Wakil&rsquo;s
-            team will recommend your pathway — matched to the concerns you would rather not explain twice. Nothing is
-            stored, and nothing is booked without you.
-          </p>
-          <p class="mt-6 text-[10px] font-semibold tracking-[0.25em] text-cream/35 uppercase">Confidential · Reviewed by clinicians · No account required</p>
-        </div>
-        <div class="hairline-t border-gold/15 bg-white/[0.015] p-9 md:border-t-0 md:border-l md:p-14">
-          <QuizUI />
-        </div>
-      </div>
-
-      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2" data-reveal-child>
-        <!-- Discreet triage that routes to humans -->
-        <div class="hairline flex flex-col bg-ink p-9 md:p-12" data-tilt>
-          <span class="mb-6 inline-block w-fit border border-teal/40 px-3 py-1 text-[9px] font-bold tracking-[0.3em] text-teal uppercase">Coming 2026</span>
-          <h3 class="font-serif text-3xl text-cream">Discreet Patient Concierge</h3>
-          <p class="mt-5 text-sm leading-[1.85] text-cream/60">
-            A private first conversation, any hour of the day. Smart triage takes your question and routes it to the
-            right human — a nurse, a coordinator, or Dr Wakil&rsquo;s team — never pushy, always confidential. Try the
-            scripted demonstration via the icon at the bottom right of your screen.
-          </p>
-          <div class="hairline mt-8 space-y-3 bg-white/[0.015] p-5">
-            <div class="chat-msg from-user">Is my enquiry confidential?</div>
-            <div class="chat-msg from-ai">Completely. Discreet communication, unmarked correspondence, private appointment times on request.</div>
-          </div>
-        </div>
-
-        <!-- Personalised Protocol Dashboard -->
-        <div class="hairline flex flex-col bg-ink p-9 md:p-12" data-tilt>
-          <span class="mb-6 inline-block w-fit border border-teal/40 px-3 py-1 text-[9px] font-bold tracking-[0.3em] text-teal uppercase">Coming 2026</span>
-          <h3 class="font-serif text-3xl text-cream">Personalised Protocol Dashboard</h3>
-          <p class="mt-5 text-sm leading-[1.85] text-cream/60">
-            Members will follow their protocol, biomarkers and upcoming sessions in one private view — reviewed at
-            every step by the clinical team, so progress you see is progress a doctor has verified.
-          </p>
-          <!-- static dashboard mock -->
-          <div class="hairline mt-8 bg-white/[0.015] p-6">
-            <div class="flex items-center gap-6">
-              <svg viewBox="0 0 96 96" class="h-24 w-24 shrink-0" role="img" aria-label="Protocol progress: 68 percent">
-                <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(244,241,236,0.08)" stroke-width="5" />
-                <circle cx="48" cy="48" r="40" fill="none" stroke="#2DD4BF" stroke-width="5" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="80.4" transform="rotate(-90 48 48)" />
-                <text x="48" y="46" text-anchor="middle" fill="#F4F1EC" font-size="19" font-family="Cormorant Garamond, serif">68%</text>
-                <text x="48" y="61" text-anchor="middle" fill="rgba(244,241,236,0.4)" font-size="7.5" letter-spacing="1">PROTOCOL</text>
-              </svg>
-              <div class="min-w-0 flex-1">
-                <p class="text-[9px] font-semibold tracking-[0.25em] text-cream/40 uppercase">Upcoming sessions</p>
-                <ul class="mt-3 space-y-2.5 text-xs text-cream/75">
-                  <li class="flex justify-between gap-4"><span>ESWT — Session 4 of 6</span><span class="shrink-0 text-teal">Tue 14 · 09:40</span></li>
-                  <li class="flex justify-between gap-4"><span>Review with Dr Wakil</span><span class="shrink-0 text-teal">Fri 31 · 16:15</span></li>
-                </ul>
-              </div>
-            </div>
-            <div class="hairline-t mt-6 pt-5">
-              <div class="flex items-baseline justify-between">
-                <p class="text-[9px] font-semibold tracking-[0.25em] text-cream/40 uppercase">Free testosterone · 6-month trend</p>
-                <p class="text-xs text-teal">▲ 31%</p>
-              </div>
-              <svg viewBox="0 0 260 48" class="mt-3 h-12 w-full" preserveAspectRatio="none" role="img" aria-label="Biomarker trend, rising over six months">
-                <polyline points="0,40 40,37 80,38 120,30 160,24 200,18 260,10" fill="none" stroke="#2DD4BF" stroke-width="1.5" />
-                <circle cx="260" cy="10" r="3" fill="#2DD4BF" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ MEMBERSHIP ============ -->
+  <!-- 8 · MEMBERSHIP -->
   <section class="hairline-t bg-ink py-24 md:py-36">
     <div class="wrap">
       <div class="mx-auto max-w-2xl text-center" data-reveal>
@@ -485,97 +210,6 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ============ CONCIERGE TEASER ============ -->
-  <ConciergeSection variant="teaser" />
-
-  <!-- ============ TEAM ============ -->
-  <section class="hairline-t bg-ink2 py-24 md:py-32">
-    <div class="wrap">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow">The clinical team</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-          Led by Dr Wakil. Delivered by a world-class clinical team.
-        </h2>
-        <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
-          A multidisciplinary bench of consultants — plastic surgery, regenerative orthopaedics, regenerative
-          medicine and metabolic surgery — practising as one team across clinics in London, Dubai and Egypt.
-        </p>
-      </div>
-
-      <figure class="relative mt-14 overflow-hidden" data-reveal>
-        <img
-          src={withBase('images/team-hero.jpg')}
-          alt="The Dr SW Clinics team at 77 Harley Street"
-          class="h-[420px] w-full object-cover md:h-[520px]"
-          loading="lazy"
-          data-parallax="-6"
-        />
-        <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
-        <figcaption class="absolute bottom-8 left-8 max-w-md md:bottom-12 md:left-12">
-          <p class="eyebrow !text-[9px]">77 Harley Street, London</p>
-          <p class="mt-3 font-serif text-2xl leading-snug text-cream md:text-3xl">
-            One protocol. One team. Specialists in a field most clinics won&rsquo;t even name.
-          </p>
-        </figcaption>
-      </figure>
-
-      <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-child>
-        {
-          team.map((member) => (
-            <div class="group hairline flex flex-col bg-ink p-3 pb-6" data-tilt>
-              <div class="overflow-hidden">
-                <img
-                  src={member.img}
-                  alt={`Portrait of ${member.name}, ${member.role}`}
-                  class="aspect-[4/5] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="mt-5 px-3 font-serif text-xl text-cream">{member.name}</h3>
-              <p class="mt-1 px-3 text-[10px] font-semibold tracking-[0.25em] text-gold/80 uppercase">{member.role}</p>
-              <p class="mt-3 px-3 text-[13px] leading-relaxed text-cream/55">{member.bio}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ TESTIMONIALS ============ -->
-  <section id="testimonials" class="hairline-t relative bg-ink py-24 md:py-32">
-    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
-    <div class="wrap relative">
-      <div class="mx-auto max-w-3xl text-center" data-reveal>
-        <p class="eyebrow">In their words</p>
-        <div class="mt-12 grid" aria-live="polite">
-          {
-            testimonials.map((t, i) => (
-              <blockquote class:list={['t-slide px-2', i === 0 && 'active']}>
-                <span class="font-serif text-7xl leading-none text-gold" aria-hidden="true">“</span>
-                <p class="mt-2 font-serif text-2xl leading-[1.5] text-cream/90 italic md:text-[1.75rem]">{t.quote}</p>
-                <footer class="mt-8 text-[11px] font-semibold tracking-[0.3em] text-gold uppercase">{t.who}</footer>
-              </blockquote>
-            ))
-          }
-        </div>
-
-        <div class="mt-12 flex items-center justify-center gap-6">
-          <button class="t-prev cursor-pointer p-2 text-lg text-cream/50 transition-colors duration-300 hover:text-gold" aria-label="Previous testimonial">←</button>
-          <div class="flex gap-2">
-            {testimonials.map((_, i) => (
-              <button class:list={['t-dot', i === 0 && 'active']} aria-label={`Go to testimonial ${i + 1}`} />
-            ))}
-          </div>
-          <button class="t-next cursor-pointer p-2 text-lg text-cream/50 transition-colors duration-300 hover:text-gold" aria-label="Next testimonial">→</button>
-        </div>
-        <p class="mt-10 text-[10px] tracking-[0.25em] text-cream/35 uppercase">Patient identities protected</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PATIENT JOURNEY ============ -->
-  <Journey />
-
-  <!-- ============ FINAL CTA ============ -->
+  <!-- 9 · FINAL CTA -->
   <FinalCTA />
 </Base>

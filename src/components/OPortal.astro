@@ -1,0 +1,463 @@
+---
+/**
+ * OPortal.astro — THE O CONCEPT — "The DNA Journey"
+ * ------------------------------------------------------------------
+ * Fine double-helix strands (thin gold + teal lines, glowing nodes,
+ * base-pair rungs). Scroll flies the camera through a small, clean set
+ * of DNA rings; the last ring unrolls into a STANDING helix:
+ *
+ *   intro        the DNA-O, front            "Step into the O."
+ *   fly-through  through DNA rings           For Him · For Her · Longevity
+ *   the OPEN     the last ring's centreline straightens circle → vertical,
+ *                the winding riding along it (a clean unroll, no tangle)
+ *   the ZOOM     camera dollies in; the helix settles on the RIGHT
+ *   your body    "Your body's own biology, reactivated." (left)
+ *
+ * Hands into "The Science of The O Concept™" below (its own DNA drifts
+ * over the imagery), so the strand threads the page.
+ *
+ * Guards: rAF pauses offscreen / hidden · reduced-motion + mobile get a
+ * static standing helix, no pin · WebGL disposed on navigation · avoids
+ * [data-parallax]/[data-count]/[data-reveal] (claimed by main.js).
+ * ------------------------------------------------------------------
+ */
+
+interface Props {
+  scrollLength?: number;
+  minWidth?: number;
+}
+
+const { scrollLength = 3.2, minWidth = 860 } = Astro.props;
+
+const gates = [
+  { title: 'For Him', body: 'Function, performance and vitality — restored.', accent: 'gold' },
+  { title: 'For Her', body: 'Comfort, sensation and confidence — at every stage.', accent: 'rose' },
+  { title: 'Longevity', body: 'Energy, hormones and healthy years — optimised.', accent: 'teal' },
+];
+---
+
+<section
+  class="dnaj relative bg-ink"
+  data-scroll-length={scrollLength}
+  data-min-width={minWidth}
+  style={`height:${(scrollLength + 1) * 100}vh;`}
+  aria-label="The O Concept — the DNA of regeneration"
+>
+  <div class="dnaj__pin sticky top-0 h-screen w-full overflow-hidden">
+    <div class="dnaj__bg absolute inset-0" aria-hidden="true"
+      style="background:
+        radial-gradient(ellipse 55% 55% at 50% 45%, rgba(201,169,110,0.12), transparent 62%),
+        radial-gradient(ellipse 65% 50% at 50% 100%, rgba(201,169,110,0.07), transparent 65%),
+        radial-gradient(ellipse 38% 32% at 50% 20%, rgba(45,212,191,0.05), transparent 60%),
+        #08080a;">
+    </div>
+
+    <canvas class="dnaj__canvas absolute inset-0 h-full w-full opacity-0 transition-opacity duration-1000" aria-hidden="true"></canvas>
+
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true"
+      style="background: radial-gradient(ellipse 42% 46% at 50% 50%, rgba(8,8,10,0.82), rgba(8,8,10,0.38) 48%, transparent 74%);">
+    </div>
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true"
+      style="background: linear-gradient(to right, rgba(8,8,10,0.92) 0%, rgba(8,8,10,0.45) 32%, transparent 58%);">
+    </div>
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true"
+      style="background: linear-gradient(to bottom, rgba(8,8,10,0.5) 0%, transparent 22%, transparent 72%, rgba(8,8,10,0.85) 100%);">
+    </div>
+
+    <div class="dnaj__intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+      <p class="eyebrow dnaj__ce" style="opacity:0">The O Concept™ · Harley Street</p>
+      <h1 class="dnaj__ce mt-6 max-w-[16ch] font-serif text-5xl leading-[1.03] text-cream md:text-7xl" style="opacity:0">Step into the O.</h1>
+      <p class="dnaj__ce mt-6 max-w-sm text-[15px] leading-relaxed text-cream/70" style="opacity:0">Wholeness, vitality and flow — the regenerative protocol the world now trains in.</p>
+      <div class="dnaj__ce pointer-events-auto mt-9 flex flex-col gap-4 sm:flex-row" style="opacity:0">
+        <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
+        <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
+      </div>
+    </div>
+
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      {
+        gates.map((g, i) => (
+          <div class="dnaj__phase absolute inset-0 flex flex-col items-center justify-center px-6 text-center" data-phase={i} style="opacity:0">
+            <p class={`text-[11px] font-semibold uppercase tracking-[0.4em] ${g.accent === 'teal' ? 'text-teal' : g.accent === 'rose' ? 'text-rose' : 'text-gold'}`}>Pathway 0{i + 1}</p>
+            <h2 class="mt-4 font-serif text-4xl text-cream md:text-6xl">{g.title}</h2>
+            <span class={`mt-5 block h-px w-14 ${g.accent === 'teal' ? 'bg-teal' : g.accent === 'rose' ? 'bg-rose' : 'bg-gold'}`} />
+            <p class="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-cream/65">{g.body}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="dnaj__body pointer-events-none absolute inset-0 flex items-center" style="opacity:0">
+      <div class="wrap">
+        <div class="max-w-md">
+          <p class="eyebrow-teal">The Science of Regeneration</p>
+          <h2 class="mt-6 font-serif text-5xl leading-[1.04] text-cream md:text-6xl">Your body&rsquo;s own biology, <span class="text-teal italic">reactivated.</span></h2>
+          <p class="mt-7 max-w-md text-[15px] leading-[1.9] text-cream/65">
+            Platelet-rich plasma, growth factors and your own cells — precisely deployed to reawaken cellular repair.
+            New vessels, new tissue, restored function. Not masking the symptom; rebuilding the biology beneath it.
+          </p>
+          <div class="pointer-events-auto mt-9">
+            <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dnaj__cue pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2" aria-hidden="true">
+      <span class="text-[9px] font-semibold tracking-[0.45em] text-cream/40 uppercase">Enter</span>
+      <span class="relative block h-10 w-px overflow-hidden bg-cream/10">
+        <span class="scroll-cue-dot absolute top-0 left-0 block h-2 w-px bg-gold"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import * as THREE from "three";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const GOLD = new THREE.Color(0xc9a96e);
+  const GOLDLIGHT = new THREE.Color(0xe3c992);
+  const TEAL = new THREE.Color(0x2dd4bf);
+  const ROSE = new THREE.Color(0xd9a4a4);
+
+  function glowSprite() {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.4, "rgba(255,255,255,0.45)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 64, 64);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }
+
+  function initDnaJourney(section: HTMLElement) {
+    const canvas = section.querySelector<HTMLCanvasElement>(".dnaj__canvas");
+    const bg = section.querySelector<HTMLElement>(".dnaj__bg");
+    const intro = section.querySelector<HTMLElement>(".dnaj__intro");
+    const ce = Array.from(section.querySelectorAll<HTMLElement>(".dnaj__ce"));
+    const phaseEls = Array.from(section.querySelectorAll<HTMLElement>(".dnaj__phase"));
+    const bodyEl = section.querySelector<HTMLElement>(".dnaj__body");
+    const cue = section.querySelector<HTMLElement>(".dnaj__cue");
+    if (!canvas) return;
+
+    const scrollLength = Number(section.dataset.scrollLength ?? 3.2);
+    const minWidth = Number(section.dataset.minWidth ?? 860);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const isMobile = window.innerWidth < minWidth;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+    } catch {
+      section.style.height = "100vh";
+      ce.forEach((el) => (el.style.opacity = "1"));
+      return;
+    }
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    renderer.setClearColor(0x08080a, 0);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x08080a, 10, 30); // distant rings fade → no clutter
+    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 120);
+    camera.position.set(0, 0, 7);
+
+    const sprite = glowSprite();
+    const disposables: any[] = [];
+    const world = new THREE.Group();
+    scene.add(world);
+
+    const RING_TW = 13, R = 2.0, WIND = 0.22;
+
+    /* ---- static fine-DNA ring at depth z (fly-through rings) ------- */
+    function makeRing(z: number, colA: THREE.Color, colB: THREE.Color, pts: number) {
+      const bufA = new Float32Array(pts * 3), bufB = new Float32Array(pts * 3);
+      for (let i = 0; i < pts; i++) {
+        const t = i / (pts - 1), phi = t * Math.PI * 2;
+        const thA = RING_TW * phi, thB = thA + Math.PI;
+        const rrA = R + WIND * Math.cos(thA), rrB = R + WIND * Math.cos(thB);
+        bufA.set([rrA * Math.cos(phi), rrA * Math.sin(phi), WIND * Math.sin(thA)], i * 3);
+        bufB.set([rrB * Math.cos(phi), rrB * Math.sin(phi), WIND * Math.sin(thB)], i * 3);
+      }
+      const grp = new THREE.Group();
+      const mats: THREE.Material[] = [];
+      for (const [buf, col] of [[bufA, colA], [bufB, colB]] as const) {
+        const lg = new THREE.BufferGeometry();
+        lg.setAttribute("position", new THREE.BufferAttribute(buf, 3));
+        lg.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 4);
+        const lm = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false });
+        const pm = new THREE.PointsMaterial({ color: col, size: 0.075, map: sprite, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+        grp.add(new THREE.Line(lg, lm), new THREE.Points(lg, pm));
+        mats.push(lm, pm);
+        disposables.push(lg, lm, pm);
+      }
+      grp.position.z = z;
+      world.add(grp);
+      return { grp, mats };
+    }
+
+    // just four rings, spaced deep — hero O, For Him, For Her (+ Longevity morphs)
+    const heroRing = makeRing(0, GOLD, TEAL, 170);
+    const pathRings = [
+      { ring: makeRing(-6, GOLD, GOLDLIGHT, 140), c: 0.22 },
+      { ring: makeRing(-12, ROSE, ROSE, 140), c: 0.4 },
+    ];
+
+    /* ---- the morphable end ring (Longevity) → standing helix -------
+       Morph the CENTRELINE (circle → vertical line) with the helix
+       winding riding along it, so it unrolls cleanly instead of
+       tangling. Computed per-frame from precomputed angles. */
+    const MZ = -16, N = 200;
+    const S_LEN = 2 * Math.PI * R; // strand arc length (ring perimeter)
+    const phiArr = new Float32Array(N), tArr = new Float32Array(N);
+    for (let i = 0; i < N; i++) { const t = i / (N - 1); tArr[i] = t; phiArr[i] = t * Math.PI * 2; }
+    const posA = new Float32Array(N * 3), posB = new Float32Array(N * 3);
+    // seed with ring form so it renders correctly before first frame
+    for (let i = 0; i < N; i++) {
+      const phi = phiArr[i], thA = RING_TW * phi;
+      const rrA = R + WIND * Math.cos(thA), rrB = R + WIND * Math.cos(thA + Math.PI);
+      posA.set([rrA * Math.cos(phi), rrA * Math.sin(phi), WIND * Math.sin(thA)], i * 3);
+      posB.set([rrB * Math.cos(phi), rrB * Math.sin(phi), WIND * Math.sin(thA + Math.PI)], i * 3);
+    }
+
+    const morph = new THREE.Group();
+    morph.position.z = MZ;
+    world.add(morph);
+    const mkLine = (buf: Float32Array, col: THREE.Color, op: number) => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(buf, 3));
+      g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 8);
+      const m = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false });
+      disposables.push(g, m);
+      return new THREE.Line(g, m);
+    };
+    const mkPts = (buf: Float32Array, col: THREE.Color) => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(buf, 3));
+      g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 8);
+      const m = new THREE.PointsMaterial({ color: col, size: 0.085, map: sprite, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+      disposables.push(g, m);
+      return new THREE.Points(g, m);
+    };
+    const mLineA = mkLine(posA, TEAL, 0.6), mLineB = mkLine(posB, GOLDLIGHT, 0.5);
+    const mNodesA = mkPts(posA, TEAL), mNodesB = mkPts(posB, GOLDLIGHT);
+    morph.add(mLineA, mLineB, mNodesA, mNodesB);
+    const RSTEP = 5;
+    const rIdx: number[] = [];
+    for (let i = 0; i < N; i += RSTEP) rIdx.push(i);
+    const rungBuf = new Float32Array(rIdx.length * 6);
+    const rungGeo = new THREE.BufferGeometry();
+    rungGeo.setAttribute("position", new THREE.BufferAttribute(rungBuf, 3));
+    rungGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 8);
+    const rungMat = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0.26, blending: THREE.AdditiveBlending, depthWrite: false });
+    disposables.push(rungGeo, rungMat);
+    morph.add(new THREE.LineSegments(rungGeo, rungMat));
+
+    /* ---- ambient particles ---------------------------------------- */
+    const COUNT = isMobile ? 150 : 380;
+    const pbase = new Float32Array(COUNT * 3), ppos = new Float32Array(COUNT * 3), pcol = new Float32Array(COUNT * 3), pspd = new Float32Array(COUNT);
+    for (let i = 0; i < COUNT; i++) {
+      const a = Math.random() * Math.PI * 2, rr = 1 + Math.random() * 6;
+      pbase.set([Math.cos(a) * rr, (Math.random() - 0.5) * 14, 2 - Math.random() * 24], i * 3);
+      pspd[i] = 0.4 + Math.random() * 1.2;
+      const c = Math.random() < 0.72 ? GOLD.clone().lerp(GOLDLIGHT, Math.random()) : TEAL;
+      pcol.set([c.r, c.g, c.b], i * 3);
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(ppos, 3));
+    pGeo.setAttribute("color", new THREE.BufferAttribute(pcol, 3));
+    pGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 40);
+    const pMat = new THREE.PointsMaterial({ size: 0.075, map: sprite, vertexColors: true, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+    disposables.push(pGeo, pMat);
+    world.add(new THREE.Points(pGeo, pMat));
+
+    /* ---- choreography --------------------------------------------- */
+    const state = { progress: 0 };
+    let visible = true;
+    const OFFX = 4.2; // standing helix settles into the right third
+
+    function reveal() {
+      canvas.style.opacity = "1";
+      if (reduced) {
+        state.progress = 0.92;
+        if (bodyEl) bodyEl.style.opacity = "1";
+        section.style.height = "100vh";
+        applyFrame(0);
+        renderer.render(scene, camera);
+        return;
+      }
+      gsap.to(ce, { opacity: 1, y: 0, duration: 1.1, ease: "power3.out", stagger: 0.12, delay: 0.2, startAt: { y: 26 } });
+    }
+
+    if (!reduced && !isMobile) {
+      ScrollTrigger.create({
+        trigger: section, start: "top top", end: `+=${scrollLength * 100}%`, scrub: 0.6,
+        onUpdate: (self) => (state.progress = self.progress),
+      });
+    }
+
+    const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+    if (finePointer) {
+      window.addEventListener("pointermove", (e) => {
+        ptr.tx = e.clientX / window.innerWidth - 0.5;
+        ptr.ty = e.clientY / window.innerHeight - 0.5;
+      }, { passive: true });
+    }
+
+    const smooth = (a: number, b: number, x: number) => {
+      const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    };
+    const pulse = (p: number, c: number) => smooth(c - 0.1, c - 0.03, p) * (1 - smooth(c + 0.03, c + 0.1, p));
+    const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
+
+    let tSpin = 0, spinZ = 0, helixSpin = 0;
+    const clock = new THREE.Clock();
+    let raf: number | null = null;
+
+    function applyFrame(t: number) {
+      const p = state.progress;
+      const flyT = smooth(0, 0.55, p);
+      const openT = smooth(0.55, 0.75, p);
+      const zoomT = smooth(0.75, 1.0, p);
+      const m = openT;
+
+      ptr.x += (ptr.tx - ptr.x) * 0.05;
+      ptr.y += (ptr.ty - ptr.y) * 0.05;
+
+      // camera: fly forward, hold through the open, then dolly in
+      camera.position.z = 7 - flyT * 15 - zoomT * 1.2;
+      camera.position.x = ptr.x * 0.4;
+      camera.position.y = -ptr.y * 0.35;
+      camera.lookAt(OFFX * 0.2 * zoomT, 0, MZ); // small follow → helix stays right
+
+      // ---- unroll like cutting a ring and pulling one edge: the centreline
+      // is a circular arc whose curvature relaxes from a full circle (k=1/R)
+      // to a straight vertical line (k=0). The s=0 end stays put; the far end
+      // swings out. Always a simple arc → no spiral, no self-crossing, no flip.
+      const k = (1 / R) * (1 - m);
+      const useArc = k > 1e-4;
+      let mx = 0, my = 0;
+      for (let i = 0; i < N; i++) {
+        const tt = tArr[i], s = tt * S_LEN;
+        let cx, cy, tx, ty;
+        if (useArc) { const a = k * s; cx = (1 - Math.cos(a)) / k; cy = Math.sin(a) / k; tx = Math.sin(a); ty = Math.cos(a); }
+        else { cx = 0; cy = s; tx = 0; ty = 1; }
+        const nx = ty, ny = -tx; // in-plane normal to the centreline
+        const th = lerp(RING_TW, 6, m) * tt * Math.PI * 2; // winding relaxes 13→6 turns
+        const wr = lerp(WIND, 1.0, m);
+        const cA = Math.cos(th) * wr, sA = Math.sin(th) * wr;
+        posA[i * 3] = cx + cA * nx; posA[i * 3 + 1] = cy + cA * ny; posA[i * 3 + 2] = sA;
+        posB[i * 3] = cx - cA * nx; posB[i * 3 + 1] = cy - cA * ny; posB[i * 3 + 2] = -sA;
+        mx += cx; my += cy;
+      }
+      mx /= N; my /= N; // recentre on the centreline centroid each frame
+      for (let i = 0; i < N; i++) { posA[i * 3] -= mx; posA[i * 3 + 1] -= my; posB[i * 3] -= mx; posB[i * 3 + 1] -= my; }
+      mLineA.geometry.getAttribute("position").needsUpdate = true;
+      mLineB.geometry.getAttribute("position").needsUpdate = true;
+      mNodesA.geometry.getAttribute("position").needsUpdate = true;
+      mNodesB.geometry.getAttribute("position").needsUpdate = true;
+      for (let r = 0; r < rIdx.length; r++) {
+        const i = rIdx[r] * 3;
+        rungBuf.set([posA[i], posA[i + 1], posA[i + 2], posB[i], posB[i + 1], posB[i + 2]], r * 6);
+      }
+      rungGeo.getAttribute("position").needsUpdate = true;
+
+      // freeze the ring spin the instant it opens, ease tilt to upright,
+      // gentle drift once standing; slide right on the zoom
+      if (openT < 0.02) spinZ += 0.0024;
+      morph.rotation.z = spinZ * (1 - openT);
+      if (openT > 0.9) helixSpin += 0.0022;
+      morph.rotation.y = helixSpin;
+      morph.position.x = OFFX * zoomT;
+      morph.scale.setScalar(lerp(1, 0.5, m)); // final standing helix ~6 units tall
+
+      // tunnel rings spin; fade out as the helix forms
+      tSpin += 0.0024;
+      const tunnelFade = 1 - openT;
+      heroRing.grp.rotation.z = tSpin * 0.6;
+      heroRing.mats.forEach((mm: any, i) => (mm.opacity = (i % 2 ? 0.9 : 0.55) * tunnelFade));
+      pathRings.forEach(({ ring, c }) => {
+        ring.grp.rotation.z = tSpin * 0.5;
+        const a = 0.3 + pulse(p, c) * 0.6;
+        ring.mats.forEach((mm: any, i) => (mm.opacity = (i % 2 ? a : a * 0.7) * tunnelFade));
+      });
+
+      mNodesA.material.opacity = mNodesB.material.opacity = 0.8 + 0.15 * Math.sin(t * 1.5);
+      world.rotation.x += (ptr.y * 0.1 * (1 - openT) - world.rotation.x) * 0.05;
+
+      for (let i = 0; i < COUNT; i++) {
+        let y = pbase[i * 3 + 1] + t * pspd[i] * 0.4;
+        y = (((y + 7) % 14) + 14) % 14 - 7;
+        ppos[i * 3] = pbase[i * 3] + Math.sin(t * 0.3 + i) * 0.12;
+        ppos[i * 3 + 1] = y;
+        ppos[i * 3 + 2] = pbase[i * 3 + 2];
+      }
+      pGeo.getAttribute("position").needsUpdate = true;
+
+      if (intro) {
+        intro.style.opacity = String(1 - smooth(0.02, 0.1, p));
+        intro.style.transform = `scale(${(1 + p * 0.4).toFixed(3)})`;
+      }
+      const centers = [0.2, 0.36, 0.5];
+      for (let i = 0; i < phaseEls.length; i++) phaseEls[i].style.opacity = pulse(p, centers[i]).toFixed(3);
+      if (bodyEl) bodyEl.style.opacity = smooth(0.8, 0.95, p).toFixed(3);
+      if (cue) cue.style.opacity = String(1 - smooth(0.02, 0.14, p));
+      if (bg) bg.style.transform = `translateY(${(-p * 30 - ptr.y * 8).toFixed(1)}px) scale(1.08)`;
+    }
+
+    function frame() {
+      raf = requestAnimationFrame(frame);
+      applyFrame(clock.getElapsedTime());
+      renderer.render(scene, camera);
+    }
+    const start = () => { if (raf === null) raf = requestAnimationFrame(frame); };
+    const stop = () => { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } };
+
+    if (reduced) {
+      reveal();
+    } else {
+      if (isMobile) section.style.height = "100vh";
+      reveal();
+      start();
+      new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        visible && !document.hidden ? start() : stop();
+      }, { threshold: 0.01 }).observe(section);
+      document.addEventListener("visibilitychange", () => {
+        document.hidden || !visible ? stop() : start();
+      });
+    }
+
+    window.addEventListener("pagehide", () => {
+      stop();
+      disposables.forEach((d) => d.dispose?.());
+      sprite.dispose();
+      renderer.dispose();
+    });
+
+    let rt: number;
+    window.addEventListener("resize", () => {
+      clearTimeout(rt);
+      rt = window.setTimeout(() => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight, false);
+      }, 200);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>(".dnaj").forEach(initDnaJourney);
+</script>
