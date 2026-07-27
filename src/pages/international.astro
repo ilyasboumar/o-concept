@@ -58,6 +58,53 @@ const internationalSchema = [
   description="Travelling from abroad for treatment? Dr Wakil's Harley Street clinic welcomes international patients — video consultation before you fly, VIP airport reception, door-to-door transfers and treatment completed within your day. Clinics in London, Dubai and Egypt."
   schema={internationalSchema}
 >
+  <!-- ===== TRIAL — International video animation (Hailuo AI). The original
+       layout below is hidden behind {false && …}; say "go back" to restore. ===== -->
+  <section class="relative -mt-20 flex min-h-screen items-end overflow-hidden bg-ink pb-16 md:pb-20">
+    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <!-- full-bleed video anchored to the bottom: fills the screen edge to
+           edge (no side spaces) and, on wide screens, trims only the empty
+           top sky — the jet and the Rolls-Royce stay fully in frame -->
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster={withBase('images/dr-sw-international.png')}
+        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 100%;"
+      >
+        <source src={withBase('images/dr-sw-international.mp4')} type="video/mp4" />
+      </video>
+    </div>
+    <!-- legibility scrims: strong at the bottom-left where the copy sits,
+         lighter over the jet so the video still reads -->
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background:
+        linear-gradient(to top, rgba(8,8,10,0.96) 0%, rgba(8,8,10,0.6) 28%, rgba(8,8,10,0.15) 52%, transparent 72%),
+        linear-gradient(to right, rgba(8,8,10,0.82) 0%, rgba(8,8,10,0.38) 34%, transparent 62%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="wrap relative" style="text-shadow: 0 2px 22px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.55);">
+      <p class="eyebrow" data-reveal>International Patients</p>
+      <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1">
+        The Capital of Regenerative Medicine <span class="text-gold italic">and Wellbeing.</span>
+      </h1>
+      <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/75 md:text-lg" data-reveal data-delay="0.2">
+        Patients travel from around the world to 77 Harley Street. We make the journey effortless.
+      </p>
+      <div class="mt-10" data-reveal data-delay="0.3">
+        <a href="tel:+442030068459" class="btn btn-gold" data-magnetic>Plan Your Visit</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== ORIGINAL INTERNATIONAL LAYOUT — hidden while trialing the video.
+      Say "go back" to restore this and remove the video hero above. ===== */}
+  {false && (
+    <>
   <!-- ============ HERO — jet-first, full viewport ============ -->
   <section class="relative -mt-20 flex min-h-screen items-end overflow-hidden pb-16 md:pb-20">
     <!-- the jet dominates: scaled up slightly (900px source at full viewport),
@@ -256,4 +303,6 @@ const internationalSchema = [
       </div>
     </div>
   </section>
+    </>
+  )}
 </Base>
