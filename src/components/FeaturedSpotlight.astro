@@ -35,21 +35,21 @@ if (!t) throw new Error(`FeaturedSpotlight: unknown featured slug for page "${pa
         />
       </div>
       <figcaption class="flex items-center justify-between px-2 pt-3 pb-1">
-        <span class="text-[9px] font-semibold tracking-[0.3em] text-cream/45 uppercase">{t.tag}</span>
+        <span class="text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">{t.tag}</span>
         <span class:list={['pathway-tag', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
       </figcaption>
     </figure>
 
     <!-- copy + CTAs -->
     <div data-reveal-child>
-      <p class="shimmer-label text-[11px] font-semibold tracking-[0.35em] uppercase">Treatment of the Month</p>
+      <p class="shimmer-label text-[12px] font-semibold tracking-[0.2em] uppercase">Treatment of the Month</p>
       <h2 id={`spotlight-${pageKey}`} class="mt-6 font-serif text-4xl leading-[1.05] text-cream md:text-6xl">
         {t.name}
       </h2>
       <div class="mt-6 flex flex-wrap gap-1.5">
         {t.conditions.map((c) => <span class="condition-chip" title={c.plain}>{c.clinical}</span>)}
       </div>
-      <p class="mt-6 max-w-lg text-[15px] leading-[1.85] text-cream/65 line-clamp-2">{t.desc}</p>
+      <p class="mt-6 max-w-lg text-[16px] leading-[1.85] text-cream/75 line-clamp-2">{t.desc}</p>
       <div class="mt-9 flex flex-col gap-4 sm:flex-row">
         <a href="#begin" class="btn btn-gold" data-magnetic>Book a Consultation</a>
         <a href={`#${t.slug}`} class="btn btn-ghost" data-magnetic>Learn More</a>

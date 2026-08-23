@@ -1,0 +1,78 @@
+---
+/**
+ * Reassurance.astro — the "you are in the right place" band.
+ *
+ * One prop-driven component reading from src/data/assurances.ts, so the same
+ * voice repeats across the site from a single source and maps to one editable
+ * CMS block later. Pick a set with `variant`; don't write new copy into a page.
+ *
+ * Deliberately quiet: hairline rules, no cards, no icons. This is meant to read
+ * as a hand on the shoulder at the moment someone is deciding whether to pick
+ * up the phone — a loud, boxed-in "REASSURANCE" panel would do the opposite.
+ */
+import { sets, type AssuranceSetName } from '../data/assurances';
+
+interface Props {
+  variant?: AssuranceSetName;
+  /** `ink` sits on the page base; `ink2` lifts it off an adjacent section. */
+  surface?: 'ink' | 'ink2' | 'inkdeep';
+  /** Accent for the rules and numerals. Match the pathway you're sitting in. */
+  accent?: 'gold' | 'rose' | 'teal';
+}
+
+const { variant = 'welcome', surface = 'ink2', accent = 'gold' } = Astro.props;
+const set = sets[variant];
+
+const bg = surface === 'ink' ? 'bg-ink' : surface === 'inkdeep' ? 'bg-inkdeep' : 'bg-ink2';
+const eyebrowClass = accent === 'teal' ? 'eyebrow-teal' : 'eyebrow';
+---
+
+<section class:list={['hairline-t relative', bg, 'py-20 md:py-28']} aria-labelledby={`assure-${variant}`}>
+  <div
+    class="pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    style={
+      accent === 'teal'
+        ? 'background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(45,212,191,0.05), transparent 65%);'
+        : accent === 'rose'
+          ? 'background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(217,164,164,0.05), transparent 65%);'
+          : 'background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,169,110,0.06), transparent 65%);'
+    }
+  >
+  </div>
+
+  <div class="wrap relative">
+    <div class="max-w-2xl" data-reveal>
+      <p class={eyebrowClass}>{set.eyebrow}</p>
+      <h2 id={`assure-${variant}`} class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+        {set.heading}
+      </h2>
+    </div>
+
+    <ul class="mt-14 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-14" data-reveal-child>
+      {
+        set.items.map((item) => (
+          <li class="assure">
+            <span
+              class:list={[
+                'assure__rule',
+                accent === 'teal' ? 'bg-teal' : accent === 'rose' ? 'bg-rose' : 'bg-gold',
+              ]}
+              aria-hidden="true"
+            />
+            <h3 class="mt-6 font-serif text-2xl leading-snug text-cream">{item.title}</h3>
+            <p class="mt-4 text-sm leading-[1.85] text-cream/75">{item.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .assure__rule {
+    display: block;
+    height: 1px;
+    width: 2.75rem;
+  }
+</style>

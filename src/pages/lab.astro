@@ -1,0 +1,398 @@
+---
+/**
+ * /lab — motion sandbox. NOT part of the website.
+ *
+ * Deliberately does not use Base.astro: no header, footer, concierge, quiz or
+ * main.js. Nothing here can affect the live site, and nothing on the live site
+ * affects what you see here. It is excluded from the sitemap and marked
+ * noindex, and no page links to it.
+ *
+ * Purpose: develop the "increase the animation without distracting from the
+ * message" brief in isolation. Every candidate renders behind the real hero
+ * copy, because the only question that matters is whether the headline still
+ * reads. Toggle the copy off to judge the motion on its own.
+ *
+ * When a candidate is approved it gets ported into the site properly; until
+ * then this file and src/scripts/lab/** are the only things that exist.
+ */
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
+import '../styles/global.css';
+
+import goldenCells from '../scripts/lab/scenes/goldenCells.js';
+import stemCells from '../scripts/lab/scenes/stemCells.js';
+import helix from '../scripts/lab/scenes/helix.js';
+import fusion from '../scripts/lab/scenes/fusion.js';
+import strings from '../scripts/lab/scenes/strings.js';
+
+const scenes = [goldenCells, stemCells, helix, fusion, strings];
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Motion lab — The O Concept™ (internal)</title>
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body class="lab">
+    <header class="lab-head">
+      <div>
+        <p class="lab-kicker">Internal sandbox — not part of the website</p>
+        <h1 class="lab-title">Motion lab</h1>
+        <p class="lab-intro">
+The luxury material language applied to the regenerative subject — gold, pearl and frosted
+          glass, but made <em>of</em> DNA, cells and platelets rather than instead of them. Round one
+          had the subject and rendered it clinically; round two had the register and dropped the
+          subject. These join the two. No teal, no surgical blues, no clinical white.
+          Each runs behind the real hero copy; <strong>Hide copy</strong> shows the motion alone.
+        </p>
+      </div>
+      <div class="lab-global">
+        <button type="button" class="lab-btn" data-toggle-copy aria-pressed="true">Hide copy</button>
+        <p class="lab-note">
+          Reduced motion, offscreen pause and hidden-tab pause are wired into every candidate —
+          same rules as the live site.
+        </p>
+      </div>
+    </header>
+
+    {
+      scenes.map((s, i) => (
+        <section class="lab-scene" data-scene={s.id}>
+          <div class="lab-stage" style={s.bg ? `background:${s.bg}` : undefined}>
+            <canvas class="lab-canvas" data-canvas></canvas>
+
+            <div class="lab-copy" data-copy data-owns-copy={s.ownsCopy ? "" : undefined}>
+              <p class="lab-copy__eyebrow">The O Concept™ · Harley Street</p>
+              <h2 class="lab-copy__h">Your body’s own biology, reactivated.</h2>
+              <p class="lab-copy__p">
+                More than 25,000 cases worldwide. The doctor who brought the O-Shot® and P-Shot®
+                to the UK.
+              </p>
+              <div class="lab-copy__row">
+                <span class="lab-copy__btn">Book a confidential consultation</span>
+                <span class="lab-copy__btn ghost">Explore the science</span>
+              </div>
+            </div>
+
+            <p class="lab-fps"><span data-fps>—</span> fps</p>
+          </div>
+
+          <div class="lab-panel">
+            <div class="lab-panel__head">
+              <p class="lab-index">{String(i + 1).padStart(2, '0')}</p>
+              <div>
+                <h3 class="lab-name">{s.name}</h3>
+                <p class="lab-blurb">{s.blurb}</p>
+                <p class="lab-placement"><strong>Where it fits:</strong> {s.placement}</p>
+              </div>
+            </div>
+
+            <div class="lab-controls">
+              {Object.entries(s.params).map(([key, cfg]) => (
+                <label class="lab-control">
+                  <span class="lab-control__label">
+                    {cfg.label}
+                    <output data-out={key}>{cfg.value}</output>
+                  </span>
+                  <input
+                    type="range"
+                    data-param={key}
+                    min={cfg.min}
+                    max={cfg.max}
+                    step={cfg.step}
+                    value={cfg.value}
+                  />
+                </label>
+              ))}
+              <button type="button" class="lab-btn lab-btn--reset" data-reset>Reset</button>
+            </div>
+          </div>
+        </section>
+      ))
+    }
+
+    <footer class="lab-foot">
+      <p>
+        Nothing here is wired into the site. Once a direction is chosen, it gets ported properly —
+        tokens, reduced motion, and the same disposal rules as the existing 3D layer.
+      </p>
+    </footer>
+
+    <script>
+      import '../scripts/lab/index.js';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .lab {
+    background: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+
+  .lab-head {
+    display: grid;
+    gap: 2.5rem;
+    padding: 4rem 1.5rem 3rem;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  @media (min-width: 900px) {
+    .lab-head {
+      grid-template-columns: 1.6fr 1fr;
+      align-items: end;
+      padding: 5rem 2.5rem 3.5rem;
+    }
+  }
+  .lab-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+  }
+  .lab-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.75rem, 6vw, 4.25rem);
+    line-height: 1.05;
+    margin-top: 0.75rem;
+    color: var(--color-cream);
+  }
+  .lab-intro {
+    margin-top: 1.25rem;
+    max-width: 62ch;
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .lab-intro strong {
+    color: var(--color-teal);
+    font-weight: 600;
+  }
+  .lab-global {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .lab-note {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(244, 241, 236, 0.62);
+    max-width: 40ch;
+  }
+
+  .lab-btn {
+    cursor: pointer;
+    border: 1px solid rgba(45, 212, 191, 0.5);
+    background: transparent;
+    color: var(--color-teal);
+    padding: 0.7rem 1.4rem;
+    font: 600 12px/1 var(--font-sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .lab-btn:hover {
+    background: rgba(45, 212, 191, 0.12);
+  }
+  .lab-btn[aria-pressed='false'] {
+    border-color: rgba(201, 169, 110, 0.5);
+    color: var(--color-gold);
+  }
+
+  .lab-scene {
+    max-width: 1180px;
+    margin: 0 auto 5.5rem;
+    padding: 0 1.5rem;
+  }
+  @media (min-width: 900px) {
+    .lab-scene {
+      padding: 0 2.5rem;
+    }
+  }
+
+  .lab-stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-height: 380px;
+    overflow: hidden;
+    border: 1px solid rgba(244, 241, 236, 0.12);
+    background: var(--color-ink);
+  }
+  .lab-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .lab-copy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .lab-copy[hidden] {
+    display: flex;
+    opacity: 0;
+  }
+  .lab-copy__eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .lab-copy__h {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
+    line-height: 1.1;
+    margin-top: 1rem;
+    max-width: 16ch;
+  }
+  .lab-copy__p {
+    margin-top: 1.25rem;
+    max-width: 44ch;
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .lab-copy__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+  .lab-copy__btn {
+    background: var(--color-gold);
+    color: var(--color-ink);
+    padding: 0.9rem 1.6rem;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  }
+  .lab-copy__btn.ghost {
+    background: transparent;
+    color: var(--color-cream);
+    border: 1px solid rgba(201, 169, 110, 0.45);
+  }
+
+  .lab-fps {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.75rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgba(244, 241, 236, 0.62);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lab-panel {
+    border: 1px solid rgba(244, 241, 236, 0.12);
+    border-top: 0;
+    padding: 1.75rem clamp(1.25rem, 3vw, 2.25rem) 2rem;
+    background: var(--color-ink2);
+  }
+  .lab-panel__head {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .lab-index {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: var(--color-teal);
+    line-height: 1;
+  }
+  .lab-name {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: var(--color-cream);
+  }
+  .lab-blurb {
+    margin-top: 0.6rem;
+    max-width: 70ch;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .lab-placement {
+    margin-top: 0.6rem;
+    max-width: 70ch;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(244, 241, 236, 0.62);
+  }
+  .lab-placement strong {
+    color: var(--color-gold);
+    font-weight: 600;
+  }
+
+  .lab-controls {
+    display: grid;
+    gap: 1.1rem 2rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(244, 241, 236, 0.1);
+    align-items: end;
+  }
+  @media (min-width: 700px) {
+    .lab-controls {
+      grid-template-columns: repeat(3, 1fr) auto;
+    }
+  }
+  .lab-control {
+    display: block;
+  }
+  .lab-control__label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(244, 241, 236, 0.75);
+    margin-bottom: 0.6rem;
+  }
+  .lab-control__label output {
+    color: var(--color-teal);
+    font-variant-numeric: tabular-nums;
+  }
+  .lab-control input[type='range'] {
+    width: 100%;
+    accent-color: var(--color-teal);
+    cursor: pointer;
+  }
+  .lab-btn--reset {
+    align-self: end;
+  }
+
+  .lab-foot {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(244, 241, 236, 0.62);
+  }
+</style>

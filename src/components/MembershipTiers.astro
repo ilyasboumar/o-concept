@@ -66,17 +66,17 @@ const tiers = [
         ]}
       >
         {tier.featured && (
-          <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold px-4 py-1.5 text-[9px] font-bold tracking-[0.3em] text-ink uppercase">
+          <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold px-4 py-1.5 text-[11px] font-bold tracking-[0.18em] text-ink uppercase">
             Most Chosen
           </span>
         )}
         <h3 class="font-serif text-3xl text-gold">{tier.name}</h3>
-        <p class="mt-2 min-h-10 text-xs leading-relaxed text-cream/50">{tier.tagline}</p>
+        <p class="mt-2 min-h-10 text-xs leading-relaxed text-cream/62">{tier.tagline}</p>
         <p class="mt-6 flex items-baseline gap-3">
           <span class="font-serif text-4xl text-cream">{tier.price}</span>
-          <span class="text-[10px] font-semibold tracking-[0.22em] text-cream/45 uppercase">{tier.priceNote}</span>
+          <span class="text-[11px] font-semibold tracking-[0.14em] text-cream/62 uppercase">{tier.priceNote}</span>
         </p>
-        <ul class="hairline-t mt-8 flex-1 space-y-4 pt-8 text-sm text-cream/70">
+        <ul class="hairline-t mt-8 flex-1 space-y-4 pt-8 text-sm text-cream/75">
           {tier.benefits.map((benefit) => (
             <li class="flex items-start gap-3">
               <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" aria-hidden="true" />

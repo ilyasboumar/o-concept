@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
-import TreatmentCarousel from '../components/TreatmentCarousel.astro';
-import { imageUrl } from '../lib/url';
-import { treatments, PATHWAY_LABELS } from '../data/treatments';
+import TreatmentGrid from '../components/TreatmentGrid.astro';
+import { treatments } from '../data/treatments';
+import Reassurance from '../components/Reassurance.astro';
 
 const procedureSchema = treatments.map((t) => ({
   '@context': 'https://schema.org',
@@ -58,56 +58,22 @@ const faqSchema = {
   />
 
   <FeaturedSpotlight pageKey="treatments" />
-  <TreatmentCarousel pathway="all" />
 
   <section class="relative bg-ink py-20 md:py-28">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
     <div class="wrap relative">
-      <!-- filter tabs -->
-      <div class="flex flex-wrap gap-3" data-treatment-filters data-reveal>
-        <button type="button" class="filter-tab active" data-filter="all">All</button>
-        <button type="button" class="filter-tab" data-filter="him">For Him</button>
-        <button type="button" class="filter-tab" data-filter="her">For Her</button>
-        <button type="button" class="filter-tab" data-filter="longevity">Longevity</button>
+      <div class="mb-12 max-w-2xl" data-reveal>
+        <p class="eyebrow">The catalogue</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">
+          Sixteen protocols, grouped by who they serve.
+        </h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
+          Open any treatment to see the concerns it answers — described the way patients describe them,
+          not the way textbooks do.
+        </p>
       </div>
 
-      <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-treatment-grid data-reveal-child>
-        {
-          treatments.map((t) => (
-            <article class:list={['treatment-box group flex flex-col overflow-hidden bg-ink2', t.pathway]} data-pathway={t.pathway} id={t.slug} data-tilt>
-              <!-- real treatment imagery — fixed ratio, uniform crop, dark overlay for legibility -->
-              <div class="relative aspect-[3/2] shrink-0 overflow-hidden">
-                <img
-                  src={imageUrl(t.image)}
-                  alt={t.imageAlt}
-                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/10" aria-hidden="true"></div>
-                <span class:list={['pathway-tag absolute top-5 left-6', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
-                <span class="absolute bottom-4 left-6 text-[9px] font-bold tracking-[0.3em] text-cream/70 uppercase">{t.tag}</span>
-              </div>
-
-              <div class="flex flex-1 flex-col p-7">
-                <h2 class="font-serif text-2xl text-cream">{t.name}</h2>
-                <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-                <div class="mt-6">
-                  <p class="mb-2.5 text-[8.5px] font-bold tracking-[0.3em] text-cream/35 uppercase">Addresses</p>
-                  <div class="flex flex-wrap gap-1.5">
-                    {t.conditions.map((c) => (
-                      <span class="condition-chip" title={c.plain}>{c.clinical}</span>
-                    ))}
-                  </div>
-                </div>
-                <a href="#begin" class="mt-7 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-gold uppercase">
-                  Enquire confidentially <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
-                </a>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-      <p class="mt-10 hidden text-center text-sm text-cream/50" data-treatment-empty>No treatments in this pathway yet.</p>
+      <TreatmentGrid filters grouped />
     </div>
   </section>
 
@@ -117,7 +83,7 @@ const faqSchema = {
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow">Before you ask</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions everyone has.</h2>
-        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
           Anything else, in complete confidence:
           <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
         </p>
@@ -130,13 +96,15 @@ const faqSchema = {
                 <span class="font-serif text-xl text-cream">{faq.q}</span>
                 <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">＋</span>
               </summary>
-              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/75">{faq.a}</p>
             </details>
           ))
         }
       </div>
     </div>
   </section>
+
+  <Reassurance variant="guidance" surface="ink2" accent="teal" />
 
   <FinalCTA
     heading="Not sure where to start?"

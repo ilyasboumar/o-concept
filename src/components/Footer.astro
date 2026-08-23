@@ -36,12 +36,12 @@ const socials = [
 ];
 ---
 
-<footer class="hairline-t bg-[#070708]">
+<footer class="hairline-t bg-inkdeep">
   <div class="wrap grid grid-cols-1 gap-14 py-20 md:grid-cols-12">
     <div class="md:col-span-4">
       <p class="font-serif text-3xl text-cream">The O Concept<sup class="text-[0.5em] text-gold">™</sup></p>
-      <p class="mt-1 text-[9px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by Dr SW Clinics</p>
-      <p class="mt-8 max-w-sm text-sm leading-relaxed text-cream/55">
+      <p class="mt-1 text-[11px] font-semibold tracking-[0.22em] text-gold/85 uppercase">by Dr SW Clinics</p>
+      <p class="mt-8 max-w-sm text-sm leading-relaxed text-cream/75">
         The world&rsquo;s most awarded sexual rejuvenation protocol — regenerative, evidence-led and entirely
         confidential, delivered from Harley Street.
       </p>
@@ -51,7 +51,7 @@ const socials = [
             <a
               href={s.href}
               aria-label={s.name}
-              class="hairline flex h-10 w-10 items-center justify-center text-gold/70 transition-all duration-400 hover:border-gold hover:text-gold"
+              class="hairline flex h-10 w-10 items-center justify-center text-gold/85 transition-all duration-400 hover:border-gold hover:text-gold"
             >
               <Fragment set:html={s.icon} />
             </a>
@@ -66,7 +66,7 @@ const socials = [
         {
           treatmentsNav.map((link) => (
             <li>
-              <a href={link.href} class="text-sm text-cream/65 transition-colors duration-400 hover:text-gold">
+              <a href={link.href} class="text-sm text-cream/75 transition-colors duration-400 hover:text-gold">
                 {link.label}
               </a>
             </li>
@@ -81,7 +81,7 @@ const socials = [
         {
           practiceNav.map((link) => (
             <li>
-              <a href={link.href} class="text-sm text-cream/65 transition-colors duration-400 hover:text-gold">
+              <a href={link.href} class="text-sm text-cream/75 transition-colors duration-400 hover:text-gold">
                 {link.label}
               </a>
             </li>
@@ -92,9 +92,9 @@ const socials = [
 
     <div class="md:col-span-3">
       <p class="eyebrow mb-7">Contact</p>
-      <address class="space-y-4 text-sm text-cream/65 not-italic">
+      <address class="space-y-4 text-sm text-cream/75 not-italic">
         <p>77 Harley Street<br />London W1G 8QN</p>
-        <p class="text-xs text-cream/45">Clinics in London, Dubai and Egypt — headquartered at 77 Harley Street.</p>
+        <p class="text-xs text-cream/62">Clinics in London, Dubai and Egypt — headquartered at 77 Harley Street.</p>
         <p><a href="tel:+442030068459" class="transition-colors duration-400 hover:text-gold">+44 (0)20 3006 8459</a></p>
         <p><a href="mailto:info@drswclinics.com" class="transition-colors duration-400 hover:text-gold">info@drswclinics.com</a></p>
       </address>
@@ -102,7 +102,7 @@ const socials = [
   </div>
 
   <div class="hairline-t">
-    <div class="wrap flex flex-col gap-3 py-7 text-[10px] tracking-[0.12em] text-cream/35 md:flex-row md:items-center md:justify-between">
+    <div class="wrap flex flex-col gap-3 py-7 text-[11px] tracking-[0.12em] text-cream/62 md:flex-row md:items-center md:justify-between">
       <p>© {year} Dr SW Clinics. The O Concept™ is a registered trademark of Dr SW Clinics.</p>
       <p>GMC Registered Physicians · CQC Registered Clinic · Harley Street, London</p>
     </div>

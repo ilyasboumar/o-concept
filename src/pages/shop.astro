@@ -78,8 +78,8 @@ const products = [
     <div class="wrap relative">
       <!-- curated-by note — slim strip so the first product row shares the opening viewport -->
       <div class="hairline flex flex-col items-center justify-center gap-x-6 gap-y-2 bg-ink2 px-6 py-4 text-center md:flex-row" data-reveal>
-        <p class="eyebrow !text-[9px] shrink-0">Curated by Dr Wakil</p>
-        <p class="text-sm leading-relaxed text-cream/60">
+        <p class="eyebrow !text-[11px] shrink-0">Curated by Dr Wakil</p>
+        <p class="text-sm leading-relaxed text-cream/75">
           Every product is one Dr Wakil formulates, prescribes or personally recommends in clinic — fulfilled by the
           official store, opening in a new tab.
         </p>
@@ -94,21 +94,21 @@ const products = [
                 class="relative flex h-52 items-center justify-center"
                 style={`background:
                   radial-gradient(ellipse 70% 60% at 50% 20%, rgba(${i % 2 ? '45,212,191' : '201,169,110'},0.14), transparent 60%),
-                  linear-gradient(180deg, #16161c, #0d0d10 80%);`}
+                  linear-gradient(180deg, #2b2e36, #20222a 80%);`}
               >
                 <div class="hairline flex h-28 w-16 items-end justify-center bg-gradient-to-b from-white/[0.06] to-transparent pb-2">
-                  <span class="text-[7px] font-bold tracking-[0.25em] text-gold/70 uppercase">SW</span>
+                  <span class="text-[11px] font-bold tracking-[0.16em] text-gold/85 uppercase">SW</span>
                 </div>
-                <span class="absolute top-4 left-5 text-[8.5px] font-bold tracking-[0.3em] text-cream/45 uppercase">{p.tag}</span>
+                <span class="absolute top-4 left-5 text-[11px] font-bold tracking-[0.18em] text-cream/62 uppercase">{p.tag}</span>
               </div>
               <div class="flex flex-1 flex-col p-6">
                 <h2 class="font-serif text-xl leading-snug text-cream">{p.name}</h2>
-                <p class="mt-3 flex-1 text-[13px] leading-relaxed text-cream/55">{p.desc}</p>
+                <p class="mt-3 flex-1 text-[14px] leading-relaxed text-cream/75">{p.desc}</p>
                 <a
                   href={EXTERNAL_SHOP_URL}
                   target="_blank"
                   rel="noopener"
-                  class="btn btn-ghost mt-6 !px-5 !py-3 !text-[10px]"
+                  class="btn btn-ghost mt-6 !px-5 !py-3 !text-[11px]"
                 >
                   View in store ↗
                 </a>
@@ -118,7 +118,7 @@ const products = [
         }
       </div>
 
-      <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+      <p class="mt-12 text-center text-[11px] tracking-[0.16em] text-cream/62 uppercase" data-reveal>
         Fulfilled by the official Dr SW store · Links open in a new tab
       </p>
     </div>

@@ -28,11 +28,11 @@ const glow = glows[theme];
   <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" aria-hidden="true"></div>
 
   <div class="wrap relative">
-    <p class:list={['text-[11px] font-semibold uppercase tracking-[0.35em]', eyebrowColor]} data-reveal>
+    <p class:list={['text-[12px] font-semibold uppercase tracking-[0.2em]', eyebrowColor]} data-reveal>
       {eyebrow}
     </p>
     <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1" set:html={title} />
-    <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">{sub}</p>
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/75 md:text-lg" data-reveal data-delay="0.2">{sub}</p>
     {
       Astro.slots.has('default') && (
         <div class="mt-8" data-reveal data-delay="0.3">

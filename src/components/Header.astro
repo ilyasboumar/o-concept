@@ -20,11 +20,11 @@ const treatmentsActive = ['for-him', 'for-her', 'longevity', 'treatments'].some(
 const aboutActive = ['about-dr-wakil', 'training', 'shop'].some(is);
 
 const triggerClass = (active: boolean) => [
-  'nav-trigger flex cursor-pointer items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+  'nav-trigger flex cursor-pointer items-center gap-2 text-[12px] font-semibold tracking-[0.14em] uppercase transition-colors duration-400 hover:text-gold',
   active ? 'text-gold' : 'text-cream/75',
 ];
 const linkClass = (active: boolean) => [
-  'text-[11px] font-semibold tracking-[0.22em] uppercase transition-colors duration-400 hover:text-gold',
+  'text-[12px] font-semibold tracking-[0.14em] uppercase transition-colors duration-400 hover:text-gold',
   active ? 'text-gold' : 'text-cream/75',
 ];
 ---
@@ -35,7 +35,7 @@ const linkClass = (active: boolean) => [
       <span class="font-serif text-[1.55rem] font-medium tracking-wide text-cream transition-colors duration-500 group-hover:text-gold">
         The O Concept<sup class="text-[0.55em] text-gold">™</sup>
       </span>
-      <span class="mt-1 text-[8.5px] font-semibold tracking-[0.4em] text-gold/70 uppercase">by SW Clinics</span>
+      <span class="mt-1 text-[11px] font-semibold tracking-[0.22em] text-gold/85 uppercase">by SW Clinics</span>
     </a>
 
     <nav class="hidden items-center gap-9 lg:flex" aria-label="Primary">
@@ -86,7 +86,7 @@ const linkClass = (active: boolean) => [
     </nav>
 
     <div class="hidden items-center gap-7 lg:flex">
-      <a href="tel:+442030068459" class="text-[11px] font-medium tracking-[0.14em] text-cream/70 transition-colors duration-400 hover:text-gold">
+      <a href="tel:+442030068459" class="text-[12px] font-medium tracking-[0.14em] text-cream/75 transition-colors duration-400 hover:text-gold">
         +44 (0)20 3006 8459
       </a>
       <a href="#begin" class="btn btn-gold !px-6 !py-3">Book a Consultation</a>
@@ -124,7 +124,7 @@ const linkClass = (active: boolean) => [
         <div class="m-acc-inner">
           {
             treatmentsChildren.map((link) => (
-              <a href={withBase(link.slug)} class="block py-2.5 text-sm tracking-[0.18em] text-cream/70 uppercase transition-colors duration-300 hover:text-gold">
+              <a href={withBase(link.slug)} class="block py-2.5 text-sm tracking-[0.18em] text-cream/75 uppercase transition-colors duration-300 hover:text-gold">
                 {link.label}
               </a>
             ))
@@ -151,7 +151,7 @@ const linkClass = (active: boolean) => [
         <div class="m-acc-inner">
           {
             aboutChildren.map((link) => (
-              <a href={withBase(link.slug)} class="block py-2.5 last:pb-5 text-sm tracking-[0.18em] text-cream/70 uppercase transition-colors duration-300 hover:text-gold">
+              <a href={withBase(link.slug)} class="block py-2.5 last:pb-5 text-sm tracking-[0.18em] text-cream/75 uppercase transition-colors duration-300 hover:text-gold">
                 {link.label}
               </a>
             ))
@@ -162,7 +162,7 @@ const linkClass = (active: boolean) => [
   </nav>
 
   <div class="wrap mt-auto mb-12 flex flex-col gap-5 pt-10">
-    <a href="tel:+442030068459" class="text-sm tracking-[0.14em] text-cream/70">+44 (0)20 3006 8459</a>
+    <a href="tel:+442030068459" class="text-sm tracking-[0.14em] text-cream/75">+44 (0)20 3006 8459</a>
     <a href="#begin" class="btn btn-gold w-full">Book a Consultation</a>
   </div>
 </div>

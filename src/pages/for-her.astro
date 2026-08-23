@@ -4,9 +4,10 @@ import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
-import TreatmentCarousel from '../components/TreatmentCarousel.astro';
+import TreatmentGrid from '../components/TreatmentGrid.astro';
 import { imageUrl } from '../lib/url';
 import { treatments, treatmentsByPathway } from '../data/treatments';
+import Reassurance from '../components/Reassurance.astro';
 
 /* Native her treatments, plus the O Concept™ Chair (its image is the
    women's-incontinence EM chair) — every box carries a real image. */
@@ -67,7 +68,6 @@ const procedureSchema = herTreatments.map((t) => ({
   />
 
   <FeaturedSpotlight pageKey="for-her" />
-  <TreatmentCarousel pathway="her" />
 
   <section class="relative bg-ink py-24 md:py-32">
     <div
@@ -79,10 +79,10 @@ const procedureSchema = herTreatments.map((t) => ({
     <div class="wrap relative">
       <div class="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
         <div class="lg:col-span-5">
-          <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Heard, first</p>
+          <p class="text-[12px] font-semibold tracking-[0.2em] text-rose uppercase">Heard, first</p>
           <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Medicine that listens before it treats.</h2>
         </div>
-        <div class="space-y-6 text-[15px] leading-[1.9] text-cream/65 lg:col-span-7">
+        <div class="space-y-6 text-[16px] leading-[1.9] text-cream/75 lg:col-span-7">
           <p>
             So many women are told their symptoms are simply "part of life" — dryness, discomfort, changes in
             sensation, moments of leakage that quietly reorganise a whole day. They are not character traits. They
@@ -96,35 +96,8 @@ const procedureSchema = herTreatments.map((t) => ({
         </div>
       </div>
 
-      <div class="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
-        {
-          herTreatments.map((t) => (
-            <div id={t.slug} class="group flex flex-col overflow-hidden border border-rose/20 bg-ink2 transition-colors duration-500 hover:border-rose/60" data-tilt>
-              <div class="relative aspect-[3/2] overflow-hidden">
-                <img
-                  src={imageUrl(t.image)}
-                  alt={t.imageAlt}
-                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-ink2 via-ink/20 to-ink/5" aria-hidden="true"></div>
-              </div>
-              <div class="flex flex-1 flex-col p-8 pt-6">
-                <span class="text-[9px] font-bold tracking-[0.3em] text-rose/80 uppercase">{t.tag}</span>
-                <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
-                <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-                <div class="mt-6 flex flex-wrap gap-1.5">
-                  {t.conditions
-                    .filter((c) => !/erectile/i.test(c.clinical))
-                    .slice(0, 3)
-                    .map((c) => (
-                      <span class="condition-chip" title={c.plain}>{c.clinical}</span>
-                    ))}
-                </div>
-              </div>
-            </div>
-          ))
-        }
+      <div class="mt-20">
+        <TreatmentGrid items={herTreatments} keepCondition={(c) => !/erectile/i.test(c.clinical)} />
       </div>
     </div>
   </section>
@@ -133,9 +106,9 @@ const procedureSchema = herTreatments.map((t) => ({
   <section class="hairline-t bg-ink2 py-24 md:py-32">
     <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
-        <p class="text-[11px] font-semibold tracking-[0.35em] text-rose uppercase">Asked gently, often</p>
+        <p class="text-[12px] font-semibold tracking-[0.2em] text-rose uppercase">Asked gently, often</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions women actually search.</h2>
-        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
           A confidential conversation with a female member of our care team:
           <a href="tel:+442030068459" class="text-rose">+44 (0)20 3006 8459</a>.
         </p>
@@ -148,7 +121,7 @@ const procedureSchema = herTreatments.map((t) => ({
                 <span class="font-serif text-xl text-cream">{faq.q}</span>
                 <span class="faq-icon shrink-0 text-xl font-light text-rose" aria-hidden="true">＋</span>
               </summary>
-              <p class="border-t border-rose/20 pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+              <p class="border-t border-rose/20 pt-5 pb-7 text-sm leading-[1.85] text-cream/75">{faq.a}</p>
             </details>
           ))
         }
@@ -157,5 +130,7 @@ const procedureSchema = herTreatments.map((t) => ({
   </section>
 
   <Journey />
+  <Reassurance variant="guidance" surface="ink2" accent="rose" />
+
   <FinalCTA heading="Gently, and in your own time." sub="A confidential conversation with a female member of our care team is always available on request." />
 </Base>

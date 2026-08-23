@@ -46,12 +46,12 @@ for (let i = 0; i < max; i++) {
 }
 ---
 
-<section class="hairline-t hairline-b relative overflow-hidden bg-[#070708] py-14 md:py-16" aria-label="Awards, testimonials and press recognition">
+<section class="hairline-t hairline-b relative overflow-hidden bg-inkdeep py-14 md:py-16" aria-label="Awards, testimonials and press recognition">
   <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
 
   <div class="relative flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-0">
     <!-- fixed intro cell — Dr Wakil anchors the stream -->
-    <div class="relative z-10 flex shrink-0 items-center gap-5 border-gold/25 bg-[#070708] px-6 md:px-10 lg:w-[340px] lg:border-r">
+    <div class="relative z-10 flex shrink-0 items-center gap-5 border-gold/25 bg-inkdeep px-6 md:px-10 lg:w-[340px] lg:border-r">
       <div class="hairline h-20 w-20 shrink-0 overflow-hidden rounded-full p-1 md:h-24 md:w-24">
         <img
           src="https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg"
@@ -64,8 +64,8 @@ for (let i = 0; i < max; i++) {
       </div>
       <div>
         <p class="font-serif text-xl leading-tight text-cream md:text-2xl">Dr Sherif Wakil</p>
-        <p class="mt-1.5 text-[9px] font-semibold tracking-[0.28em] text-gold uppercase">Creator of The O Concept™</p>
-        <p class="mt-1 text-[9px] tracking-[0.2em] text-cream/40 uppercase">World’s most awarded protocol</p>
+        <p class="mt-1.5 text-[11px] font-semibold tracking-[0.17em] text-gold uppercase">Creator of The O Concept™</p>
+        <p class="mt-1 text-[11px] tracking-[0.13em] text-cream/62 uppercase">World’s most awarded protocol</p>
       </div>
     </div>
 
@@ -97,9 +97,9 @@ for (let i = 0; i < max; i++) {
                         <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M8 5v14l11-7z" /></svg>
                       </span>
                       <span class="absolute inset-x-4 bottom-4">
-                        <span class="block text-[8.5px] font-semibold tracking-[0.3em] text-gold uppercase">Patient story · watch</span>
+                        <span class="block text-[11px] font-semibold tracking-[0.18em] text-gold uppercase">Patient story · watch</span>
                         <span class="mt-1.5 line-clamp-2 font-serif text-[0.95rem] leading-snug text-cream italic">“{cell.quote}”</span>
-                        <span class="mt-2 block text-[9px] font-semibold tracking-[0.25em] text-cream/50 uppercase">{cell.attribution}</span>
+                        <span class="mt-2 block text-[11px] font-semibold tracking-[0.16em] text-cream/62 uppercase">{cell.attribution}</span>
                       </span>
                     </button>
                   )}
@@ -112,17 +112,17 @@ for (let i = 0; i < max; i++) {
                   )}
                   {cell.kind === 'quote' && (
                     <blockquote class="flex h-full flex-col justify-between">
-                      <p class="font-serif text-[1.05rem] leading-snug text-cream/85 italic">
+                      <p class="font-serif text-[1.05rem] leading-snug text-cream/90 italic">
                         <span class="mr-1 text-2xl leading-none text-gold" aria-hidden="true">“</span>
                         {cell.text}
                       </p>
-                      <footer class="mt-4 text-[9px] font-semibold tracking-[0.25em] text-gold/80 uppercase">{cell.who}</footer>
+                      <footer class="mt-4 text-[11px] font-semibold tracking-[0.16em] text-gold/80 uppercase">{cell.who}</footer>
                     </blockquote>
                   )}
                   {cell.kind === 'press' && (
                     <div class="flex h-full min-h-[150px] flex-col items-center justify-center gap-3">
-                      <span class="text-[8.5px] font-semibold tracking-[0.35em] text-cream/35 uppercase">As seen in</span>
-                      <span class="font-serif text-3xl text-cream/70">{cell.name}</span>
+                      <span class="text-[11px] font-semibold tracking-[0.2em] text-cream/62 uppercase">As seen in</span>
+                      <span class="font-serif text-3xl text-cream/75">{cell.name}</span>
                     </div>
                   )}
                 </div>
@@ -151,7 +151,7 @@ for (let i = 0; i < max; i++) {
     justify-content: center;
     border-radius: 9999px;
     border: 1px solid rgba(201, 169, 110, 0.6);
-    background: rgba(10, 10, 11, 0.68);
+    background: rgba(28, 30, 36, 0.5);
     color: var(--color-gold);
     backdrop-filter: blur(4px);
     transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;

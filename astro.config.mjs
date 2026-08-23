@@ -7,7 +7,9 @@ export default defineConfig({
   output: 'static',
   site: 'https://ilyasboumar.github.io',
   base: '/o-concept',
-  integrations: [sitemap()],
+  // /lab is an internal motion sandbox — keep it out of the sitemap.
+  // It is also marked noindex and linked from nowhere.
+  integrations: [sitemap({ filter: (page) => !page.includes('/lab') })],
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,0 +1,99 @@
+---
+/**
+ * TeachingRecord.astro — "the doctor who teaches the doctors".
+ *
+ * The client's ask: show the scale of the training, and list the congresses
+ * spoken at. Both read from src/data/credentials.ts, so adding an engagement
+ * is one object in an array — no template edit, and one CMS block later.
+ *
+ * The speaking list renders only what is confirmed. It is deliberately built
+ * to look correct with three entries or thirty, so a short list reads as
+ * selective rather than as a gap waiting to be filled.
+ */
+import { trainingStats, programmes, speaking } from '../data/credentials';
+
+interface Props {
+  /** Hide the programme grid where the page already covers the curriculum. */
+  showProgrammes?: boolean;
+}
+const { showProgrammes = true } = Astro.props;
+
+const stats = [trainingStats.clinicians, trainingStats.cohort, trainingStats.reach];
+---
+
+<section class="hairline-t relative overflow-hidden bg-ink py-24 md:py-32" aria-labelledby="teaching-heading">
+  <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+
+  <div class="wrap relative">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Teaching &amp; speaking</p>
+      <h2 id="teaching-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+        The doctor the doctors learn from.
+      </h2>
+      <p class="mt-6 text-[16px] leading-relaxed text-cream/75">
+        Dr Wakil created The O Concept™ and brought the O&#8209;Shot<sup class="text-[0.5em]">®</sup> and
+        P&#8209;Shot<sup class="text-[0.5em]">®</sup> to the UK. Clinicians travel from around the world to learn
+        these techniques from him directly — and the standard he teaches is the standard the clinic runs on.
+      </p>
+    </div>
+
+    <!-- the scale of it -->
+    <dl class="hairline-t mt-16 grid grid-cols-1 gap-x-10 gap-y-12 pt-14 md:grid-cols-3" data-reveal-child>
+      {
+        stats.map((s) => (
+          <div class="flex flex-col">
+            <dt class="order-2 mt-3 text-[11px] font-semibold tracking-[0.18em] text-cream/75 uppercase">{s.label}</dt>
+            <dd class="order-1 font-serif text-5xl leading-none text-gold md:text-6xl">{s.value}</dd>
+            <dd class="order-3 mt-3 max-w-[30ch] text-sm leading-relaxed text-cream/62">{s.note}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    {
+      showProgrammes && (
+        <div class="mt-20">
+          <p class="eyebrow-teal" data-reveal>The curriculum</p>
+          <ul class="mt-8 grid grid-cols-1 gap-px bg-cream/10 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+            {programmes.map((p) => (
+              <li class="bg-ink p-8">
+                <h3 class="font-serif text-xl leading-snug text-cream">{p.name}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-cream/75">{p.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      speaking.length > 0 && (
+        <div class="mt-20">
+          <p class="eyebrow" data-reveal>Selected congresses &amp; invited lectures</p>
+          <ul class="hairline-t mt-8 divide-y divide-cream/10 border-cream/10" data-reveal-child>
+            {speaking.map((e) => (
+              <li class="flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:justify-between md:gap-8">
+                <div>
+                  <h3 class="font-serif text-xl leading-snug text-cream">{e.event}</h3>
+                  {e.place && <p class="mt-1.5 text-sm text-cream/75">{e.place}</p>}
+                </div>
+                <div class="flex shrink-0 items-baseline gap-5">
+                  {e.role && (
+                    <span class="text-[11px] font-semibold tracking-[0.16em] text-gold/85 uppercase">{e.role}</span>
+                  )}
+                  {e.year && <span class="font-serif text-xl text-gold">{e.year}</span>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="mt-14 flex flex-wrap gap-4" data-reveal>
+      <a href="https://iaagsw.com" target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
+        The IAAGSW ↗
+      </a>
+    </div>
+  </div>
+</section>

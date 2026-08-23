@@ -36,12 +36,12 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
       <h2 id="finder-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
         Find your treatment.
       </h2>
-      <p class="mt-6 text-[15px] leading-relaxed text-cream/60">
+      <p class="mt-6 text-[16px] leading-relaxed text-cream/75">
         Describe your concern in your own words — or explore by system below. We&rsquo;ll show you the treatments that
         address it, instantly and privately. Nothing you type is stored or sent.
       </p>
       <!-- diagnostic readout -->
-      <p class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[9.5px] font-semibold tracking-[0.3em] text-teal/70 uppercase" aria-hidden="true">
+      <p class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold tracking-[0.18em] text-teal/85 uppercase" aria-hidden="true">
         <span>{condCount} conditions indexed</span>
         <span class="h-[3px] w-[3px] rounded-full bg-teal/50"></span>
         <span>{txCount} signature protocols</span>
@@ -60,7 +60,7 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
           placeholder="Try “difficulty keeping an erection”, “dryness”, “low energy”, “leaking”…"
           autocomplete="off"
         />
-        <span class="pointer-events-none absolute top-1/2 right-6 -translate-y-1/2 text-teal/60" aria-hidden="true">
+        <span class="pointer-events-none absolute top-1/2 right-6 -translate-y-1/2 text-teal/85" aria-hidden="true">
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
           </svg>
@@ -100,7 +100,7 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
       }
     </div>
 
-    <p class="mt-8 text-center text-[10px] font-semibold tracking-[0.25em] text-cream/40 uppercase" data-finder-catalogue data-reveal>
+    <p class="mt-8 text-center text-[11px] font-semibold tracking-[0.16em] text-cream/62 uppercase" data-finder-catalogue data-reveal>
       Part of a catalogue of 100+ protocols —
       <a href={withBase('treatments')} class="text-teal transition-colors duration-300 hover:text-cream">browse the full treatment index →</a>
     </p>
@@ -108,7 +108,7 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
     <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-finder-results aria-live="polite">
       <!-- matching treatment cards are rendered here by main.js -->
     </div>
-    <p class="mt-10 hidden text-center text-sm text-cream/50" data-finder-empty>
+    <p class="mt-10 hidden text-center text-sm text-cream/62" data-finder-empty>
       No direct match — but that does not mean no answer. <a href="#begin" class="text-teal underline underline-offset-4">Book a confidential consultation</a> and we&rsquo;ll take it from there.
     </p>
   </div>

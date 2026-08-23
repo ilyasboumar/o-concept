@@ -1,0 +1,92 @@
+---
+/**
+ * TreatmentCard.astro — the treatment "square".
+ *
+ * One prop-driven component, rendered from a Treatment record. Every page
+ * that shows treatments uses this and nothing else, so a CMS migration maps
+ * it to a single repeatable block bound to the Treatment collection rather
+ * than to N hand-built sections. No copy lives here except the two
+ * structural labels below.
+ *
+ * The interaction: at rest the card reads as clinical medicine — imagery,
+ * name, modality. On engage it behaves like a diagnostic instrument reading
+ * the tissue: a scan line sweeps the image, the image drifts and dims, and a
+ * readout rises showing what the treatment actually treats *in the patient's
+ * own words*. That plain-language phrasing already exists on every condition
+ * and was previously buried in a `title` tooltip — invisible on desktop and
+ * unreachable on touch. It is the whole point of the card.
+ *
+ * Engage = hover (pointers only), or the explicit button (touch + keyboard).
+ * The button is the primary control; hover is the enhancement. Reduced motion
+ * keeps the readout and drops the sweep and the drift.
+ */
+import { imageUrl } from '../lib/url';
+import { PATHWAY_LABELS, type Condition, type Treatment } from '../data/treatments';
+
+interface Props {
+  treatment: Treatment;
+  /** Where the card's enquiry link points. */
+  href?: string;
+  /**
+   * Drop conditions that don't belong in this context. Some treatments are
+   * cross-listed across pathways — the O Concept™ Chair treats pelvic floors
+   * of both sexes — so the For Her page hides the male-specific entries.
+   * Returning true keeps the condition.
+   */
+  keepCondition?: (c: Condition) => boolean;
+}
+
+const { treatment: t, href = '#begin', keepCondition } = Astro.props;
+const conditions = keepCondition ? t.conditions.filter(keepCondition) : t.conditions;
+const readoutId = `readout-${t.slug}`;
+---
+
+<article class:list={['tx2', t.pathway]} id={t.slug} data-pathway={t.pathway} data-tx-card>
+  <div class="tx2__media">
+    <img
+      class="tx2__img"
+      src={imageUrl(t.image)}
+      alt={t.imageAlt}
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="tx2__veil" aria-hidden="true"></span>
+    <span class="tx2__scan" aria-hidden="true"></span>
+    <span class="tx2__grid" aria-hidden="true"></span>
+    <span class:list={['pathway-tag', 'tx2__pathway', t.pathway]}>{PATHWAY_LABELS[t.pathway]}</span>
+  </div>
+
+  <div class="tx2__body">
+    <p class="tx2__modality">{t.tag}</p>
+    <h3 class="tx2__name">{t.name}</h3>
+    <p class="tx2__desc">{t.desc}</p>
+  </div>
+
+  <div class="tx2__foot">
+    <button type="button" class="tx2__toggle" aria-expanded="false" aria-controls={readoutId}>
+      <span class="tx2__sign" aria-hidden="true"></span>
+      <span class="tx2__toggle-label">What this treats</span>
+      <span class="tx2__count">{conditions.length}</span>
+    </button>
+    <a href={href} class="tx2__cta">
+      Enquire <span class="tx2__arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <div class="tx2__readout" id={readoutId}>
+    <!-- the name repeats here: the readout covers the card body, so without
+         it the reader loses track of which treatment they opened -->
+    <p class="tx2__readout-name">{t.name}</p>
+    <p class="tx2__readout-title">What this treats</p>
+    <ul class="tx2__conditions">
+      {
+        conditions.map((c) => (
+          <li class="tx2__condition">
+            <span class="tx2__clinical">{c.clinical}</span>
+            <span class="tx2__plain">{c.plain}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</article>

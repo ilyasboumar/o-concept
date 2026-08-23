@@ -3,3 +3,24 @@ dist/
 .astro/
 .DS_Store
 .claude/
+
+# Raw client media (unprocessed originals) — the web-ready derivatives
+# live in public/images/ and are committed.
+assets-source/
+
+# Raw photo libraries staged in public/ (677 MB as of Aug 2026).
+#
+# These must NOT be committed. Anything in public/ is copied verbatim into
+# dist/, so committing them would (a) push the repo past GitHub's comfortable
+# size, (b) make every clone painfully slow, and (c) be permanent — git history
+# cannot be cleaned without a force-rewrite that breaks everyone else's clone.
+#
+# The workflow is the one used for the Dr Wakil hero: optimise the single image
+# you need into public/images/ (5.5 MB -> 202 KB) and commit only that.
+public/Clinic/
+public/Logos/
+public/Signature file/
+public/DR SW photos -*/
+public/DR SW WS photos -*/
+public/Animation -*/
+public/*.docx

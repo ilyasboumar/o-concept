@@ -9,7 +9,7 @@
 import DnaHelix from './DnaHelix.astro';
 ---
 
-<section class="relative flex min-h-screen items-center overflow-hidden bg-[#070708]" data-helix-stage aria-labelledby="interlude-heading">
+<section class="relative flex min-h-screen items-center overflow-hidden bg-inkdeep" data-helix-stage aria-labelledby="interlude-heading">
   <!-- helix stage — the hero of the section, not a background -->
   <div
     class="absolute top-1/2 right-[-14%] h-[62vh] w-[95%] -translate-y-1/2 sm:right-[-6%] sm:w-[70%] lg:right-0 lg:h-[78vh] lg:w-[58%]"
@@ -30,7 +30,7 @@ import DnaHelix from './DnaHelix.astro';
   <div class="scan-sweep" aria-hidden="true"></div>
 
   <!-- legibility gradient behind the copy -->
-  <div class="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-[#070708] via-[#070708]/80 to-transparent lg:w-[68%]" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-inkdeep via-inkdeep/80 to-transparent lg:w-[68%]" aria-hidden="true"></div>
 
   <div class="wrap relative py-28 md:py-36">
     <div class="max-w-xl">
@@ -38,7 +38,7 @@ import DnaHelix from './DnaHelix.astro';
       <h2 id="interlude-heading" class="mt-6 font-serif text-5xl leading-[1.04] text-cream md:text-7xl" data-reveal data-delay="0.1">
         Your body&rsquo;s own biology, <span class="text-teal italic">reactivated.</span>
       </h2>
-      <p class="mt-8 max-w-md text-[15px] leading-[1.9] text-cream/65" data-reveal data-delay="0.2">
+      <p class="mt-8 max-w-md text-[16px] leading-[1.9] text-cream/75" data-reveal data-delay="0.2">
         The O Concept™ is built on a regenerative principle: platelet-rich plasma, growth factors and the body&rsquo;s
         own blood products, precisely deployed to reawaken cellular repair — new vessels, new tissue, restored
         function. Not masking the symptom; rebuilding the biology beneath it.
@@ -52,7 +52,7 @@ import DnaHelix from './DnaHelix.astro';
   <!-- interaction hint — fades after first interaction; variant per pointer type -->
   <p
     data-helix-hint
-    class="pointer-events-none absolute bottom-10 right-[6%] text-[9px] font-semibold tracking-[0.4em] text-gold/70 uppercase"
+    class="pointer-events-none absolute bottom-10 right-[6%] text-[11px] font-semibold tracking-[0.22em] text-gold/85 uppercase"
     aria-hidden="true"
   >
     <span class="hint-fine">Move your cursor — explore the strand</span>

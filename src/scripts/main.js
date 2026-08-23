@@ -523,106 +523,6 @@ if (document.querySelector('[data-three]')) {
 }
 
 /* ============================================================
-   All-treatments carousel — slow marquee (~40s/loop), pauses on
-   hover/touch, draggable with momentum, resumes 3s after the
-   interaction ends. Drags never fire the card's anchor click.
-   Reduced motion: CSS turns the viewport into a scrollable row.
-   ============================================================ */
-
-document.querySelectorAll('[data-tx-carousel]').forEach((viewport) => {
-  const track = viewport.querySelector('.tx-track');
-  if (!track || reduced) return;
-
-  let x = 0;
-  let dragging = false;
-  let hovering = false; // hover holds the strip; leaving releases it instantly
-  let paused = false; // touch/drag pause — released by the resume timer
-  let resumeTimer = null;
-  let startX = 0;
-  let startTrackX = 0;
-  let lastX = 0;
-  let lastT = 0;
-  let velocity = 0;
-  let dragDistance = 0;
-
-  const half = () => track.scrollWidth / 2;
-  const scheduleResume = () => {
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(() => (paused = false), 2000);
-  };
-
-  gsap.ticker.add((_, dt) => {
-    if (!dragging) {
-      if (Math.abs(velocity) > 0.05) {
-        x += velocity * dt; // drag momentum, decaying
-        velocity *= Math.pow(0.94, dt / 16.7);
-      } else if (!paused && !hovering) {
-        x -= (half() / 40000) * dt; // ~40s per seamless loop
-      }
-    }
-    const h = half();
-    if (h > 0) {
-      if (x <= -h) x += h;
-      if (x > 0) x -= h;
-    }
-    track.style.transform = `translate3d(${x}px,0,0)`;
-  });
-
-  viewport.addEventListener('mouseenter', () => (hovering = true));
-  viewport.addEventListener('mouseleave', () => (hovering = false));
-  viewport.addEventListener('touchstart', () => {
-    paused = true;
-    clearTimeout(resumeTimer);
-  }, { passive: true });
-  viewport.addEventListener('touchend', scheduleResume, { passive: true });
-
-  /* No pointer capture — capturing would retarget the click away from the
-     card links, breaking plain clicks. Window listeners track the drag. */
-  viewport.addEventListener('pointerdown', (e) => {
-    dragging = true;
-    paused = true;
-    clearTimeout(resumeTimer);
-    velocity = 0;
-    dragDistance = 0;
-    startX = lastX = e.clientX;
-    startTrackX = x;
-    lastT = performance.now();
-    viewport.classList.add('dragging');
-  });
-  window.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    x = startTrackX + (e.clientX - startX);
-    dragDistance = Math.max(dragDistance, Math.abs(e.clientX - startX));
-    const now = performance.now();
-    const dt = Math.max(1, now - lastT);
-    velocity = (e.clientX - lastX) / dt; // px per ms
-    lastX = e.clientX;
-    lastT = now;
-  });
-  const endDrag = () => {
-    if (!dragging) return;
-    dragging = false;
-    viewport.classList.remove('dragging');
-    scheduleResume();
-  };
-  window.addEventListener('pointerup', endDrag);
-  window.addEventListener('pointercancel', endDrag);
-
-  /* a real drag must not fire the card link underneath */
-  viewport.addEventListener(
-    'click',
-    (e) => {
-      if (dragDistance > 8) {
-        e.preventDefault();
-        e.stopPropagation();
-        dragDistance = 0;
-      }
-    },
-    true
-  );
-});
-
-/* ============================================================
    Hero photography rotation — slow crossfade (legacy pages)
    ============================================================ */
 
@@ -763,11 +663,11 @@ if (finderInput) {
           <h3 class="font-serif text-2xl text-cream">${t.name}</h3>
           <span class="pathway-tag ${t.pathway} shrink-0">${PATHWAY_LABELS[t.pathway]}</span>
         </div>
-        <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">${t.desc}</p>
+        <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/75">${t.desc}</p>
         <div class="mt-5 flex flex-wrap gap-1.5">
           ${shown.map((c) => `<span class="condition-chip">${c.clinical}</span>`).join('')}
         </div>
-        <span class="mt-6 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.25em] text-teal uppercase">
+        <span class="mt-6 inline-flex items-center gap-3 text-[11px] font-semibold tracking-[0.16em] text-teal uppercase">
           View treatment <span class="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
         </span>
       </a>`;
@@ -819,20 +719,81 @@ if (finderInput) {
 const filterWrap = document.querySelector('[data-treatment-filters]');
 if (filterWrap) {
   const tabs = filterWrap.querySelectorAll('.filter-tab');
-  const boxes = document.querySelectorAll('[data-treatment-grid] [data-pathway]');
+  const groups = document.querySelectorAll('[data-tx-group]');
+  const cards = document.querySelectorAll('[data-treatment-grid] [data-pathway]');
   const emptyMsg = document.querySelector('[data-treatment-empty]');
+
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.toggle('active', t === tab));
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-pressed', String(on));
+      });
+
       const f = tab.dataset.filter;
       let visible = 0;
-      boxes.forEach((box) => {
-        const show = f === 'all' || box.dataset.pathway === f;
-        box.classList.toggle('hidden', !show);
-        if (show) visible++;
-      });
+
+      if (groups.length) {
+        /* grouped catalogue — a pathway filter simply picks its run,
+           so the group heading and its cards travel together */
+        groups.forEach((g) => {
+          const show = f === 'all' || g.dataset.txGroup === f;
+          g.classList.toggle('hidden', !show);
+          if (show) visible += g.querySelectorAll('[data-pathway]').length;
+        });
+      } else {
+        cards.forEach((card) => {
+          const show = f === 'all' || card.dataset.pathway === f;
+          card.classList.toggle('hidden', !show);
+          if (show) visible++;
+        });
+      }
+
       emptyMsg?.classList.toggle('hidden', visible > 0);
       ScrollTrigger.refresh();
+    });
+  });
+}
+
+/* ============================================================
+   Treatment squares — the diagnostic readout.
+   A single `.is-open` class drives every engaged style, so there
+   is one state definition rather than a duplicated :hover block.
+   The button is the primary control (works on touch and keyboard);
+   hover is an enhancement on fine pointers only, which is also why
+   a tap can never leave a card stuck open.
+   ============================================================ */
+
+const txCards = document.querySelectorAll('[data-tx-card]');
+if (txCards.length) {
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  const setOpen = (card, open) => {
+    card.classList.toggle('is-open', open);
+    card.querySelector('.tx2__toggle')?.setAttribute('aria-expanded', String(open));
+  };
+
+  txCards.forEach((card) => {
+    const toggle = card.querySelector('.tx2__toggle');
+
+    toggle?.addEventListener('click', () => {
+      const open = !card.classList.contains('is-open');
+      /* one readout at a time keeps a filtered grid legible */
+      if (open) txCards.forEach((other) => other !== card && setOpen(other, false));
+      setOpen(card, open);
+    });
+
+    card.addEventListener('mouseenter', () => finePointer.matches && setOpen(card, true));
+    card.addEventListener('mouseleave', () => finePointer.matches && setOpen(card, false));
+
+    /* Tabbing into the card reveals the readout, but focusing the toggle
+       itself must not — the click that follows would immediately close it. */
+    card.addEventListener('focusin', (e) => {
+      if (e.target !== toggle) setOpen(card, true);
+    });
+    card.addEventListener('focusout', (e) => {
+      if (!card.contains(e.relatedTarget)) setOpen(card, false);
     });
   });
 }
@@ -847,8 +808,8 @@ document.querySelectorAll('[data-video-facade]').forEach((facade) => {
     if (!id || id.startsWith('REPLACE_WITH')) {
       facade.innerHTML = `
         <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center">
-          <span class="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Video slot reserved</span>
-          <p class="max-w-xs text-sm leading-relaxed text-cream/55">The final video is being selected from Dr Wakil's library — the real embed will load here.</p>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Video slot reserved</span>
+          <p class="max-w-xs text-sm leading-relaxed text-cream/75">The final video is being selected from Dr Wakil's library — the real embed will load here.</p>
         </div>`;
       return;
     }
@@ -962,11 +923,11 @@ function initQuiz(root) {
       <div class="quiz-inner py-6 text-center">
         <div class="hairline mx-auto flex h-14 w-14 items-center justify-center rounded-full text-xl text-gold">✓</div>
         <h3 class="mt-6 font-serif text-2xl text-cream">Request received.</h3>
-        <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/60">
+        <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/75">
           A clinician will review and respond within 24 hours — discreetly, and with no obligation.
         </p>
         <button type="button" class="quiz-restart btn btn-ghost mt-8">Start Again</button>
-        <p class="mt-5 text-[10px] uppercase tracking-[0.2em] text-cream/30">Prototype — nothing is stored or sent</p>
+        <p class="mt-5 text-[11px] uppercase tracking-[0.13em] text-cream/62">Prototype — nothing is stored or sent</p>
       </div>`;
     root.querySelector('.quiz-restart')?.addEventListener('click', () => {
       step = 0;
@@ -981,9 +942,9 @@ function initQuiz(root) {
       const s = QUIZ_STEPS[step];
       html = `
         <div class="quiz-inner">
-          <div class="mb-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/40">
+          <div class="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/62">
             <span>Step ${step + 1} of ${QUIZ_STEPS.length}</span>
-            ${step > 0 ? '<button type="button" class="quiz-back cursor-pointer text-gold/80 uppercase tracking-[0.3em] transition-colors duration-300 hover:text-gold">← Back</button>' : ''}
+            ${step > 0 ? '<button type="button" class="quiz-back cursor-pointer text-gold/80 uppercase tracking-[0.18em] transition-colors duration-300 hover:text-gold">← Back</button>' : ''}
           </div>
           ${progressBar(((step + 1) / (QUIZ_STEPS.length + 1)) * 100)}
           <h3 class="mt-7 font-serif text-2xl leading-snug text-cream">${s.question}</h3>
@@ -992,7 +953,7 @@ function initQuiz(root) {
               .map((opt, i) => `<button type="button" class="quiz-option" data-i="${i}">${opt}</button>`)
               .join('')}
           </div>
-          <p class="mt-6 text-[10px] uppercase tracking-[0.2em] text-cream/30">Confidential · Reviewed by our clinical team · Nothing is stored in this prototype</p>
+          <p class="mt-6 text-[11px] uppercase tracking-[0.13em] text-cream/62">Confidential · Reviewed by our clinical team · Nothing is stored in this prototype</p>
         </div>`;
     } else {
       const r = quizResult(answers);
@@ -1000,17 +961,17 @@ function initQuiz(root) {
         <div class="quiz-inner">
           ${progressBar(100)}
           <div class="mt-7 flex items-center gap-3">
-            <p class="eyebrow !text-[10px]">Your likely pathway</p>
+            <p class="eyebrow !text-[11px]">Your likely pathway</p>
             ${r.pathway ? `<span class="pathway-tag ${r.pathway}">${PATHWAY_LABELS[r.pathway]}</span>` : ''}
           </div>
           <h3 class="mt-3 font-serif text-2xl leading-snug text-cream">${r.title}</h3>
-          <p class="mt-4 text-sm leading-relaxed text-cream/60">${r.body}</p>
+          <p class="mt-4 text-sm leading-relaxed text-cream/75">${r.body}</p>
           <ul class="mt-6 space-y-3">
             ${r.matches
               .filter(Boolean)
               .map(
                 (t) =>
-                  `<li class="hairline flex items-center gap-3 px-4 py-3 text-sm text-cream/80"><span class="h-1 w-1 shrink-0 rounded-full bg-gold"></span><span>${t.name}<span class="ml-2 text-cream/45">— ${t.tag.toLowerCase()}</span></span></li>`
+                  `<li class="hairline flex items-center gap-3 px-4 py-3 text-sm text-cream/90"><span class="h-1 w-1 shrink-0 rounded-full bg-gold"></span><span>${t.name}<span class="ml-2 text-cream/62">— ${t.tag.toLowerCase()}</span></span></li>`
               )
               .join('')}
           </ul>
@@ -1018,7 +979,7 @@ function initQuiz(root) {
             <a href="${r.href}" class="btn btn-gold flex-1">Book a Consultation</a>
             <button type="button" class="quiz-review btn btn-teal flex-1">Request a Doctor's Review Online</button>
           </div>
-          <p class="mt-5 text-center text-[10px] uppercase tracking-[0.2em] text-cream/30">Your responses are reviewed by our clinical team — Dr Wakil's team will recommend your pathway</p>
+          <p class="mt-5 text-center text-[11px] uppercase tracking-[0.13em] text-cream/62">Your responses are reviewed by our clinical team — Dr Wakil's team will recommend your pathway</p>
         </div>`;
     }
 
@@ -1111,7 +1072,7 @@ function renderChips() {
     const b = document.createElement('button');
     b.type = 'button';
     b.className =
-      'cursor-pointer border border-gold/30 px-3 py-1.5 text-[10px] tracking-[0.08em] text-gold/85 transition-all duration-300 hover:border-gold hover:bg-gold/10';
+      'cursor-pointer border border-gold/30 px-3 py-1.5 text-[11px] tracking-[0.08em] text-gold/85 transition-all duration-300 hover:border-gold hover:bg-gold/10';
     b.textContent = item.chip;
     b.addEventListener('click', () => {
       addMessage(item.chip, 'user');

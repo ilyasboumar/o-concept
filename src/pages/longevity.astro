@@ -5,9 +5,10 @@ import Journey from '../components/Journey.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 import CellField from '../components/CellField.astro';
 import FeaturedSpotlight from '../components/FeaturedSpotlight.astro';
-import TreatmentCarousel from '../components/TreatmentCarousel.astro';
+import TreatmentGrid from '../components/TreatmentGrid.astro';
 import { imageUrl } from '../lib/url';
 import { treatmentsByPathway } from '../data/treatments';
+import Reassurance from '../components/Reassurance.astro';
 
 const programmes = treatmentsByPathway('longevity');
 
@@ -65,7 +66,6 @@ const procedureSchema = programmes.map((t) => ({
   </PageHero>
 
   <FeaturedSpotlight pageKey="longevity" />
-  <TreatmentCarousel pathway="longevity" />
 
   <section class="relative bg-ink py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
@@ -75,7 +75,7 @@ const procedureSchema = programmes.map((t) => ({
           <p class="eyebrow-teal">Optimise the system</p>
           <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">You maintain everything you value. Why not yourself?</h2>
         </div>
-        <div class="space-y-6 text-[15px] leading-[1.9] text-cream/65 lg:col-span-7">
+        <div class="space-y-6 text-[16px] leading-[1.9] text-cream/75 lg:col-span-7">
           <p>
             Fatigue, brain fog, stubborn weight, fading drive — these are usually not character flaws or simple age.
             They are measurable shifts in hormones, metabolism and cellular repair. The O Concept™ Longevity programme
@@ -91,32 +91,8 @@ const procedureSchema = programmes.map((t) => ({
         </div>
       </div>
 
-      <div class="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
-        {
-          programmes.map((t) => (
-            <div id={t.slug} class="hairline-teal group flex flex-col overflow-hidden bg-ink2 transition-all duration-500 hover:border-teal/60" data-tilt>
-              <div class="relative aspect-[3/2] overflow-hidden">
-                <img
-                  src={imageUrl(t.image)}
-                  alt={t.imageAlt}
-                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-ink2 via-ink/20 to-ink/5" aria-hidden="true"></div>
-              </div>
-              <div class="flex flex-1 flex-col p-8 pt-6">
-                <span class="text-[9px] font-bold tracking-[0.3em] text-teal/80 uppercase">{t.tag}</span>
-                <h3 class="mt-4 font-serif text-2xl text-cream">{t.name}</h3>
-                <p class="mt-3 flex-1 text-sm leading-relaxed text-cream/55">{t.desc}</p>
-                <div class="mt-6 flex flex-wrap gap-1.5">
-                  {t.conditions.slice(0, 3).map((c) => (
-                    <span class="condition-chip">{c.clinical}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))
-        }
+      <div class="mt-20">
+        <TreatmentGrid items={programmes} />
       </div>
     </div>
   </section>
@@ -147,7 +123,7 @@ const procedureSchema = programmes.map((t) => ({
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow-teal">Questions, answered</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">What patients ask first.</h2>
-        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
           Anything else, our patient care team will answer in complete confidence on
           <a href="tel:+442030068459" class="text-teal">+44 (0)20 3006 8459</a>.
         </p>
@@ -160,7 +136,7 @@ const procedureSchema = programmes.map((t) => ({
                 <span class="font-serif text-xl text-cream">{faq.q}</span>
                 <span class="faq-icon shrink-0 text-xl font-light text-teal" aria-hidden="true">＋</span>
               </summary>
-              <p class="hairline-teal-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+              <p class="hairline-teal-t pt-5 pb-7 text-sm leading-[1.85] text-cream/75">{faq.a}</p>
             </details>
           ))
         }
@@ -169,6 +145,8 @@ const procedureSchema = programmes.map((t) => ({
   </section>
 
   <Journey />
+  <Reassurance variant="guidance" surface="ink2" accent="teal" />
+
   <FinalCTA
     heading="Start with the data."
     sub="A confidential consultation and Endo Test — the full picture of where you are, and a physician-led plan for where you could be."

@@ -49,7 +49,7 @@ const panels = [
       <h2 id="science-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
         The Science of The&nbsp;O&nbsp;Concept<sup class="text-[0.45em] text-teal">™</sup>
       </h2>
-      <p class="mt-6 max-w-xl text-[15px] leading-relaxed text-cream/60">
+      <p class="mt-6 max-w-xl text-[16px] leading-relaxed text-cream/75">
         Four clinical phases, one coherent protocol — created by Dr Wakil, and now taught by him to physicians
         worldwide.
       </p>
@@ -79,7 +79,7 @@ const panels = [
             <DnaHelix nodeCount={82} opacity={1} interactive mobile="reduced" mobileNodes={40} />
           </div>
           <div class="absolute bottom-5 left-6 right-6">
-            <p class="text-[9px] font-semibold tracking-[0.3em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
+            <p class="text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
           </div>
         </div>
 
@@ -89,8 +89,8 @@ const panels = [
             panels.map((p, i) => (
               <li class:list={['science-step', i === 0 && 'active']} data-step={i}>
                 <div class="flex items-baseline gap-4">
-                  <span class="science-step-num font-serif text-lg text-cream/50">{p.step}</span>
-                  <span class="text-[11px] font-semibold tracking-[0.3em] text-cream uppercase">{p.title}</span>
+                  <span class="science-step-num font-serif text-lg text-cream/62">{p.step}</span>
+                  <span class="text-[12px] font-semibold tracking-[0.18em] text-cream uppercase">{p.title}</span>
                 </div>
                 <span class="science-step-bar mt-2 block h-px w-full bg-gradient-to-r from-teal to-tealdeep/40" aria-hidden="true" />
               </li>
@@ -128,8 +128,8 @@ const panels = [
             <div class="hairline-teal relative bg-ink2/60 p-9 backdrop-blur-sm md:p-12">
               <span class="absolute -top-4 left-8 bg-ink px-3 font-serif text-4xl text-teal">{p.step}</span>
               <h3 class="mt-2 font-serif text-3xl text-cream md:text-4xl">{p.title}</h3>
-              <p class="mt-5 text-[15px] leading-[1.9] text-cream/65">{p.body}</p>
-              <p class="hairline-teal-t mt-7 pt-5 text-[10px] font-semibold tracking-[0.22em] text-teal/80 uppercase">{p.detail}</p>
+              <p class="mt-5 text-[16px] leading-[1.9] text-cream/75">{p.body}</p>
+              <p class="hairline-teal-t mt-7 pt-5 text-[11px] font-semibold tracking-[0.14em] text-teal/80 uppercase">{p.detail}</p>
             </div>
           </article>
         ))
@@ -138,11 +138,11 @@ const panels = [
       <!-- closing panel — freezes while the left column scrolls through -->
       <div class="science-final flex flex-col justify-center py-14 lg:min-h-[calc(100vh-5rem)] lg:py-0">
         <div class="gold-glow relative bg-ink2 p-9 md:p-12">
-          <p class="eyebrow !text-[10px]">The result</p>
+          <p class="eyebrow !text-[11px]">The result</p>
           <p class="mt-5 font-serif text-3xl leading-snug text-cream md:text-4xl">
             Function, sensation and confidence — <span class="text-gold italic">measured, restored, maintained.</span>
           </p>
-          <p class="mt-6 text-sm leading-[1.85] text-cream/60">
+          <p class="mt-6 text-sm leading-[1.85] text-cream/75">
             Not a procedure but a protocol: diagnostics first, regeneration at the cause, restoration with energy-based
             medicine, and optimisation that never stands still. This is the method the world now trains in — with the
             physician who created it.

@@ -15,7 +15,7 @@ interface Props {
 const { variant = 'full' } = Astro.props;
 ---
 
-<section class="hairline-t relative overflow-hidden bg-[#070708]" aria-labelledby="concierge-heading">
+<section class="hairline-t relative overflow-hidden bg-inkdeep" aria-labelledby="concierge-heading">
   <div class="relative py-24 md:py-32">
     <!-- cinematic private-jet background under the standard dark overlay -->
     <img
@@ -41,10 +41,10 @@ const { variant = 'full' } = Astro.props;
         <h2 id="concierge-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
           The O Concept<sup class="text-[0.45em] text-gold">™</sup> Concierge
         </h2>
-        <p class="mt-7 font-serif text-2xl leading-snug text-cream/85 italic md:text-3xl">
+        <p class="mt-7 font-serif text-2xl leading-snug text-cream/90 italic md:text-3xl">
           From airstrip to clinic and back — complete discretion, door-to-door.
         </p>
-        <p class="mt-6 max-w-xl text-[15px] leading-[1.9] text-cream/65">
+        <p class="mt-6 max-w-xl text-[16px] leading-[1.9] text-cream/75">
           {
             variant === 'full'
               ? 'Included with Platinum membership: VIP airport reception, transfers between hotel and clinic throughout your stay, accommodation arranged, and treatment completed within your day — premium hospitality, entirely private.'
@@ -57,7 +57,7 @@ const { variant = 'full' } = Astro.props;
         variant === 'full' && (
           <ul class="mt-10 flex max-w-2xl flex-wrap gap-3" data-reveal-child>
             {['VIP airport reception', 'Hotel–clinic transfers', 'Accommodation arranged', 'Complete discretion'].map((item) => (
-              <li class="hairline bg-ink/70 px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-gold/85 uppercase backdrop-blur-sm">
+              <li class="hairline bg-ink/70 px-5 py-3 text-[11px] font-semibold tracking-[0.14em] text-gold/85 uppercase backdrop-blur-sm">
                 {item}
               </li>
             ))}
@@ -68,7 +68,7 @@ const { variant = 'full' } = Astro.props;
       <div class="mt-11" data-reveal>
         <a
           href={withBase('international')}
-          class:list={[variant === 'full' ? 'btn btn-gold' : 'inline-flex items-center gap-3 text-[11px] font-semibold tracking-[0.25em] text-gold uppercase transition-colors duration-400 hover:text-goldlight']}
+          class:list={[variant === 'full' ? 'btn btn-gold' : 'inline-flex items-center gap-3 text-[12px] font-semibold tracking-[0.16em] text-gold uppercase transition-colors duration-400 hover:text-goldlight']}
           data-magnetic={variant === 'full' ? true : undefined}
         >
           {variant === 'full' ? 'Explore the International Service' : 'Discover our International service'}

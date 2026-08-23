@@ -22,6 +22,8 @@
  * ------------------------------------------------------------------
  */
 
+import { withBase } from '../lib/url';
+
 interface Props {
   scrollLength?: number;
   minWidth?: number;
@@ -49,25 +51,25 @@ const gates = [
         radial-gradient(ellipse 55% 55% at 50% 45%, rgba(201,169,110,0.12), transparent 62%),
         radial-gradient(ellipse 65% 50% at 50% 100%, rgba(201,169,110,0.07), transparent 65%),
         radial-gradient(ellipse 38% 32% at 50% 20%, rgba(45,212,191,0.05), transparent 60%),
-        #08080a;">
+        #16181d;">
     </div>
 
     <canvas class="dnaj__canvas absolute inset-0 h-full w-full opacity-0 transition-opacity duration-1000" aria-hidden="true"></canvas>
 
     <div class="pointer-events-none absolute inset-0" aria-hidden="true"
-      style="background: radial-gradient(ellipse 42% 46% at 50% 50%, rgba(8,8,10,0.82), rgba(8,8,10,0.38) 48%, transparent 74%);">
+      style="background: radial-gradient(ellipse 42% 46% at 50% 50%, rgba(16, 17, 22, 0.64), rgba(16, 17, 22, 0.26) 48%, transparent 74%);">
     </div>
     <div class="pointer-events-none absolute inset-0" aria-hidden="true"
-      style="background: linear-gradient(to right, rgba(8,8,10,0.92) 0%, rgba(8,8,10,0.45) 32%, transparent 58%);">
+      style="background: linear-gradient(to right, rgba(16, 17, 22, 0.74) 0%, rgba(16, 17, 22, 0.32) 32%, transparent 58%);">
     </div>
     <div class="pointer-events-none absolute inset-0" aria-hidden="true"
-      style="background: linear-gradient(to bottom, rgba(8,8,10,0.5) 0%, transparent 22%, transparent 72%, rgba(8,8,10,0.85) 100%);">
+      style="background: linear-gradient(to bottom, rgba(16, 17, 22, 0.36) 0%, transparent 22%, transparent 72%, rgba(16, 17, 22, 0.64) 100%);">
     </div>
 
     <div class="dnaj__intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
       <p class="eyebrow dnaj__ce" style="opacity:0">The O Concept™ · Harley Street</p>
       <h1 class="dnaj__ce mt-6 max-w-[16ch] font-serif text-5xl leading-[1.03] text-cream md:text-7xl" style="opacity:0">Step into the O.</h1>
-      <p class="dnaj__ce mt-6 max-w-sm text-[15px] leading-relaxed text-cream/70" style="opacity:0">Wholeness, vitality and flow — the regenerative protocol the world now trains in.</p>
+      <p class="dnaj__ce mt-6 max-w-sm text-[16px] leading-relaxed text-cream/75" style="opacity:0">Wholeness, vitality and flow — the regenerative protocol the world now trains in.</p>
       <div class="dnaj__ce pointer-events-auto mt-9 flex flex-col gap-4 sm:flex-row" style="opacity:0">
         <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
         <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
@@ -78,33 +80,82 @@ const gates = [
       {
         gates.map((g, i) => (
           <div class="dnaj__phase absolute inset-0 flex flex-col items-center justify-center px-6 text-center" data-phase={i} style="opacity:0">
-            <p class={`text-[11px] font-semibold uppercase tracking-[0.4em] ${g.accent === 'teal' ? 'text-teal' : g.accent === 'rose' ? 'text-rose' : 'text-gold'}`}>Pathway 0{i + 1}</p>
+            <p class={`text-[12px] font-semibold uppercase tracking-[0.22em] ${g.accent === 'teal' ? 'text-teal' : g.accent === 'rose' ? 'text-rose' : 'text-gold'}`}>Pathway 0{i + 1}</p>
             <h2 class="mt-4 font-serif text-4xl text-cream md:text-6xl">{g.title}</h2>
             <span class={`mt-5 block h-px w-14 ${g.accent === 'teal' ? 'bg-teal' : g.accent === 'rose' ? 'bg-rose' : 'bg-gold'}`} />
-            <p class="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-cream/65">{g.body}</p>
+            <p class="mx-auto mt-5 max-w-sm text-[16px] leading-relaxed text-cream/75">{g.body}</p>
           </div>
         ))
       }
     </div>
 
     <div class="dnaj__body pointer-events-none absolute inset-0 flex items-center" style="opacity:0">
+      <!--
+        Dr Wakil stands in the gap between the copy column and the helix. He is
+        deliberately *beside* the strand rather than over it: the canvas keeps
+        its full width and the DNA motion is untouched. The portrait's edges are
+        feathered in the asset itself, so it dissolves into the scene instead of
+        landing as a rectangle on top of it.
+      -->
       <div class="wrap">
-        <div class="max-w-md">
+       <div class="dnaj__layout">
+        <div class="dnaj__col">
           <p class="eyebrow-teal">The Science of Regeneration</p>
           <h2 class="mt-6 font-serif text-5xl leading-[1.04] text-cream md:text-6xl">Your body&rsquo;s own biology, <span class="text-teal italic">reactivated.</span></h2>
-          <p class="mt-7 max-w-md text-[15px] leading-[1.9] text-cream/65">
+          <p class="mt-7 max-w-md text-[16px] leading-[1.9] text-cream/75">
             Platelet-rich plasma, growth factors and your own cells — precisely deployed to reawaken cellular repair.
             New vessels, new tissue, restored function. Not masking the symptom; rebuilding the biology beneath it.
           </p>
           <div class="pointer-events-auto mt-9">
             <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
           </div>
+
+        <!-- Authority markers. The brief is "a global authority, not just another
+             sexual clinic" — so the claim is made with verifiable specifics
+             rather than adjectives. -->
+        <ul class="dnaj__creds">
+          <li>
+            <strong>25,000+</strong>
+            <span>cases worldwide</span>
+          </li>
+          <li>
+            <strong>1<sup>st</sup></strong>
+            <span>O&#8209;Shot<sup>®</sup> &amp; P&#8209;Shot<sup>®</sup> in the UK</span>
+          </li>
+          <li>
+            <strong>IAAGSW</strong>
+            <span>President &amp; Founder</span>
+          </li>
+        </ul>
         </div>
+
+        <!--
+          Dr Wakil is a grid sibling of the copy, not an absolutely positioned
+          overlay. That is the whole point: an absolute figure and a centred copy
+          column use different vertical anchors, so their relationship drifts with
+          viewport height — he sat below the credentials on one screen and above
+          them on the next. As a grid item he is locked to the same centre line at
+          every size. He still sits clear of the helix, so the DNA is untouched.
+        -->
+        <figure class="dnaj__figure">
+          <img
+            src={withBase('images/dr-wakil-hero.webp')}
+            alt="Dr Sherif Wakil at his desk, beneath a wall of professional certifications"
+            width="1100"
+            height="1650"
+            decoding="async"
+          />
+          <figcaption class="dnaj__figcap">
+            <span class="dnaj__figname">Dr Sherif Wakil</span>
+            <span class="dnaj__figrole">Founder · The O Concept™</span>
+          </figcaption>
+        </figure>
+       </div>
       </div>
     </div>
 
     <div class="dnaj__cue pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2" aria-hidden="true">
-      <span class="text-[9px] font-semibold tracking-[0.45em] text-cream/40 uppercase">Enter</span>
+      <span class="text-[11px] font-semibold tracking-[0.22em] text-cream/62 uppercase">Enter</span>
       <span class="relative block h-10 w-px overflow-hidden bg-cream/10">
         <span class="scroll-cue-dot absolute top-0 left-0 block h-2 w-px bg-gold"></span>
       </span>
@@ -167,10 +218,10 @@ const gates = [
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(window.innerWidth, window.innerHeight, false);
-    renderer.setClearColor(0x08080a, 0);
+    renderer.setClearColor(0x1c1e24, 0);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x08080a, 10, 30); // distant rings fade → no clutter
+    scene.fog = new THREE.Fog(0x1c1e24, 10, 30); // distant rings fade → no clutter
     const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 120);
     camera.position.set(0, 0, 7);
 
@@ -461,3 +512,106 @@ const gates = [
 
   document.querySelectorAll<HTMLElement>(".dnaj").forEach(initDnaJourney);
 </script>
+
+<style>
+  /* --- Dr Wakil in the hero -------------------------------------------------
+     Copy and portrait are grid siblings on ONE centre line. Previously the copy
+     was flex-centred and the figure was absolutely bottom-anchored, so the gap
+     between the credentials and his caption changed with every viewport height.
+     Same row, same alignment, so that can no longer happen. */
+  .dnaj__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 30rem);
+    /* END, not center: the columns are different heights, so centring each one
+       independently lets their BOTTOMS drift apart as the viewport changes —
+       which is why the caption sat below the credentials on one screen and above
+       them on the next. Aligning bottoms locks the caption to the credential
+       baseline at every size. */
+    align-items: end;
+    gap: clamp(1.5rem, 3.5vw, 4.5rem);
+  }
+  /* the portrait only appears where there is room for it beside the copy AND
+     clear of the helix */
+  @media (min-width: 1100px) {
+    .dnaj__layout { grid-template-columns: minmax(0, 30rem) max-content; }
+  }
+
+  .dnaj__col { min-width: 0; }
+
+  .dnaj__figure {
+    margin: 0;
+    justify-self: start;
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .dnaj__figure { display: block; }
+  }
+  .dnaj__figure img {
+    display: block;
+    /* height-driven: viewport height is the binding constraint in a pinned
+       hero. The vw term keeps the width in its lane beside the helix. */
+    height: min(58vh, 540px, 30vw);
+    width: auto;
+    filter: drop-shadow(0 0 80px rgba(201, 169, 110, 0.10));
+  }
+  .dnaj__figcap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: clamp(0.5rem, 1.4vh, 1.1rem);
+  }
+  .dnaj__figname {
+    font-family: var(--font-serif);
+    font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+    line-height: 1;
+    color: var(--color-cream);
+  }
+  .dnaj__figrole {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  /* --- authority markers ---------------------------------------------------- */
+  .dnaj__creds {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.6rem, 1.4vh, 1.25rem) 1.25rem;
+    max-width: 28rem;
+    margin-top: clamp(1.25rem, 3vh, 2.75rem);
+    padding-top: clamp(0.9rem, 2vh, 1.75rem);
+    border-top: 1px solid rgba(201, 169, 110, 0.22);
+  }
+  .dnaj__creds li { display: flex; flex-direction: column; gap: 0.35rem; }
+  .dnaj__creds strong {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2.4vh, 1.9rem);
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-gold);
+  }
+  .dnaj__creds strong sup { font-size: 0.5em; }
+  .dnaj__creds span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.55;
+    color: rgba(244, 241, 236, 0.75);
+  }
+
+  /* Short viewports: the pinned hero cannot scroll, so the block has to fit.
+     Headline and body step down before anything can clip off the top. */
+  @media (max-height: 780px) {
+    .dnaj__body h2 { font-size: clamp(1.9rem, 4.4vh, 3rem); }
+    .dnaj__body .dnaj__col > p { font-size: 15px; line-height: 1.7; margin-top: 1.1rem; }
+    .dnaj__body .dnaj__col > div { margin-top: 1.4rem; }
+  }
+  @media (max-height: 660px) {
+    .dnaj__creds { margin-top: 1rem; padding-top: 0.8rem; }
+    .dnaj__creds span { font-size: 10px; letter-spacing: 0.1em; }
+    .dnaj__body .eyebrow-teal { font-size: 11px; }
+  }
+</style>

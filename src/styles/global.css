@@ -6,9 +6,18 @@
    ============================================================ */
 
 @theme {
-  --color-ink: #0a0a0b;
-  --color-ink2: #101014;
-  --color-ink3: #16161c;
+  /* Surface ramp, darkest → lightest. Deliberately lifted off true black:
+     a near-black page starves an older retina of light, and maximum
+     light-on-dark contrast makes text *halate* (bleed outward) for eyes
+     with the lens scatter, cataract or astigmatism common past 55.
+     Dark stays the identity; near-black does not. Lifted a second step in
+     Aug 2026 — the owner wants the dark identity kept, so the ramp gained
+     1.84x more light rather than going grey. Every text tier still clears
+     AA: the floor (cream/62 on the card surface) measures 5.65:1. */
+  --color-inkdeep: #16181d; /* recessed bands — footer, final CTA */
+  --color-ink: #1c1e24; /* page base */
+  --color-ink2: #24262d; /* raised panels */
+  --color-ink3: #2b2e36; /* cards, highest surface */
   --color-cream: #f4f1ec;
   --color-gold: #c9a96e;
   --color-goldlight: #e3c992;
@@ -20,6 +29,18 @@
 
   --font-serif: "Cormorant Garamond", "Georgia", serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Type scale — floored for the patient demographic (50s–70s).
+     Each step runs one notch above Tailwind's default and carries
+     generous leading. Pupils narrow and lenses yellow with age, so the
+     retina receives far less light than a young eye's: size and leading
+     buy more legibility here than contrast does. */
+  --text-xs: 0.8125rem; /* 13px — was 12px */
+  --text-xs--line-height: 1.65;
+  --text-sm: 0.9375rem; /* 15px — was 14px */
+  --text-sm--line-height: 1.7;
+  --text-base: 1.0625rem; /* 17px — was 16px */
+  --text-base--line-height: 1.75;
 }
 
 @layer base {
@@ -41,7 +62,7 @@
     width: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0a0b;
+    background: #1c1e24;
   }
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, rgba(201, 169, 110, 0.45), rgba(45, 212, 191, 0.4));
@@ -57,6 +78,35 @@
   }
 }
 
+/* ============================================================
+   Legibility floor — patient demographic (50s–70s)
+   ------------------------------------------------------------
+   Text runs on three tiers of cream: 100 % / 75 % / 62 %. 62 % is a
+   hard floor and still measures 6.45:1 against the page base — nothing
+   a patient has to read sits below it. Hierarchy is carried by size
+   and weight, never by fading text further.
+
+   Phones take one more step up. Handsets get used in daylight, where
+   screen reflections wash out a dark UI and cost more effective
+   contrast than any palette choice can win back. These override the
+   arbitrary-value utilities, so they sit outside Tailwind's layers.
+   ============================================================ */
+
+@media (max-width: 767px) {
+  .text-\[11px\] {
+    font-size: 12px;
+  }
+  .text-\[12px\] {
+    font-size: 13px;
+  }
+  .text-\[14px\] {
+    font-size: 15px;
+  }
+  .text-\[16px\] {
+    font-size: 17px;
+  }
+}
+
 @layer components {
   /* ---------- layout ---------- */
   .wrap {
@@ -64,7 +114,7 @@
   }
 
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.35em] text-gold;
+    @apply text-[12px] font-semibold uppercase tracking-[0.2em] text-gold;
   }
 
   .hairline {
@@ -91,12 +141,12 @@
     background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(45, 212, 191, 0.06), transparent 65%);
   }
   .eyebrow-teal {
-    @apply text-[11px] font-semibold uppercase tracking-[0.35em] text-teal;
+    @apply text-[12px] font-semibold uppercase tracking-[0.2em] text-teal;
   }
 
   /* ---------- buttons — sci-fi bevel cut + light sweep ---------- */
   .btn {
-    @apply relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden px-8 py-4 text-[11px] font-semibold tracking-[0.25em] uppercase transition-all duration-500;
+    @apply relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden px-8 py-4 text-[12px] font-semibold tracking-[0.16em] uppercase transition-all duration-500;
     clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
   }
   /* light sweep on hover — plays once, rests invisible */
@@ -143,13 +193,13 @@
 
   /* ---------- forms ---------- */
   .field {
-    @apply w-full border border-cream/15 bg-white/[0.03] px-4 py-3 text-sm text-cream transition-colors duration-300 outline-none placeholder:text-cream/35;
+    @apply w-full border border-cream/15 bg-white/[0.03] px-4 py-3 text-sm text-cream transition-colors duration-300 outline-none placeholder:text-cream/62;
   }
   .field:focus {
     border-color: rgba(201, 169, 110, 0.7);
   }
   .field-label {
-    @apply mb-2 block text-[10px] font-semibold tracking-[0.25em] uppercase text-cream/50;
+    @apply mb-2 block text-[11px] font-semibold tracking-[0.16em] uppercase text-cream/62;
   }
 
   form[data-demo] .form-success {
@@ -216,7 +266,7 @@ html.js .hw {
   border-bottom: 1px solid transparent;
 }
 #site-header.scrolled {
-  background-color: rgba(10, 10, 11, 0.92);
+  background-color: rgba(28, 30, 36, 0.74);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom-color: rgba(201, 169, 110, 0.16);
@@ -240,7 +290,7 @@ html.js .hw {
   left: -1.25rem;
   min-width: 240px;
   padding: 0.9rem 0.5rem;
-  background: #101014;
+  background: #24262d;
   border: 1px solid rgba(201, 169, 110, 0.28);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   opacity: 0;
@@ -419,7 +469,7 @@ html.js .hw {
   }
 }
 .marquee-item {
-  @apply flex items-center px-10 font-serif text-2xl text-cream/30 transition-colors duration-500 md:px-14 md:text-3xl;
+  @apply flex items-center px-10 font-serif text-2xl text-cream/62 transition-colors duration-500 md:px-14 md:text-3xl;
   white-space: nowrap;
 }
 .marquee-item:hover {
@@ -517,7 +567,7 @@ html.js .hw {
   width: 100%;
   max-height: min(88vh, 820px);
   overflow-y: auto;
-  background: #101014;
+  background: #24262d;
   border: 1px solid rgba(201, 169, 110, 0.25);
   transform: translateY(28px);
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
@@ -592,7 +642,7 @@ html.js .hw {
    ============================================================ */
 
 .quiz-option {
-  @apply w-full cursor-pointer border border-cream/12 bg-white/[0.02] px-5 py-4 text-left text-sm text-cream/80 transition-all duration-400;
+  @apply w-full cursor-pointer border border-cream/12 bg-white/[0.02] px-5 py-4 text-left text-sm text-cream/90 transition-all duration-400;
 }
 .quiz-option:hover {
   border-color: rgba(201, 169, 110, 0.65);
@@ -737,50 +787,6 @@ details.faq[open] .faq-icon {
 .grain-layer {
   opacity: 0.07;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ============================================================
-   All-treatments carousel — marquee + drag, edge fade masks
-   ============================================================ */
-
-.tx-viewport {
-  overflow: hidden;
-  cursor: grab;
-  touch-action: pan-y; /* vertical page scroll stays native; horizontal drags reach us */
-  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-}
-.tx-viewport.dragging {
-  cursor: grabbing;
-}
-.tx-track {
-  display: flex;
-  width: max-content;
-  align-items: stretch;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .tx-viewport {
-    overflow-x: auto;
-    cursor: default;
-  }
-  /* the seamless-loop duplicate is pointless in a static scrollable row */
-  .tx-track > div[aria-hidden="true"] {
-    display: none;
-  }
-}
-
-.tx-card {
-  @apply mx-3 flex w-[250px] shrink-0 flex-col overflow-hidden;
-  border: 1px solid rgba(201, 169, 110, 0.25);
-  background: #101014;
-  user-select: none;
-  transform-style: preserve-3d;
-  transition: border-color 0.5s ease, box-shadow 0.5s ease;
-}
-.tx-card:hover {
-  border-color: rgba(45, 212, 191, 0.55);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.45), 0 0 32px rgba(45, 212, 191, 0.1);
 }
 
 /* ============================================================
@@ -970,7 +976,7 @@ html:not(.js) .award-static {
 .recog-card {
   @apply mx-3 flex w-[290px] shrink-0 flex-col justify-between p-7;
   border: 1px solid rgba(201, 169, 110, 0.22);
-  background: #101014;
+  background: #24262d;
   user-select: none;
   transform-style: preserve-3d;
   transition: border-color 0.5s ease, box-shadow 0.5s ease;
@@ -1022,7 +1028,7 @@ html:not(.js) .award-static {
    ============================================================ */
 
 .chip {
-  @apply cursor-pointer border border-cream/15 bg-white/[0.02] px-4 py-2 text-[11px] font-medium tracking-[0.08em] text-cream/70 transition-all duration-300;
+  @apply cursor-pointer border border-cream/15 bg-white/[0.02] px-4 py-2 text-[12px] font-medium tracking-[0.08em] text-cream/75 transition-all duration-300;
 }
 .chip:hover {
   border-color: rgba(45, 212, 191, 0.6);
@@ -1048,7 +1054,7 @@ html:not(.js) .award-static {
 }
 
 .sys-tab {
-  @apply inline-flex cursor-pointer items-center gap-2.5 border border-cream/12 bg-white/[0.02] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-cream/60 transition-all duration-300;
+  @apply inline-flex cursor-pointer items-center gap-2.5 border border-cream/12 bg-white/[0.02] px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-cream/75 transition-all duration-300;
 }
 .sys-tab:hover {
   color: var(--color-cream);
@@ -1123,7 +1129,7 @@ html:not(.js) .award-static {
 
 .finder-card {
   border: 1px solid rgba(244, 241, 236, 0.1);
-  background: #101014;
+  background: #24262d;
   transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
 }
 .finder-card:hover {
@@ -1132,7 +1138,7 @@ html:not(.js) .award-static {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 34px rgba(45, 212, 191, 0.07);
 }
 .pathway-tag {
-  @apply inline-block border px-2.5 py-1 text-[8.5px] font-bold uppercase tracking-[0.28em];
+  @apply inline-block border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.17em];
 }
 .pathway-tag.him {
   border-color: rgba(201, 169, 110, 0.5);
@@ -1148,35 +1154,375 @@ html:not(.js) .award-static {
 }
 
 .condition-chip {
-  @apply inline-block border border-cream/10 px-2.5 py-1 text-[9.5px] tracking-[0.06em] text-cream/50;
+  @apply inline-block border border-cream/10 px-2.5 py-1 text-[11px] tracking-[0.06em] text-cream/62;
 }
 
 /* ============================================================
-   Treatment grid boxes (/treatments)
+   Treatment squares — the diagnostic card (.tx2)
+   ------------------------------------------------------------
+   At rest: clinical medicine. Engaged: the card reads the tissue —
+   a scan line sweeps the image, the image drifts and dims, and a
+   readout rises listing what the treatment treats in the patient's
+   own words.
+
+   State is a single `.is-open` class owned by main.js (hover on fine
+   pointers, focus-within, and the explicit button all set it). One
+   state definition, no duplicated hover block, and no :hover left
+   stuck on after a tap.
+
+   Without JS the readout is a plain static list in normal flow, so
+   the conditions are never unreachable.
    ============================================================ */
 
-.treatment-box {
+.tx2-filters {
+  @apply flex flex-wrap gap-3;
+}
+.tx2-filters__n {
+  margin-left: 0.5em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.55;
+}
+
+.tx2-group + .tx2-group {
+  margin-top: 4.5rem;
+}
+.tx2-group__head {
+  @apply mb-8 flex items-center gap-5;
+}
+.tx2-group__label {
+  @apply font-serif text-2xl md:text-3xl;
+  color: var(--tx2-accent);
+}
+.tx2-group__label.him {
+  --tx2-accent: var(--color-gold);
+}
+.tx2-group__label.her {
+  --tx2-accent: var(--color-rose);
+}
+.tx2-group__label.longevity {
+  --tx2-accent: var(--color-teal);
+}
+.tx2-group__rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(244, 241, 236, 0.22), transparent);
+}
+.tx2-group__n {
+  @apply text-[12px] font-semibold tracking-[0.18em] text-cream/62;
+  font-variant-numeric: tabular-nums;
+}
+
+.tx2-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .tx2-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1120px) {
+  .tx2-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tx2-empty {
+  @apply mt-10 text-center text-sm text-cream/62;
+}
+
+/* ---------- the card ---------- */
+
+.tx2 {
+  --tx2-accent: var(--color-gold);
+  --tx2-accent-rgb: 201, 169, 110;
+  --tx2-foot: 3.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-ink2);
   border: 1px solid rgba(244, 241, 236, 0.1);
-  transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
 }
-.treatment-box:hover {
-  transform: translateY(-5px);
+.tx2.her {
+  --tx2-accent: var(--color-rose);
+  --tx2-accent-rgb: 217, 164, 164;
 }
-.treatment-box.him:hover {
-  border-color: rgba(201, 169, 110, 0.55);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(201, 169, 110, 0.09);
+.tx2.longevity {
+  --tx2-accent: var(--color-teal);
+  --tx2-accent-rgb: 45, 212, 191;
 }
-.treatment-box.her:hover {
-  border-color: rgba(217, 164, 164, 0.55);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(217, 164, 164, 0.08);
+.tx2.is-open {
+  border-color: rgba(var(--tx2-accent-rgb), 0.55);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(var(--tx2-accent-rgb), 0.1);
 }
-.treatment-box.longevity:hover {
-  border-color: rgba(45, 212, 191, 0.55);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 40px rgba(45, 212, 191, 0.09);
+
+/* ---------- media ---------- */
+
+.tx2__media {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.tx2__img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  /* the slow drift is the "moving picture" — no video assets involved */
+  transition: transform 6s ease-out, filter 0.6s ease;
+}
+.tx2.is-open .tx2__img {
+  transform: scale(1.12) translate(-1.5%, -1.5%);
+  filter: brightness(0.5) saturate(0.8);
+}
+.tx2__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--color-ink2), rgba(28, 30, 36, 0.22) 55%, rgba(28, 30, 36, 0.08));
+}
+.tx2__pathway {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+/* blueprint grid — instrumentation, only while engaged */
+.tx2__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background-image:
+    linear-gradient(rgba(var(--tx2-accent-rgb), 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--tx2-accent-rgb), 0.16) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black, transparent 80%);
+}
+.tx2.is-open .tx2__grid {
+  opacity: 1;
+}
+
+/* scan line — one sweep per engage, like a sequencer read-head */
+.tx2__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 40%;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--tx2-accent-rgb), 0.1) 42%,
+    rgba(var(--tx2-accent-rgb), 0.55) 50%,
+    rgba(var(--tx2-accent-rgb), 0.1) 58%,
+    transparent
+  );
+}
+.tx2.is-open .tx2__scan {
+  animation: tx2Scan 1s ease-out;
+}
+@keyframes tx2Scan {
+  0% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(290%);
+  }
+}
+
+/* ---------- body ---------- */
+
+.tx2__body {
+  @apply flex flex-1 flex-col px-7 pt-6 pb-4;
+}
+.tx2__modality {
+  @apply text-[11px] font-bold tracking-[0.2em] uppercase;
+  color: var(--tx2-accent);
+}
+.tx2__name {
+  @apply mt-3 font-serif text-2xl text-cream;
+}
+.tx2__desc {
+  @apply mt-3 text-sm text-cream/75;
+  /* clamped so every card in a row is the same height — the client's
+     "more organised" note was really about ragged card geometry */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  min-height: calc(3 * 1.7em);
+}
+
+/* ---------- footer: stays reachable while the readout is up ---------- */
+
+.tx2__foot {
+  @apply flex items-center justify-between gap-3 px-7;
+  position: relative;
+  z-index: 2;
+  height: var(--tx2-foot);
+  border-top: 1px solid rgba(244, 241, 236, 0.09);
+  background: var(--color-ink2);
+}
+.tx2__toggle {
+  @apply flex cursor-pointer items-center gap-2.5 text-[11px] font-semibold tracking-[0.14em] text-cream/75 uppercase transition-colors duration-300;
+}
+.tx2__toggle:hover {
+  color: var(--color-cream);
+}
+.tx2__sign {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+.tx2__sign::before,
+.tx2__sign::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: var(--tx2-accent);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.tx2__sign::before {
+  width: 100%;
+  height: 1.5px;
+}
+.tx2__sign::after {
+  width: 1.5px;
+  height: 100%;
+}
+/* + becomes − when the readout is up */
+.tx2.is-open .tx2__sign::after {
+  transform: scaleY(0);
+  opacity: 0;
+}
+.tx2__count {
+  @apply text-[11px] font-bold;
+  color: var(--tx2-accent);
+  font-variant-numeric: tabular-nums;
+}
+.tx2__cta {
+  @apply inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors duration-300;
+  color: var(--tx2-accent);
+}
+.tx2__arrow {
+  transition: transform 0.5s ease;
+}
+.tx2__cta:hover .tx2__arrow {
+  transform: translateX(5px);
+}
+
+/* ---------- the readout ---------- */
+
+.tx2__readout {
+  @apply px-7 pt-6 pb-5;
+  border-top: 1px solid rgba(var(--tx2-accent-rgb), 0.3);
+  background: var(--color-ink2);
+}
+.tx2__readout-name {
+  @apply font-serif text-2xl text-cream;
+}
+.tx2__readout-title {
+  @apply mt-1 mb-5 text-[11px] font-bold tracking-[0.2em] uppercase;
+  color: var(--tx2-accent);
+}
+.tx2__conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.tx2__condition {
+  position: relative;
+  padding-left: 1.1rem;
+}
+.tx2__condition::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 7px;
+  height: 1px;
+  background: var(--tx2-accent);
+}
+.tx2__clinical {
+  @apply block text-[11px] font-semibold tracking-[0.14em] text-cream/75 uppercase;
+}
+/* the plain phrasing is the payoff — the words patients actually use */
+.tx2__plain {
+  @apply mt-1 block font-serif text-[16px] leading-snug text-cream/90 italic;
+}
+
+/* JS present: the readout becomes an overlay panel that rises on engage */
+html.js .tx2__readout {
+  position: absolute;
+  inset: 0 0 var(--tx2-foot) 0;
+  z-index: 1;
+  overflow-y: auto;
+  transform: translateY(101%);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.js .tx2.is-open .tx2__readout {
+  transform: translateY(0);
+}
+
+/* ---------- HUD brackets ---------- */
+
+.tx2::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  --hud: rgba(var(--tx2-accent-rgb), 0.75);
+  background:
+    linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 1px 16px,
+    linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 16px 1px,
+    linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 1px 16px;
+  background-repeat: no-repeat;
+}
+.tx2.is-open::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tx2__img,
+  html.js .tx2__readout {
+    transition: none;
+  }
+  .tx2.is-open .tx2__img {
+    transform: none;
+  }
+  .tx2.is-open .tx2__scan {
+    animation: none;
+  }
 }
 
 .filter-tab {
-  @apply cursor-pointer border border-cream/15 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-cream/60 transition-all duration-300;
+  @apply cursor-pointer border border-cream/15 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-cream/75 transition-all duration-300;
 }
 .filter-tab:hover {
   color: var(--color-cream);
@@ -1202,7 +1548,7 @@ html:not(.js) .award-static {
   background:
     radial-gradient(ellipse 70% 70% at 30% 20%, rgba(45, 212, 191, 0.1), transparent 60%),
     radial-gradient(ellipse 60% 60% at 80% 90%, rgba(201, 169, 110, 0.12), transparent 60%),
-    #0d0d10;
+    #20222a;
 }
 .video-facade iframe {
   position: absolute;
@@ -1223,7 +1569,7 @@ html:not(.js) .award-static {
   justify-content: center;
   border-radius: 9999px;
   border: 1px solid rgba(201, 169, 110, 0.6);
-  background: rgba(10, 10, 11, 0.72);
+  background: rgba(28, 30, 36, 0.54);
   backdrop-filter: blur(6px);
   transition: all 0.45s ease;
 }
@@ -1266,16 +1612,12 @@ html:not(.js) .award-static {
 
 [data-tilt],
 .finder-card,
-.tx-card,
-.recog-card,
-.treatment-box {
+.recog-card {
   position: relative;
 }
 [data-tilt]::after,
 .finder-card::after,
-.tx-card::after,
-.recog-card::after,
-.treatment-box::after {
+.recog-card::after {
   content: "";
   position: absolute;
   inset: 6px;
@@ -1300,9 +1642,7 @@ html:not(.js) .award-static {
 }
 [data-tilt]:hover::after,
 .finder-card:hover::after,
-.tx-card:hover::after,
-.recog-card:hover::after,
-.treatment-box:hover::after {
+.recog-card:hover::after {
   opacity: 1;
 }
 
@@ -1360,5 +1700,5 @@ html:not(.js) .award-static {
 .concierge-art {
   background:
     radial-gradient(ellipse 90% 55% at 50% 100%, rgba(201, 169, 110, 0.12), transparent 65%),
-    linear-gradient(180deg, #08080a 0%, #0d0d11 55%, #101014 100%);
+    linear-gradient(180deg, #16181d 0%, #20222a 55%, #24262d 100%);
 }

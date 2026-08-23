@@ -16,12 +16,12 @@ const pillars = [
 ];
 ---
 
-<section class="hairline-teal-t relative overflow-hidden bg-[#070708] py-28 md:py-40" aria-labelledby="longevity-teaser-heading">
+<section class="hairline-teal-t relative overflow-hidden bg-inkdeep py-28 md:py-40" aria-labelledby="longevity-teaser-heading">
   <!-- stem-cell particle field — always behind content -->
   <div class="absolute inset-0" aria-hidden="true">
     <CellField count={200} opacity={0.5} size={0.38} />
   </div>
-  <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #070708 95%);" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #16181d 95%);" aria-hidden="true"></div>
 
   <div class="wrap relative">
     <div class="max-w-3xl" data-reveal>
@@ -29,7 +29,7 @@ const pillars = [
       <h2 id="longevity-teaser-heading" class="mt-5 font-serif text-5xl leading-[1.05] text-cream md:text-7xl">
         Longevity is a <span class="bg-gradient-to-r from-teal to-tealdeep bg-clip-text text-transparent italic">medical discipline.</span>
       </h2>
-      <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/65">
+      <p class="mt-7 max-w-xl text-base leading-relaxed text-cream/75">
         Dr Wakil&rsquo;s life-optimisation and regenerative programme treats ageing the way we treat everything else:
         measure it, understand it, and intervene at the cause — cells, hormones, metabolism, movement.
       </p>
@@ -38,7 +38,7 @@ const pillars = [
     <ul class="mt-12 flex max-w-3xl flex-wrap gap-3" data-reveal-child>
       {
         pillars.map((p) => (
-          <li class="hairline-teal bg-ink/60 px-5 py-3 text-[11px] font-medium tracking-[0.14em] text-cream/75 uppercase backdrop-blur-sm">
+          <li class="hairline-teal bg-ink/60 px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-cream/75 uppercase backdrop-blur-sm">
             {p}
           </li>
         ))

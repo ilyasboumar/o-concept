@@ -77,7 +77,7 @@ const faqSchema = {
       <h1 class="mt-5 max-w-4xl font-serif text-5xl leading-[1.04] text-cream md:text-6xl" data-reveal data-delay="0.1">
         Care that <em class="text-gold">continues.</em>
       </h1>
-      <p class="mt-5 max-w-2xl text-base leading-relaxed text-cream/60 md:text-lg" data-reveal data-delay="0.2">
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-cream/75 md:text-lg" data-reveal data-delay="0.2">
         Silver, Gold and Platinum — three tiers of head-to-toe health investment: comprehensive diagnostics, priority
         access, and optimisation that never stands still. Each by application.
       </p>
@@ -86,7 +86,7 @@ const faqSchema = {
       <div class="mt-12 lg:mt-14">
         <MembershipTiers />
       </div>
-      <p class="mt-12 text-center text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+      <p class="mt-12 text-center text-[11px] tracking-[0.16em] text-cream/62 uppercase" data-reveal>
         Pricing confirmed at application · No joining fees · Prototype placeholders shown
       </p>
     </div>
@@ -112,27 +112,27 @@ const faqSchema = {
         <table class="w-full min-w-[720px] text-left text-sm">
           <thead>
             <tr class="hairline-b">
-              <th class="px-6 py-5 text-[10px] font-semibold tracking-[0.3em] text-cream/45 uppercase">Benefit</th>
-              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Silver <span class="ml-2 text-xs text-cream/40">From £— pm</span></th>
-              <th class="bg-gold/[0.06] px-6 py-5 font-serif text-lg font-medium text-gold">Gold <span class="ml-2 text-xs text-gold/60">From £— pm</span></th>
-              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Platinum <span class="ml-2 text-xs text-cream/40">From £— pm</span></th>
+              <th class="px-6 py-5 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">Benefit</th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Silver <span class="ml-2 text-xs text-cream/62">From £— pm</span></th>
+              <th class="bg-gold/[0.06] px-6 py-5 font-serif text-lg font-medium text-gold">Gold <span class="ml-2 text-xs text-gold/85">From £— pm</span></th>
+              <th class="px-6 py-5 font-serif text-lg font-medium text-cream">Platinum <span class="ml-2 text-xs text-cream/62">From £— pm</span></th>
             </tr>
           </thead>
           <tbody>
             {
               comparison.map((row) => (
                 <tr class="border-b border-cream/[0.06] last:border-0">
-                  <td class="px-6 py-4 text-cream/70">{row.feature}</td>
-                  <td class="px-6 py-4 text-cream/55">{row.silver}</td>
-                  <td class="bg-gold/[0.06] px-6 py-4 text-cream/85">{row.gold}</td>
-                  <td class="px-6 py-4 text-cream/55">{row.platinum}</td>
+                  <td class="px-6 py-4 text-cream/75">{row.feature}</td>
+                  <td class="px-6 py-4 text-cream/75">{row.silver}</td>
+                  <td class="bg-gold/[0.06] px-6 py-4 text-cream/90">{row.gold}</td>
+                  <td class="px-6 py-4 text-cream/75">{row.platinum}</td>
                 </tr>
               ))
             }
           </tbody>
         </table>
       </div>
-      <p class="mt-8 text-[10px] tracking-[0.25em] text-cream/35 uppercase" data-reveal>
+      <p class="mt-8 text-[11px] tracking-[0.16em] text-cream/62 uppercase" data-reveal>
         All membership pricing by application — placeholder structure shown
       </p>
     </div>
@@ -147,7 +147,7 @@ const faqSchema = {
       <div class="lg:col-span-4" data-reveal>
         <p class="eyebrow">Questions, answered</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Asked quietly, often.</h2>
-        <p class="mt-6 text-sm leading-relaxed text-cream/55">
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
           Anything we haven&rsquo;t covered, our patient care team will answer in complete confidence on
           <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
         </p>
@@ -160,7 +160,7 @@ const faqSchema = {
                 <span class="font-serif text-xl text-cream">{faq.q}</span>
                 <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">＋</span>
               </summary>
-              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/60">{faq.a}</p>
+              <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/75">{faq.a}</p>
             </details>
           ))
         }

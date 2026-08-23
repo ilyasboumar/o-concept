@@ -24,7 +24,7 @@ import * as THREE from 'three';
 const GOLD = new THREE.Color('#C9A96E');
 const TEAL = new THREE.Color('#2DD4BF');
 const TEAL_DEEP = new THREE.Color('#0EA5E9');
-const INK = 0x0a0a0b;
+const INK = 0x1c1e24;
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = !window.matchMedia('(min-width: 1024px)').matches;

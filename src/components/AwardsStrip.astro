@@ -8,7 +8,7 @@ const marks = [
 ];
 ---
 
-<div class="relative z-50 border-b border-gold/12 bg-[#070708]">
+<div class="relative z-50 border-b border-gold/12 bg-inkdeep">
   <div class="awards-marquee overflow-hidden py-2.5">
     <!-- track is duplicated (group 1 visible, group 2 aria-hidden) so the
          translateX(-50%) loop is seamless -->
@@ -16,7 +16,7 @@ const marks = [
       {
         marks.map((mark) => (
           <>
-            <span class="mx-4 shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase md:mx-7">{mark}</span>
+            <span class="mx-4 shrink-0 text-[11px] font-semibold tracking-[0.14em] text-gold/85 uppercase md:mx-7">{mark}</span>
             <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" aria-hidden="true" />
           </>
         ))
@@ -25,7 +25,7 @@ const marks = [
         {
           marks.map((mark) => (
             <>
-              <span class="mx-4 shrink-0 text-[9px] font-semibold tracking-[0.22em] text-gold/60 uppercase md:mx-7">{mark}</span>
+              <span class="mx-4 shrink-0 text-[11px] font-semibold tracking-[0.14em] text-gold/85 uppercase md:mx-7">{mark}</span>
               <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-gold/35" />
             </>
           ))

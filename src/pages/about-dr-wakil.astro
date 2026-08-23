@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import FinalCTA from '../components/FinalCTA.astro';
 import { withBase } from '../lib/url';
+import Reassurance from '../components/Reassurance.astro';
+import TeachingRecord from '../components/TeachingRecord.astro';
 
 const credentials = [
   'Registered with the General Medical Council (GMC)',
@@ -63,7 +65,7 @@ const allBadges = [
         <h1 class="mt-5 font-serif text-5xl leading-[1.03] text-cream sm:text-6xl md:text-7xl" data-reveal data-delay="0.1">
           Dr Sherif <span class="text-gold italic">Wakil</span>
         </h1>
-        <p class="mt-5 max-w-xl font-serif text-xl leading-snug text-cream/85 sm:text-2xl md:text-[1.65rem]" data-reveal data-delay="0.2">
+        <p class="mt-5 max-w-xl font-serif text-xl leading-snug text-cream/90 sm:text-2xl md:text-[1.65rem]" data-reveal data-delay="0.2">
           Pioneer of sexual rejuvenation medicine in the United Kingdom. Creator of The&nbsp;O&nbsp;Concept<sup class="text-[0.5em] text-gold">™</sup>.
         </p>
       </div>
@@ -78,7 +80,7 @@ const allBadges = [
               fetchpriority="high"
             />
           </div>
-          <figcaption class="px-2 pt-3 pb-1 text-[9px] tracking-[0.25em] text-cream/40 uppercase">
+          <figcaption class="px-2 pt-3 pb-1 text-[11px] tracking-[0.16em] text-cream/62 uppercase">
             Dr Sherif Wakil · 77 Harley Street
           </figcaption>
         </figure>
@@ -117,9 +119,9 @@ const allBadges = [
         }
       </div>
 
-      <p class="mt-5 text-center text-[10px] font-semibold tracking-[0.24em] text-gold uppercase">
+      <p class="mt-5 text-center text-[11px] font-semibold tracking-[0.15em] text-gold uppercase">
         Global Excellence Awards 2025 — The O Concept™ Protocol
-        <span class="text-cream/55">· 2024 World&rsquo;s Best Sexual Rejuvenation Clinic</span>
+        <span class="text-cream/75">· 2024 World&rsquo;s Best Sexual Rejuvenation Clinic</span>
       </p>
     </div>
   </section>
@@ -130,7 +132,7 @@ const allBadges = [
       <div class="lg:col-span-7" data-reveal>
         <p class="eyebrow">The physician</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">Creating beauty is an art.</h2>
-        <div class="mt-8 space-y-6 text-[15px] leading-[1.9] text-cream/65">
+        <div class="mt-8 space-y-6 text-[16px] leading-[1.9] text-cream/75">
           <p>
             Dr Sherif El Wakil is the founder and medical director of Dr SW Clinics on London&rsquo;s Harley Street,
             with more than two decades of experience across leading hospitals in the UK and Middle East, including
@@ -166,7 +168,7 @@ const allBadges = [
             />
           </div>
         </div>
-        <p class="mt-4 text-[10px] tracking-[0.25em] text-cream/40 uppercase">Dr Sherif Wakil · Clinics in London, Dubai &amp; Egypt</p>
+        <p class="mt-4 text-[11px] tracking-[0.16em] text-cream/62 uppercase">Dr Sherif Wakil · Clinics in London, Dubai &amp; Egypt</p>
       </div>
     </div>
 
@@ -176,7 +178,7 @@ const allBadges = [
       <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
         {
           credentials.map((credential) => (
-            <li class="hairline px-5 py-3 text-[11px] font-medium tracking-[0.14em] text-cream/75 uppercase">
+            <li class="hairline px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-cream/75 uppercase">
               {credential}
             </li>
           ))
@@ -202,7 +204,7 @@ const allBadges = [
               <li class="relative">
                 <span class="absolute top-1.5 -left-8 block h-[11px] w-[11px] rounded-full border border-gold bg-ink md:-left-12 md:h-[15px] md:w-[15px]" aria-hidden="true" />
                 <p class="font-serif text-3xl text-gold">{m.mark}</p>
-                <p class="mt-2 max-w-2xl text-[15px] leading-relaxed text-cream/65">{m.text}</p>
+                <p class="mt-2 max-w-2xl text-[16px] leading-relaxed text-cream/75">{m.text}</p>
               </li>
             ))
           }
@@ -229,7 +231,7 @@ const allBadges = [
               data-parallax="-4"
             />
           </div>
-          <figcaption class="px-2 pt-3 pb-1 text-[9px] font-semibold tracking-[0.3em] text-cream/40 uppercase">
+          <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
             In consultation · 77 Harley Street
           </figcaption>
         </figure>
@@ -239,7 +241,7 @@ const allBadges = [
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl" data-reveal data-delay="0.1">
           Natural results. <span class="text-gold italic">Always.</span>
         </h2>
-        <div class="mt-7 space-y-5 text-[15px] leading-[1.9] text-cream/65" data-reveal data-delay="0.2">
+        <div class="mt-7 space-y-5 text-[16px] leading-[1.9] text-cream/75" data-reveal data-delay="0.2">
           <p>
             Our mission is simple to state and demanding to keep: to provide real solutions for sexual dysfunction and
             to enhance sexual wellness — with kindness, discretion and privacy at every step.
@@ -253,13 +255,17 @@ const allBadges = [
         <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
           {
             ['Kindness, discretion & privacy', 'A bespoke solution for every patient', 'Never "overdone" — natural, always'].map((item) => (
-              <li class="hairline px-5 py-3 text-[10px] font-semibold tracking-[0.2em] text-gold/85 uppercase">{item}</li>
+              <li class="hairline px-5 py-3 text-[11px] font-semibold tracking-[0.13em] text-gold/85 uppercase">{item}</li>
             ))
           }
         </ul>
       </div>
     </div>
   </section>
+
+  <TeachingRecord />
+
+  <Reassurance variant="authority" surface="ink2" accent="gold" />
 
   <FinalCTA heading="Meet him, privately." sub="Consultations with Dr Wakil and his clinical team are available at 77 Harley Street and by video." />
 </Base>

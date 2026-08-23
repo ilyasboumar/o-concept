@@ -1,0 +1,91 @@
+---
+/**
+ * TreatmentGrid.astro — the treatment squares, arranged.
+ *
+ * Renders TreatmentCard and nothing else, so every treatment listing on the
+ * site comes from one place. Deliberately emits no <section> wrapper: the
+ * host page owns its own heading and spacing, which keeps this a portable
+ * block rather than a page-shaped chunk.
+ *
+ * `grouped` splits the full catalogue into its three pathways with a labelled
+ * rule and a count. Sixteen undifferentiated cards read as a wall; three
+ * labelled runs read as a catalogue. Grouping is by pathway, not by the `tag`
+ * modality — that field has four single-member values and would produce
+ * groups of one.
+ */
+import TreatmentCard from './TreatmentCard.astro';
+import { treatments, treatmentsByPathway, PATHWAY_LABELS, type Condition, type Pathway, type Treatment } from '../data/treatments';
+
+interface Props {
+  pathway?: Pathway | 'all';
+  /**
+   * Explicit list, for pages that cross-list treatments from other pathways
+   * (For Him adds the diagnostics and hormone protocols; For Her adds the
+   * O Concept™ Chair). Overrides `pathway`.
+   */
+  items?: Treatment[];
+  /** Pathway filter tabs — only meaningful alongside the full catalogue. */
+  filters?: boolean;
+  /** Split into labelled pathway runs. Ignored for a single-pathway list. */
+  grouped?: boolean;
+  /** Passed through to each card — see TreatmentCard. */
+  keepCondition?: (c: Condition) => boolean;
+}
+
+const { pathway = 'all', items, filters = false, grouped = false, keepCondition } = Astro.props;
+
+const showGroups = grouped && pathway === 'all' && !items;
+const groups: { key: Pathway; label: string; items: typeof treatments }[] = showGroups
+  ? (['him', 'her', 'longevity'] as Pathway[]).map((p) => ({
+      key: p,
+      label: PATHWAY_LABELS[p],
+      items: treatmentsByPathway(p),
+    }))
+  : [];
+
+const flat = items ?? (pathway === 'all' ? treatments : treatmentsByPathway(pathway));
+---
+
+{
+  filters && (
+    <div class="tx2-filters" data-treatment-filters data-reveal>
+      <button type="button" class="filter-tab active" data-filter="all">
+        All <span class="tx2-filters__n">{treatments.length}</span>
+      </button>
+      {(['him', 'her', 'longevity'] as Pathway[]).map((p) => (
+        <button type="button" class="filter-tab" data-filter={p}>
+          {PATHWAY_LABELS[p]} <span class="tx2-filters__n">{treatmentsByPathway(p).length}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+<div data-treatment-grid>
+  {
+    showGroups ? (
+      groups.map((g) => (
+        <section class="tx2-group" data-tx-group={g.key}>
+          <header class="tx2-group__head" data-reveal>
+            <h3 class:list={['tx2-group__label', g.key]}>{g.label}</h3>
+            <span class="tx2-group__rule" aria-hidden="true" />
+            <span class="tx2-group__n">{g.items.length}</span>
+          </header>
+          <div class="tx2-grid" data-reveal-child>
+            {g.items.map((t) => (
+              <TreatmentCard treatment={t} keepCondition={keepCondition} />
+            ))}
+          </div>
+        </section>
+      ))
+    ) : (
+      <div class="tx2-grid" data-reveal-child>
+        {flat.map((t) => (
+          <TreatmentCard treatment={t} keepCondition={keepCondition} />
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<p class="tx2-empty hidden" data-treatment-empty>No treatments in this pathway yet.</p>
