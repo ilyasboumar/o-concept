@@ -111,7 +111,16 @@ const faqSchema = t.faqs?.length
             {t.price && (
               <div class="tx-fact tx-fact--price">
                 <dt>Investment</dt>
-                <dd>{t.price.from || 'On consultation'}</dd>
+                <dd>
+                  {t.price.from || 'On consultation'}
+                  {t.price.unit && <span class="tx-fact__unit">{t.price.unit}</span>}
+                </dd>
+                {t.price.finance && (
+                  <p class="tx-fact__finance">
+                    <span class="tx-fact__fin-mark" aria-hidden="true">◇</span>
+                    {t.price.finance}
+                  </p>
+                )}
                 {t.price.note && <p class="tx-fact__note">{t.price.note}</p>}
               </div>
             )}
@@ -358,6 +367,32 @@ const faqSchema = t.faqs?.length
   }
   .tx-fact--price dd {
     color: var(--color-gold);
+  }
+  .tx-fact__unit {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  /* Finance is the line that converts — patients who balk at the headline
+     figure often proceed once they see it can be spread. Given its own mark
+     and its own colour rather than buried in the small print. */
+  .tx-fact__finance {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-goldlight);
+  }
+  .tx-fact__fin-mark {
+    font-size: 10px;
+    opacity: 0.8;
   }
   .tx-fact__note {
     margin-top: 0.5rem;

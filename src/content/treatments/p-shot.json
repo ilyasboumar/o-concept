@@ -33,8 +33,10 @@
     "results": "From 3 weeks, building to 3 months"
   },
   "price": {
-    "from": "PLACEHOLDER — add your price",
-    "note": "Replace this in the CMS. Confirmed at consultation; 0% finance available."
+    "from": "From £X,XXX",
+    "unit": "per session",
+    "finance": "0% finance available over 12 months",
+    "note": "PLACEHOLDER — replace in the CMS. Final cost confirmed at consultation."
   },
   "benefits": [
     "Uses your own blood products — nothing synthetic is introduced",
@@ -83,9 +85,15 @@
       "sensitive": false
     },
     {
+      "image": "images/placeholder-photo.webp",
+      "alt": "PLACEHOLDER — replace with a clinic photograph",
+      "caption": "PLACEHOLDER — an ordinary photo slot, shown as it appears when empty.",
+      "sensitive": false
+    },
+    {
       "image": "images/tx-p-shot-2.jpg",
       "alt": "PLACEHOLDER — replace with a consented clinical photograph",
-      "caption": "PLACEHOLDER: an example of a consent-gated clinical image.",
+      "caption": "PLACEHOLDER — a consent-gated clinical image. Hidden until the visitor asks.",
       "sensitive": true
     }
   ]

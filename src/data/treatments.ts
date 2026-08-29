@@ -54,11 +54,17 @@ export interface Treatment {
     results?: string;
   };
 
-  /** Pricing. Deliberately a string, not a number — clinics quote ranges,
-      "from", and "confirmed at consultation", and a number invites a
+  /** Pricing. Deliberately strings, not numbers — clinics quote ranges,
+      "from", and "confirmed at consultation", and a numeric field forces a
       precision the clinic may not want published. */
   price?: {
+    /** The headline figure, e.g. "From £1,200". */
     from?: string;
+    /** What the figure covers, e.g. "per session" or "for a course of three". */
+    unit?: string;
+    /** Finance terms, e.g. "0% finance available over 12 months". */
+    finance?: string;
+    /** The caveat, e.g. "Confirmed at consultation." */
     note?: string;
   };
 
