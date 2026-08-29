@@ -1,0 +1,23 @@
+{
+  "slug": "dafne",
+  "name": "DAFNE",
+  "pathway": "her",
+  "tag": "Signature",
+  "desc": "Dr Wakil’s signature multi-layer rejuvenation of the external intimate area — tone, volume and skin quality.",
+  "image": "images/tx-dafne.png",
+  "imageAlt": "DAFNE — Dr Wakil’s signature external rejuvenation protocol",
+  "conditions": [
+    {
+      "clinical": "Vulval volume loss",
+      "plain": "deflation or sagging of the external intimate area"
+    },
+    {
+      "clinical": "Skin laxity",
+      "plain": "crepey or lax intimate skin"
+    },
+    {
+      "clinical": "Post-menopausal changes",
+      "plain": "changes in appearance through menopause"
+    }
+  ]
+}

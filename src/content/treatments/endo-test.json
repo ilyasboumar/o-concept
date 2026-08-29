@@ -1,0 +1,27 @@
+{
+  "slug": "endo-test",
+  "name": "Endo Test",
+  "pathway": "longevity",
+  "tag": "Diagnostics",
+  "desc": "Our comprehensive hormonal and metabolic panel — the evidence base on which every protocol is built.",
+  "image": "images/tx-ed.jpg",
+  "imageAlt": "Confidential diagnostic consultation at Dr SW Clinics, Harley Street",
+  "conditions": [
+    {
+      "clinical": "Andropause / low testosterone",
+      "plain": "low energy, low drive, weight gain in men over 40"
+    },
+    {
+      "clinical": "Hormonal imbalance",
+      "plain": "feeling \"off\" — tired, flat, not yourself"
+    },
+    {
+      "clinical": "Low libido",
+      "plain": "loss of interest in intimacy"
+    },
+    {
+      "clinical": "Unexplained fatigue",
+      "plain": "tired all the time despite sleeping"
+    }
+  ]
+}

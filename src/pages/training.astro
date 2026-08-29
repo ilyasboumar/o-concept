@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
@@ -289,7 +290,7 @@ const audience = [
         Applications for the next fellowship cohort are open to registered medical professionals.
       </p>
       <div class="mt-12" data-reveal data-delay="0.3">
-        <a href="mailto:info@drswclinics.com?subject=Training%20Fellowship%20Application" class="btn btn-gold" data-magnetic>
+        <a href="mailto:{site.email}?subject=Training%20Fellowship%20Application" class="btn btn-gold" data-magnetic>
           Apply to train with Dr Wakil
         </a>
       </div>

@@ -1,0 +1,23 @@
+{
+  "slug": "iv-nutrition",
+  "name": "IV Nutritional Therapy",
+  "pathway": "longevity",
+  "tag": "Longevity",
+  "desc": "Clinically formulated intravenous vitamin, mineral and amino-acid infusions — absorbed fully, felt quickly.",
+  "image": "https://drswclinics.com/wp-content/uploads/2024/12/Homepage-9-e1733484520778.jpg",
+  "imageAlt": "Clinical technology suite at Dr SW Clinics, Harley Street",
+  "conditions": [
+    {
+      "clinical": "Chronic fatigue",
+      "plain": "exhaustion that rest doesn’t fix"
+    },
+    {
+      "clinical": "Nutritional deficiency",
+      "plain": "run down, slow recovery, frequent illness"
+    },
+    {
+      "clinical": "Post-illness recovery",
+      "plain": "rebuilding energy after illness or burnout"
+    }
+  ]
+}

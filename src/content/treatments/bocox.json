@@ -1,0 +1,23 @@
+{
+  "slug": "bocox",
+  "name": "Bocox™",
+  "pathway": "him",
+  "tag": "Injectable",
+  "desc": "A targeted botulinum protocol improving blood flow and spontaneous function, with results lasting months.",
+  "image": "images/tx-pe.jpg",
+  "imageAlt": "Discreet clinical treatment for performance concerns at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "difficulty with spontaneous erections"
+    },
+    {
+      "clinical": "Premature ejaculation",
+      "plain": "finishing sooner than you would like"
+    },
+    {
+      "clinical": "Performance-related physical causes",
+      "plain": "physical causes behind performance anxiety"
+    }
+  ]
+}

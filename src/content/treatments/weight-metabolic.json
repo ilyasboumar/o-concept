@@ -1,0 +1,23 @@
+{
+  "slug": "weight-metabolic",
+  "name": "Weight & Metabolic Programme",
+  "pathway": "longevity",
+  "tag": "Longevity",
+  "desc": "Expert dietician programmes with hormonal-balance management — weight addressed as physiology, not willpower.",
+  "image": "images/tx-lipogems.jpg",
+  "imageAlt": "Metabolic and weight-management medicine at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Weight gain / metabolic slowdown",
+      "plain": "weight that won’t shift despite diet and exercise"
+    },
+    {
+      "clinical": "Insulin resistance",
+      "plain": "energy crashes and stubborn midsection weight"
+    },
+    {
+      "clinical": "Hormonal weight gain",
+      "plain": "weight gain in men over 40, or through menopause"
+    }
+  ]
+}

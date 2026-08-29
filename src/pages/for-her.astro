@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Journey from '../components/Journey.astro';
@@ -110,7 +111,7 @@ const procedureSchema = herTreatments.map((t) => ({
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">The questions women actually search.</h2>
         <p class="mt-6 text-sm leading-relaxed text-cream/75">
           A confidential conversation with a female member of our care team:
-          <a href="tel:+442030068459" class="text-rose">+44 (0)20 3006 8459</a>.
+          <a href={site.phone.href} class="text-rose">{site.phone.display}</a>.
         </p>
       </div>
       <div class="space-y-4 lg:col-span-8" data-reveal-child>

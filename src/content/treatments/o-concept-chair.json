@@ -1,0 +1,23 @@
+{
+  "slug": "o-concept-chair",
+  "name": "O Concept™ Chair",
+  "pathway": "him",
+  "tag": "Non-invasive",
+  "desc": "High-intensity electromagnetic pelvic-floor strengthening. Fully clothed, in a course of short sessions.",
+  "image": "images/tx-chair.jpg",
+  "imageAlt": "The O Concept™ Chair — electromagnetic pelvic-floor strengthening",
+  "conditions": [
+    {
+      "clinical": "Urinary incontinence",
+      "plain": "leaking when you laugh, cough or exercise"
+    },
+    {
+      "clinical": "Pelvic floor weakness",
+      "plain": "weak pelvic muscles affecting control and performance"
+    },
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "erection quality linked to pelvic-floor strength"
+    }
+  ]
+}

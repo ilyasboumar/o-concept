@@ -1,0 +1,23 @@
+{
+  "slug": "regenerative-medicine",
+  "name": "Regenerative Cell Therapy",
+  "pathway": "longevity",
+  "tag": "Regenerative",
+  "desc": "Stem cells, growth factors and the body’s own blood products, deployed to repair and renew tissue at source.",
+  "image": "images/tx-cell-therapy.webp",
+  "imageAlt": "Regenerative cell therapy — stem cells and growth factors",
+  "conditions": [
+    {
+      "clinical": "Tissue degeneration",
+      "plain": "joints, skin and tissue ageing faster than you are"
+    },
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "restoring erectile tissue at the cellular level"
+    },
+    {
+      "clinical": "Loss of sensitivity",
+      "plain": "regenerating nerve and tissue response"
+    }
+  ]
+}

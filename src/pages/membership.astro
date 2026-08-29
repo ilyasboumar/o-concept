@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
 import MembershipTiers from '../components/MembershipTiers.astro';
 import TreatmentPackages from '../components/TreatmentPackages.astro';
@@ -149,7 +150,7 @@ const faqSchema = {
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream">Asked quietly, often.</h2>
         <p class="mt-6 text-sm leading-relaxed text-cream/75">
           Anything we haven&rsquo;t covered, our patient care team will answer in complete confidence on
-          <a href="tel:+442030068459" class="text-gold">+44 (0)20 3006 8459</a>.
+          <a href={site.phone.href} class="text-gold">{site.phone.display}</a>.
         </p>
       </div>
       <div class="space-y-4 lg:col-span-8" data-reveal-child>

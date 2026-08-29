@@ -1,0 +1,23 @@
+{
+  "slug": "ultra-femme-360",
+  "name": "Ultra Femme 360",
+  "pathway": "her",
+  "tag": "Radiofrequency",
+  "desc": "Complete 360° radiofrequency rejuvenation, internal and external, in a course of comfortable eight-minute sessions.",
+  "image": "images/tx-vaginal-rejuv.jpg",
+  "imageAlt": "Radiofrequency vaginal rejuvenation treatment at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Vaginal laxity",
+      "plain": "laxity affecting comfort and confidence"
+    },
+    {
+      "clinical": "Loss of sensitivity",
+      "plain": "reduced sensation during intimacy"
+    },
+    {
+      "clinical": "External skin laxity",
+      "plain": "loss of tone in the external intimate area"
+    }
+  ]
+}

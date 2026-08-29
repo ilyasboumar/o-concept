@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import { withBase } from '../lib/url';
 
 const current = Astro.url.pathname.replace(/\/$/, '');
@@ -86,8 +87,8 @@ const linkClass = (active: boolean) => [
     </nav>
 
     <div class="hidden items-center gap-7 lg:flex">
-      <a href="tel:+442030068459" class="text-[12px] font-medium tracking-[0.14em] text-cream/75 transition-colors duration-400 hover:text-gold">
-        +44 (0)20 3006 8459
+      <a href={site.phone.href} class="text-[12px] font-medium tracking-[0.14em] text-cream/75 transition-colors duration-400 hover:text-gold">
+        {site.phone.display}
       </a>
       <a href="#begin" class="btn btn-gold !px-6 !py-3">Book a Consultation</a>
     </div>
@@ -162,7 +163,7 @@ const linkClass = (active: boolean) => [
   </nav>
 
   <div class="wrap mt-auto mb-12 flex flex-col gap-5 pt-10">
-    <a href="tel:+442030068459" class="text-sm tracking-[0.14em] text-cream/75">+44 (0)20 3006 8459</a>
+    <a href={site.phone.href} class="text-sm tracking-[0.14em] text-cream/75">{site.phone.display}</a>
     <a href="#begin" class="btn btn-gold w-full">Book a Consultation</a>
   </div>
 </div>

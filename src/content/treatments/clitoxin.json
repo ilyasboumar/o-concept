@@ -1,0 +1,23 @@
+{
+  "slug": "clitoxin",
+  "name": "Clitoxin™",
+  "pathway": "her",
+  "tag": "Signature",
+  "desc": "A pioneering protocol developed by Dr Wakil to enhance sensation and ease of arousal — precise and discreet.",
+  "image": "images/tx-prp-her.jpg",
+  "imageAlt": "Clitoxin™ — sensation and arousal treatment for women",
+  "conditions": [
+    {
+      "clinical": "Anorgasmia",
+      "plain": "difficulty reaching orgasm"
+    },
+    {
+      "clinical": "Low arousal",
+      "plain": "arousal that takes longer, or feels muted"
+    },
+    {
+      "clinical": "Loss of sensitivity",
+      "plain": "reduced clitoral sensation"
+    }
+  ]
+}

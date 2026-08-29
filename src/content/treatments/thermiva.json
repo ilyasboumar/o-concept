@@ -1,0 +1,23 @@
+{
+  "slug": "thermiva",
+  "name": "ThermiVa",
+  "pathway": "her",
+  "tag": "Radiofrequency",
+  "desc": "Gentle radiofrequency for tissue laxity and comfort, with no downtime and no anaesthetic required.",
+  "image": "images/tx-thermiva.jpg",
+  "imageAlt": "ThermiVa radiofrequency treatment at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Vaginal laxity",
+      "plain": "feeling of looseness, often after childbirth"
+    },
+    {
+      "clinical": "Mild urinary incontinence",
+      "plain": "small leaks with exercise or sneezing"
+    },
+    {
+      "clinical": "Vulvovaginal discomfort",
+      "plain": "discomfort or self-consciousness in intimate areas"
+    }
+  ]
+}

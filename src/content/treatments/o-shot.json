@@ -1,0 +1,27 @@
+{
+  "slug": "o-shot",
+  "name": "O-Shot®",
+  "pathway": "her",
+  "tag": "Regenerative",
+  "desc": "Platelet-rich plasma therapy for sensation, natural lubrication and urinary confidence — brought to the UK by Dr Wakil.",
+  "image": "images/tx-o-shot.jpg",
+  "imageAlt": "O-Shot® treatment for women at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Loss of sensitivity",
+      "plain": "reduced sensation or difficulty reaching orgasm"
+    },
+    {
+      "clinical": "Vaginal dryness",
+      "plain": "dryness or discomfort during intimacy"
+    },
+    {
+      "clinical": "Urinary incontinence",
+      "plain": "leaking when you laugh, cough or exercise"
+    },
+    {
+      "clinical": "Low arousal",
+      "plain": "finding it harder to become aroused"
+    }
+  ]
+}

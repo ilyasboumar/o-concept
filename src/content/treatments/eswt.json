@@ -1,0 +1,23 @@
+{
+  "slug": "eswt",
+  "name": "O Concept™ ESWT",
+  "pathway": "him",
+  "tag": "Energy-based",
+  "desc": "Low-intensity extracorporeal shockwave therapy, stimulating new blood-vessel growth at the root cause.",
+  "image": "images/tx-eswt.jpg",
+  "imageAlt": "Low-intensity shockwave (ESWT) treatment for erectile dysfunction",
+  "conditions": [
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "weaker or unreliable erections"
+    },
+    {
+      "clinical": "Vasculogenic ED",
+      "plain": "poor blood flow affecting performance"
+    },
+    {
+      "clinical": "Peyronie’s disease",
+      "plain": "curvature or plaque in the penis"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
 import { withBase } from '../lib/url';
 
@@ -96,7 +97,7 @@ const internationalSchema = [
         Patients travel from around the world to 77 Harley Street. We make the journey effortless.
       </p>
       <div class="mt-10" data-reveal data-delay="0.3">
-        <a href="tel:+442030068459" class="btn btn-gold" data-magnetic>Plan Your Visit</a>
+        <a href={site.phone.href} class="btn btn-gold" data-magnetic>Plan Your Visit</a>
       </div>
     </div>
   </section>
@@ -296,9 +297,9 @@ const internationalSchema = [
         Speak to the international patient team — by phone, WhatsApp or video, in complete confidence.
       </p>
       <div class="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row" data-reveal data-delay="0.3">
-        <a href="tel:+442030068459" class="btn btn-gold" data-magnetic>Book a Consultation</a>
+        <a href={site.phone.href} class="btn btn-gold" data-magnetic>Book a Consultation</a>
         <a href="https://wa.me/442030068459" target="_blank" rel="noopener" class="btn btn-ghost" data-magnetic>
-          WhatsApp +44 (0)20 3006 8459
+          WhatsApp {site.phone.display}
         </a>
       </div>
     </div>

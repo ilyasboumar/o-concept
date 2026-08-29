@@ -1,0 +1,39 @@
+{
+  "name": "The O Concept™",
+  "legalName": "Dr SW Clinics",
+  "founder": "Dr Sherif Wakil",
+  "phone": {
+    "display": "+44 (0)20 3006 8459",
+    "href": "tel:+442030068459",
+    "e164": "+442030068459"
+  },
+  "email": "info@drswclinics.com",
+  "address": {
+    "street": "77 Harley Street",
+    "locality": "London",
+    "postcode": "W1G 8QN",
+    "country": "GB",
+    "oneLine": "77 Harley Street, London W1G 8QN"
+  },
+  "clinics": [
+    {
+      "city": "London",
+      "country": "United Kingdom",
+      "primary": true
+    },
+    {
+      "city": "Dubai",
+      "country": "United Arab Emirates"
+    },
+    {
+      "city": "Egypt",
+      "country": "Egypt"
+    }
+  ],
+  "social": {
+    "instagram": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "iaagsw": "https://iaagsw.com"
+}

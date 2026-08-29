@@ -1,0 +1,27 @@
+{
+  "slug": "p-shot",
+  "name": "P-Shot®",
+  "pathway": "him",
+  "tag": "Regenerative",
+  "desc": "Autologous platelet-rich plasma to regenerate vascular and erectile tissue — introduced to the UK by Dr Wakil.",
+  "image": "images/tx-p-shot.webp",
+  "imageAlt": "P-Shot® platelet-rich plasma treatment at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "difficulty getting or keeping an erection"
+    },
+    {
+      "clinical": "Peyronie’s disease",
+      "plain": "curvature or scarring of the penis"
+    },
+    {
+      "clinical": "Loss of sensitivity",
+      "plain": "reduced sensation during intimacy"
+    },
+    {
+      "clinical": "Post-prostatectomy rehabilitation",
+      "plain": "recovery of function after prostate surgery"
+    }
+  ]
+}

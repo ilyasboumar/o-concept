@@ -1,0 +1,159 @@
+# CloudCannon — the command centre Dr Wakil sees.
+#
+# This file is the whole editing experience: which collections appear in his
+# sidebar, what each field is called in plain English, and what he is allowed
+# to change. Design, layout and code are deliberately absent — he edits
+# content, never structure.
+#
+# Adding a field here adds it to his editor. Every `comment` is help text he
+# will actually read, so it is written for a doctor, not a developer.
+
+source: .
+paths:
+  static: public
+  uploads: public/images/uploads
+
+collections_config:
+  treatments:
+    path: src/content/treatments
+    glob: ['*.json']
+    name: Treatments
+    icon: healing
+    description: Every treatment in the catalogue. Add one file per treatment.
+    create:
+      path: '[relative_base_path]/[slug].json'
+    schema_key: _schema
+    _enabled_editors: [data]
+    add_options:
+      - name: Add a treatment
+        schema: default
+    schemas:
+      default:
+        path: .cloudcannon/schemas/treatment.json
+        name: Treatment
+    _inputs:
+      slug:
+        type: text
+        label: Short name for the web address
+        comment: Lowercase, hyphens instead of spaces. For example p-shot.
+      name:
+        type: text
+        label: Treatment name
+        comment: Exactly as you want patients to see it.
+      pathway:
+        type: select
+        label: Which pathway
+        comment: Decides the colour and which group it appears under.
+        options:
+          values:
+            - { value: him, label: For Him }
+            - { value: her, label: For Her }
+            - { value: longevity, label: Longevity }
+      tag:
+        type: text
+        label: Type of treatment
+        comment: For example Regenerative, Energy-based, Hormonal.
+      desc:
+        type: textarea
+        label: Short description
+        comment: One or two sentences. Keep under about 120 characters so the cards stay even.
+      image:
+        type: image
+        label: Photograph
+        comment: Upload a photo. It is resized automatically.
+      imageAlt:
+        type: text
+        label: Photo description
+        comment: Describe the photo for patients using a screen reader.
+      conditions:
+        type: array
+        label: What this treats
+        comment: Add one row per concern. Both wordings appear on the card.
+      clinical:
+        type: text
+        label: Medical term
+        comment: For example Erectile dysfunction.
+      plain:
+        type: text
+        label: In a patient's words
+        comment: How someone would describe it themselves — for example difficulty getting or keeping an erection.
+
+  congresses:
+    path: src/content/congresses
+    glob: ['*.json']
+    name: Congresses & lectures
+    icon: record_voice_over
+    description: Events you have spoken at. Add one file per engagement.
+    create:
+      path: '[relative_base_path]/[slug].json'
+    _enabled_editors: [data]
+    _inputs:
+      event:
+        type: text
+        label: Event name
+        comment: The congress, society or host organisation.
+      place:
+        type: text
+        label: Venue and city
+        comment: Optional. For example Royal Society of Medicine, London.
+      year:
+        type: text
+        label: Year
+        comment: Optional. Leave blank rather than guessing.
+      role:
+        type: text
+        label: Your role
+        comment: For example Speaker, Chair, Faculty, Keynote.
+      order:
+        type: number
+        label: Position in the list
+        comment: Lower numbers appear first.
+
+  programmes:
+    path: src/content/programmes
+    glob: ['*.json']
+    name: Training programmes
+    icon: school
+    description: The courses and fellowship you teach.
+    create:
+      path: '[relative_base_path]/[slug].json'
+    _enabled_editors: [data]
+    _inputs:
+      name:
+        type: text
+        label: Programme name
+      detail:
+        type: textarea
+        label: What it covers
+        comment: One sentence on who it is for and what they learn.
+      order:
+        type: number
+        label: Position in the list
+
+  site:
+    path: src/data
+    glob: ['site.json']
+    name: Clinic details
+    icon: settings
+    description: Phone, email and address. Changing it here changes it everywhere on the site.
+    _enabled_editors: [data]
+
+collection_groups:
+  - heading: Your content
+    collections: [treatments, congresses, programmes]
+  - heading: Clinic
+    collections: [site]
+
+# Structural files are never editable. The design, the motion and the code stay
+# with the studio — this is what stops the site drifting off-brand.
+_editables:
+  content:
+    blockquote: true
+    bold: true
+    italic: true
+    link: true
+    bulletedlist: true
+    numberedlist: true
+    undo: true
+    redo: true
+    removeformat: true

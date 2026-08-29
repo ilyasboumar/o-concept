@@ -1,0 +1,23 @@
+{
+  "slug": "co2re-intima",
+  "name": "CO2RE Intima",
+  "pathway": "her",
+  "tag": "Laser",
+  "desc": "Fractional CO2 laser restoring mucosal health — particularly valued after childbirth and through menopause.",
+  "image": "images/tx-menopause.png",
+  "imageAlt": "Treatment for menopause-related intimate symptoms",
+  "conditions": [
+    {
+      "clinical": "Genitourinary syndrome of menopause",
+      "plain": "menopause symptoms — dryness, irritation, discomfort"
+    },
+    {
+      "clinical": "Vaginal atrophy",
+      "plain": "thinning, fragile intimate tissue"
+    },
+    {
+      "clinical": "Post-natal changes",
+      "plain": "changes after childbirth that never quite resolved"
+    }
+  ]
+}

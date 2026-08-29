@@ -1,0 +1,27 @@
+{
+  "slug": "hormone-optimisation",
+  "name": "Hormone Optimisation",
+  "pathway": "longevity",
+  "tag": "Longevity",
+  "desc": "Physician-led balancing of testosterone, thyroid and adrenal function — dosed from your diagnostics, reviewed continuously.",
+  "image": "images/tx-p-shot-2.jpg",
+  "imageAlt": "A couple restored to vitality — hormone optimisation at Dr SW Clinics",
+  "conditions": [
+    {
+      "clinical": "Andropause / low testosterone",
+      "plain": "low energy, low drive, weight gain in men over 40"
+    },
+    {
+      "clinical": "Menopause & perimenopause",
+      "plain": "hot flushes, mood changes, disrupted sleep"
+    },
+    {
+      "clinical": "Low libido",
+      "plain": "loss of desire in men and women"
+    },
+    {
+      "clinical": "Brain fog",
+      "plain": "poor focus, low mood, mental fatigue"
+    }
+  ]
+}

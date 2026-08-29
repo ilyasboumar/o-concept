@@ -49,43 +49,31 @@ export const trainingStats = {
   },
 };
 
-/** The IAAGSW curriculum — programme names as published by the association. */
-export const programmes: Programme[] = [
-  {
-    name: 'Intimate Female Rejuvenation',
-    detail: 'Aesthetic gynaecology and female sexual well-being, including the O-Shot® technique.',
-  },
-  {
-    name: 'Intimate Male Rejuvenation',
-    detail: 'Male sexual health and regenerative technique, including the P-Shot®.',
-  },
-  {
-    name: 'Foundation Aesthetic Training',
-    detail: 'Entry-level certification — toxin and dermal filler technique for clinicians new to the field.',
-  },
-  {
-    name: 'Advanced & Masterclass',
-    detail: 'PRP therapies, thread lifts and advanced regenerative protocol for experienced practitioners.',
-  },
-  {
-    name: 'The O Concept™ Fellowship',
-    detail: 'A structured pathway from foundation to certification in the full protocol.',
-  },
-];
+/**
+ * The IAAGSW curriculum — loaded from src/content/programmes/*.json.
+ * One file per programme; adding a course is adding a file.
+ */
+const programmeFiles = import.meta.glob<{ default: Programme & { order: number } }>(
+  '../content/programmes/*.json',
+  { eager: true }
+);
+export const programmes: Programme[] = Object.values(programmeFiles)
+  .map((m) => m.default)
+  .sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 
 /**
- * Congresses and invited lectures.
+ * Congresses and invited lectures — src/content/congresses/*.json.
  *
- * TODO — CLIENT INPUT NEEDED. Only the entry below is confirmed (it already
- * appears on the /training page). Dr Wakil has asked for his speaking record
- * to be listed here; we need event names, cities and years from him before
- * anything else goes in. Each additional entry is one object in this array —
- * no template changes required.
+ * SOURCING RULE STILL APPLIES: only engagements that actually happened. The
+ * list renders however short it is, and a short list of real events reads as
+ * selective. A padded one is a liability on a physician's page.
+ *
+ * Dr Wakil adds these himself in the CMS: one entry = one file.
  */
-export const speaking: Engagement[] = [
-  {
-    event: '1st World IAAGSW Congress',
-    place: 'Royal Society of Medicine, London',
-    role: 'Founder & President — host and faculty',
-  },
-];
+const congressFiles = import.meta.glob<{ default: Engagement & { order: number } }>(
+  '../content/congresses/*.json',
+  { eager: true }
+);
+export const speaking: Engagement[] = Object.values(congressFiles)
+  .map((m) => m.default)
+  .sort((a, b) => (a.order ?? 99) - (b.order ?? 99));

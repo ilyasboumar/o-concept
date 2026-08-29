@@ -1,4 +1,5 @@
 ---
+import { site } from '../data/site';
 import '@fontsource/cormorant-garamond/400.css';
 import '@fontsource/cormorant-garamond/500.css';
 import '@fontsource/cormorant-garamond/600.css';
@@ -40,14 +41,14 @@ const globalSchema = [
     description:
       'The world’s most awarded sexual rejuvenation and regenerative clinic. Home of The O Concept™, created by Dr Sherif Wakil.',
     url: Astro.site ? new URL(withBase(), Astro.site).href : undefined,
-    telephone: '+44 20 3006 8459',
-    email: 'info@drswclinics.com',
+    telephone: site.phone.e164,
+    email: site.email,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '77 Harley Street',
-      addressLocality: 'London',
-      postalCode: 'W1G 8QN',
-      addressCountry: 'GB',
+      streetAddress: site.address.street,
+      addressLocality: site.address.locality,
+      postalCode: site.address.postcode,
+      addressCountry: site.address.country,
     },
     medicalSpecialty: ['Sexual rejuvenation medicine', 'Regenerative medicine', 'Longevity medicine'],
     award: [
@@ -67,10 +68,10 @@ const globalSchema = [
       '@type': 'Place',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: '77 Harley Street',
-        addressLocality: 'London',
-        postalCode: 'W1G 8QN',
-        addressCountry: 'GB',
+        streetAddress: site.address.street,
+        addressLocality: site.address.locality,
+        postalCode: site.address.postcode,
+        addressCountry: site.address.country,
       },
     },
     award: [

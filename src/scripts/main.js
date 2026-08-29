@@ -2,6 +2,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { treatments, findTreatments, PATHWAY_LABELS } from '../data/treatments';
+import { site } from '../data/site';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -1042,7 +1043,7 @@ const CONCIERGE_SCRIPT = [
 ];
 
 const CONCIERGE_FALLBACK =
-  'Thank you — in the live version I will pass that straight to the right member of our clinical team and offer appointment times. For this prototype, may I suggest one of the questions below, or a call on +44 (0)20 3006 8459?';
+  `Thank you — in the live version I will pass that straight to the right member of our clinical team and offer appointment times. For this prototype, may I suggest one of the questions below, or a call on ${site.phone.display}?`;
 
 let conciergeStarted = false;
 

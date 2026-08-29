@@ -1,0 +1,23 @@
+{
+  "slug": "life-optimisation",
+  "name": "Life Optimisation & Coaching",
+  "pathway": "longevity",
+  "tag": "Longevity",
+  "desc": "Bio-hacking, supplementation, life coaching and kinetic body-movement therapy — one integrated performance programme.",
+  "image": "https://drswclinics.com/wp-content/uploads/2024/12/Homepage-8.jpg",
+  "imageAlt": "The clinic environment at Dr SW Clinics, Harley Street",
+  "conditions": [
+    {
+      "clinical": "Suboptimal performance",
+      "plain": "functioning, but nowhere near your best"
+    },
+    {
+      "clinical": "Stress & burnout",
+      "plain": "running on empty, mentally and physically"
+    },
+    {
+      "clinical": "Healthy ageing",
+      "plain": "staying strong, sharp and capable for decades"
+    }
+  ]
+}
