@@ -36,6 +36,60 @@ export interface Treatment {
   image: string;
   /** Alt text for the card image */
   imageAlt: string;
+
+  /* ---------- the treatment's own page ----------
+     Everything below is optional. A treatment with none of it still renders a
+     complete page from the fields above — which is what lets Dr Wakil add a
+     treatment today and finish writing it next week. */
+
+  /** Opening paragraph on the page. Falls back to `desc`. */
+  intro?: string;
+
+  /** The practical questions patients ask first. Any subset renders. */
+  facts?: {
+    duration?: string;
+    sessions?: string;
+    downtime?: string;
+    anaesthetic?: string;
+    results?: string;
+  };
+
+  /** Pricing. Deliberately a string, not a number — clinics quote ranges,
+      "from", and "confirmed at consultation", and a number invites a
+      precision the clinic may not want published. */
+  price?: {
+    from?: string;
+    note?: string;
+  };
+
+  /** Why a patient would choose it. */
+  benefits?: string[];
+
+  /** The steps of a session, in order. */
+  howItWorks?: { title: string; detail: string }[];
+
+  /** Page-specific questions. Also feeds FAQ structured data. */
+  faqs?: { q: string; a: string }[];
+
+  /**
+   * Clinical photography.
+   *
+   * `sensitive` marks explicit medical results — intimate anatomy, before and
+   * afters. Those are NOT downloaded until the visitor actively asks to see
+   * them: the src is withheld rather than blurred, so an unconsented image
+   * never reaches the browser, and cannot surface in a screenshot, a cache,
+   * a link preview or by inspecting the page.
+   *
+   * Publishing any of these is the clinic's decision and requires the
+   * patient's documented consent. This flag governs how the site *displays*
+   * an image; it is not, and cannot be, the consent itself.
+   */
+  gallery?: {
+    image: string;
+    alt: string;
+    caption?: string;
+    sensitive?: boolean;
+  }[];
 }
 
 export const PATHWAY_LABELS: Record<Pathway, string> = {

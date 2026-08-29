@@ -78,6 +78,92 @@ collections_config:
         label: In a patient's words
         comment: How someone would describe it themselves — for example difficulty getting or keeping an erection.
 
+      # ---- the treatment's own page ----
+      # All optional. Leave any of it blank and the page still looks finished —
+      # so a treatment can go live today and be written up later.
+      intro:
+        type: textarea
+        label: Opening paragraph
+        comment: The first thing a patient reads on the treatment's page. Leave blank to reuse the short description.
+      facts:
+        type: object
+        label: The practical facts
+        comment: What patients ask first. Fill in any of these — blank ones are simply not shown.
+      duration:
+        type: text
+        label: How long a session takes
+        comment: For example "About 45 minutes".
+      sessions:
+        type: text
+        label: How many sessions
+        comment: For example "1–3, spaced 6–8 weeks".
+      downtime:
+        type: text
+        label: Downtime
+        comment: For example "None" or "24 hours".
+      anaesthetic:
+        type: text
+        label: Anaesthetic
+        comment: For example "Topical numbing".
+      results:
+        type: text
+        label: When results appear
+        comment: For example "From 3 weeks, building to 3 months".
+      price:
+        type: object
+        label: Price
+        comment: Optional. Leave blank and the page shows nothing about cost.
+      from:
+        type: text
+        label: Price to show
+        comment: Free text, so you can write "From £X" or "On consultation" rather than a fixed number.
+      note:
+        type: text
+        label: Note under the price
+        comment: For example "Confirmed at consultation. 0% finance available."
+      benefits:
+        type: array
+        label: Why patients choose it
+        comment: One short line per benefit.
+      howItWorks:
+        type: array
+        label: How it works, step by step
+        comment: Add one row per step. They are numbered automatically in order.
+      title:
+        type: text
+        label: Step name
+        comment: One or two words — for example Diagnose, Draw, Deliver.
+      detail:
+        type: textarea
+        label: What happens in this step
+      faqs:
+        type: array
+        label: Questions about this treatment
+        comment: These also help the page appear in Google's question results.
+      q:
+        type: text
+        label: Question
+      a:
+        type: textarea
+        label: Answer
+      gallery:
+        type: array
+        label: Photographs
+        comment: >-
+          Photos for this treatment. Tick "Clinical image" on anything explicit —
+          those are hidden behind a warning and are not downloaded until the
+          visitor chooses to see them. Only publish patient photographs you hold
+          written consent for.
+      caption:
+        type: text
+        label: Caption under the photo
+      sensitive:
+        type: switch
+        label: Clinical image (18+)
+        comment: >-
+          Turn on for explicit medical results. The photo stays hidden behind a
+          warning and is never loaded until the visitor asks to view it.
+
   congresses:
     path: src/content/congresses
     glob: ['*.json']

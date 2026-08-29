@@ -20,7 +20,7 @@
  * The button is the primary control; hover is the enhancement. Reduced motion
  * keeps the readout and drops the sweep and the drift.
  */
-import { imageUrl } from '../lib/url';
+import { imageUrl, withBase } from '../lib/url';
 import { PATHWAY_LABELS, type Condition, type Treatment } from '../data/treatments';
 
 interface Props {
@@ -36,7 +36,9 @@ interface Props {
   keepCondition?: (c: Condition) => boolean;
 }
 
-const { treatment: t, href = '#begin', keepCondition } = Astro.props;
+const { treatment: t, href, keepCondition } = Astro.props;
+/* Default to the treatment's own page — the card is now a door, not a dead end. */
+const link = href ?? withBase('treatments/' + t.slug);
 const conditions = keepCondition ? t.conditions.filter(keepCondition) : t.conditions;
 const readoutId = `readout-${t.slug}`;
 ---
@@ -68,8 +70,8 @@ const readoutId = `readout-${t.slug}`;
       <span class="tx2__toggle-label">What this treats</span>
       <span class="tx2__count">{conditions.length}</span>
     </button>
-    <a href={href} class="tx2__cta">
-      Enquire <span class="tx2__arrow" aria-hidden="true">→</span>
+    <a href={link} class="tx2__cta">
+      Read more <span class="tx2__arrow" aria-hidden="true">→</span>
     </a>
   </div>
 

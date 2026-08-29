@@ -1,0 +1,199 @@
+---
+/**
+ * ClinicalGallery.astro — treatment photography, with a consent gate.
+ *
+ * Images flagged `sensitive` are explicit medical results. For those, the
+ * `src` is deliberately NOT rendered: it is held in `data-src` and only moved
+ * into `src` when the visitor presses the button. That distinction matters —
+ * a CSS blur still downloads the file, so it sits in the browser cache, shows
+ * up in a screenshot of the page mid-load, and is one devtools click away.
+ * Withholding the URL means an unconsented clinical photograph never reaches
+ * the device at all.
+ *
+ * The consent is per gallery and per session. It is not remembered across
+ * visits: someone returning later should be asked again rather than being
+ * shown intimate clinical imagery unprompted.
+ *
+ * NOTE FOR THE CLINIC: this controls *display* only. Publishing any patient
+ * photograph requires that patient's documented consent, which is a clinical
+ * governance matter, not a website setting.
+ */
+import { imageUrl } from '../lib/url';
+import type { Treatment } from '../data/treatments';
+
+interface Props {
+  gallery: NonNullable<Treatment['gallery']>;
+  treatmentName: string;
+}
+const { gallery, treatmentName } = Astro.props;
+
+const hasSensitive = gallery.some((g) => g.sensitive);
+---
+
+<section class="hairline-t bg-ink2 py-20 md:py-28" aria-labelledby="gallery-heading">
+  <div class="wrap">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Clinical photography</p>
+      <h2 id="gallery-heading" class="mt-5 font-serif text-3xl leading-tight text-cream md:text-4xl">
+        {treatmentName} — in practice.
+      </h2>
+      {
+        hasSensitive && (
+          <p class="mt-5 max-w-xl text-sm leading-relaxed text-cream/75">
+            Some images below are clinical photographs of treatment results and are intended for adults seeking
+            medical information. They are hidden until you choose to view them, and are published with patient
+            consent.
+          </p>
+        )
+      }
+    </div>
+
+    <div class="tx-gallery mt-12" data-gallery>
+      {
+        gallery.map((g) => (
+          <figure class:list={['tx-shot', g.sensitive && 'is-gated']}>
+            <div class="tx-shot__frame">
+              {
+                g.sensitive ? (
+                  <img
+                    class="tx-shot__img"
+                    data-src={imageUrl(g.image)}
+                    alt={g.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <img class="tx-shot__img" src={imageUrl(g.image)} alt={g.alt} loading="lazy" decoding="async" />
+                )
+              }
+
+              {
+                g.sensitive && (
+                  <div class="tx-shot__gate" data-gate>
+                    <span class="tx-shot__badge">18+ · Clinical image</span>
+                    <p class="tx-shot__note">
+                      This photograph shows a medical result and may be explicit.
+                    </p>
+                    <button type="button" class="tx-shot__btn" data-reveal-shot>
+                      View clinical image
+                    </button>
+                  </div>
+                )
+              }
+            </div>
+            {g.caption && <figcaption class="tx-shot__cap">{g.caption}</figcaption>}
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .tx-gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 700px) {
+    .tx-gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .tx-gallery {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .tx-shot {
+    margin: 0;
+  }
+  .tx-shot__frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid rgba(244, 241, 236, 0.1);
+    background: var(--color-ink);
+  }
+  .tx-shot__img {
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  /* Until consent, there is no image to see — the frame renders as an empty
+     surface, not a blurred photograph. */
+  .tx-shot__gate {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 1.75rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201, 169, 110, 0.07), transparent 70%),
+      var(--color-ink);
+  }
+  .tx-shot.is-revealed .tx-shot__gate {
+    display: none;
+  }
+
+  .tx-shot__badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .tx-shot__note {
+    max-width: 26ch;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .tx-shot__btn {
+    cursor: pointer;
+    border: 1px solid rgba(201, 169, 110, 0.5);
+    background: transparent;
+    color: var(--color-gold);
+    padding: 0.65rem 1.3rem;
+    font: 600 11px/1 var(--font-sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .tx-shot__btn:hover {
+    background: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  .tx-shot__cap {
+    margin-top: 0.9rem;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(244, 241, 236, 0.62);
+  }
+</style>
+
+<script>
+  /* Move data-src into src only on an explicit press. Before that the browser
+     has never been told the URL, so nothing is fetched, cached or previewable. */
+  document.querySelectorAll('[data-reveal-shot]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const shot = btn.closest('.tx-shot');
+      const img = shot?.querySelector<HTMLImageElement>('.tx-shot__img');
+      if (!img) return;
+      const src = img.getAttribute('data-src');
+      if (src) {
+        img.src = src;
+        img.removeAttribute('data-src');
+      }
+      shot?.classList.add('is-revealed');
+    });
+  });
+</script>

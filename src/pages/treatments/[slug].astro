@@ -1,0 +1,471 @@
+---
+/**
+ * /treatments/[slug] — a page per treatment.
+ *
+ * Generated from src/content/treatments/*.json, so adding a treatment in
+ * CloudCannon creates its page. Every section below is independently optional:
+ * a treatment with only the card fields filled in still renders a complete,
+ * well-proportioned page. That is deliberate — Dr Wakil can add a treatment
+ * today and write the detail next week without anything looking broken or
+ * half-built in the meantime.
+ *
+ * The one thing that never degrades is the conditions list: it is the reason
+ * a patient is on the page, and it is required by the schema.
+ */
+import Base from '../../layouts/Base.astro';
+import FinalCTA from '../../components/FinalCTA.astro';
+import Reassurance from '../../components/Reassurance.astro';
+import ClinicalGallery from '../../components/ClinicalGallery.astro';
+import { treatments, PATHWAY_LABELS, type Treatment } from '../../data/treatments';
+import { site } from '../../data/site';
+import { imageUrl, withBase } from '../../lib/url';
+
+export function getStaticPaths() {
+  return treatments.map((t) => ({ params: { slug: t.slug }, props: { t } }));
+}
+
+interface Props {
+  t: Treatment;
+}
+const { t } = Astro.props;
+
+const accent = t.pathway === 'her' ? 'rose' : t.pathway === 'longevity' ? 'teal' : 'gold';
+const intro = t.intro || t.desc;
+
+/* Only render the facts strip if something is actually in it. */
+const facts = [
+  { k: 'Session time', v: t.facts?.duration },
+  { k: 'Course', v: t.facts?.sessions },
+  { k: 'Downtime', v: t.facts?.downtime },
+  { k: 'Anaesthetic', v: t.facts?.anaesthetic },
+  { k: 'Results', v: t.facts?.results },
+].filter((f) => f.v);
+
+const procedureSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: t.name,
+  description: intro,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  bodyLocation:
+    t.pathway === 'her' ? 'Female intimate health' : t.pathway === 'him' ? 'Male sexual health' : 'Whole body',
+  performer: { '@type': 'Physician', name: site.founder },
+};
+
+const faqSchema = t.faqs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: t.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+<Base
+  title={`${t.name} — ${PATHWAY_LABELS[t.pathway]} | The O Concept™, Harley Street`}
+  description={intro}
+  schema={faqSchema ? [procedureSchema, faqSchema] : [procedureSchema]}
+>
+  <!-- ============ HERO ============ -->
+  <section class:list={['tx-hero', t.pathway]}>
+    <div class="tx-hero__media" aria-hidden="true">
+      <img src={imageUrl(t.image)} alt="" loading="eager" decoding="async" />
+      <span class="tx-hero__veil"></span>
+      <span class="tx-hero__grid"></span>
+    </div>
+
+    <div class="wrap tx-hero__inner">
+      <nav class="tx-crumb" aria-label="Breadcrumb">
+        <a href={withBase('treatments')}>Treatments</a>
+        <span aria-hidden="true">/</span>
+        <span>{PATHWAY_LABELS[t.pathway]}</span>
+      </nav>
+
+      <p class="tx-hero__tag">{t.tag}</p>
+      <h1 class="tx-hero__title">{t.name}</h1>
+      <p class="tx-hero__intro">{intro}</p>
+
+      <div class="tx-hero__cta">
+        <a href="#begin" class="btn btn-gold" data-magnetic>Book a confidential consultation</a>
+        <a href={site.phone.href} class="btn btn-ghost" data-magnetic>{site.phone.display}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FACTS + PRICE ============ -->
+  {
+    (facts.length > 0 || t.price) && (
+      <section class="hairline-t bg-ink py-14 md:py-16">
+        <div class="wrap">
+          <dl class="tx-facts">
+            {facts.map((f) => (
+              <div class="tx-fact">
+                <dt>{f.k}</dt>
+                <dd>{f.v}</dd>
+              </div>
+            ))}
+            {t.price && (
+              <div class="tx-fact tx-fact--price">
+                <dt>Investment</dt>
+                <dd>{t.price.from || 'On consultation'}</dd>
+                {t.price.note && <p class="tx-fact__note">{t.price.note}</p>}
+              </div>
+            )}
+          </dl>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ============ WHAT IT TREATS ============ -->
+  <section class="hairline-t relative bg-ink2 py-20 md:py-28">
+    <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
+    <div class="wrap relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5" data-reveal>
+        <p class="eyebrow">What this treats</p>
+        <h2 class="mt-5 font-serif text-3xl leading-tight text-cream md:text-4xl">
+          The concerns {t.name} answers.
+        </h2>
+        <p class="mt-6 text-sm leading-relaxed text-cream/75">
+          Described the way patients describe them — not the way textbooks do.
+        </p>
+      </div>
+      <ul class="lg:col-span-7" data-reveal-child>
+        {
+          t.conditions.map((c) => (
+            <li class="tx-cond">
+              <span class:list={['tx-cond__mark', accent]} aria-hidden="true" />
+              <div>
+                <p class="tx-cond__clinical">{c.clinical}</p>
+                <p class="tx-cond__plain">{c.plain}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  {
+    t.howItWorks?.length && (
+      <section class="hairline-t bg-ink py-20 md:py-28">
+        <div class="wrap">
+          <div class="max-w-2xl" data-reveal>
+            <p class="eyebrow">How it works</p>
+            <h2 class="mt-5 font-serif text-3xl leading-tight text-cream md:text-4xl">What happens, step by step.</h2>
+          </div>
+          <ol class="tx-steps mt-14" data-reveal-child>
+            {t.howItWorks.map((s, i) => (
+              <li class="tx-step">
+                <span class="tx-step__n">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="tx-step__t">{s.title}</h3>
+                <p class="tx-step__d">{s.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ============ BENEFITS ============ -->
+  {
+    t.benefits?.length && (
+      <section class="hairline-t bg-ink2 py-20 md:py-28">
+        <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <div class="lg:col-span-4" data-reveal>
+            <p class="eyebrow">Why patients choose it</p>
+            <h2 class="mt-5 font-serif text-3xl leading-tight text-cream md:text-4xl">The difference it makes.</h2>
+          </div>
+          <ul class="tx-benefits lg:col-span-8" data-reveal-child>
+            {t.benefits.map((b) => (
+              <li class="tx-benefit">
+                <span class="tx-benefit__tick" aria-hidden="true">
+                  ✓
+                </span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ============ GALLERY (consent-gated) ============ -->
+  {t.gallery?.length && <ClinicalGallery gallery={t.gallery} treatmentName={t.name} />}
+
+  <!-- ============ FAQ ============ -->
+  {
+    t.faqs?.length && (
+      <section class="hairline-t bg-ink py-20 md:py-28">
+        <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-12">
+          <div class="lg:col-span-4" data-reveal>
+            <p class="eyebrow">Before you ask</p>
+            <h2 class="mt-5 font-serif text-3xl leading-tight text-cream md:text-4xl">Questions about {t.name}.</h2>
+          </div>
+          <div class="space-y-4 lg:col-span-8" data-reveal-child>
+            {t.faqs.map((f) => (
+              <details class="faq hairline bg-ink2 px-7">
+                <summary class="flex items-center justify-between gap-6 py-6">
+                  <span class="font-serif text-xl text-cream">{f.q}</span>
+                  <span class="faq-icon shrink-0 text-xl font-light text-gold" aria-hidden="true">
+                    ＋
+                  </span>
+                </summary>
+                <p class="hairline-t pt-5 pb-7 text-sm leading-[1.85] text-cream/75">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <Reassurance variant="guidance" surface="ink2" accent={accent === 'gold' ? 'gold' : accent} />
+
+  <FinalCTA
+    heading={`Considering ${t.name}?`}
+    sub="Every programme begins with diagnostics, so the plan is chosen from evidence rather than guesswork. The first conversation is confidential and without obligation."
+  />
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .tx-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(26rem, 62vh, 40rem);
+    overflow: hidden;
+    --tx-accent: var(--color-gold);
+    --tx-accent-rgb: 201, 169, 110;
+  }
+  .tx-hero.her {
+    --tx-accent: var(--color-rose);
+    --tx-accent-rgb: 217, 164, 164;
+  }
+  .tx-hero.longevity {
+    --tx-accent: var(--color-teal);
+    --tx-accent-rgb: 45, 212, 191;
+  }
+
+  .tx-hero__media {
+    position: absolute;
+    inset: 0;
+  }
+  .tx-hero__media img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    filter: brightness(0.5) saturate(0.85);
+  }
+  .tx-hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, var(--color-ink) 4%, rgba(28, 30, 36, 0.45) 55%, rgba(28, 30, 36, 0.2)),
+      linear-gradient(to right, rgba(28, 30, 36, 0.85) 0%, rgba(28, 30, 36, 0.35) 55%, transparent 80%);
+  }
+  /* blueprint grid — the instrumentation language used across the site */
+  .tx-hero__grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    background-image:
+      linear-gradient(rgba(var(--tx-accent-rgb), 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--tx-accent-rgb), 0.09) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(ellipse 70% 80% at 20% 90%, black, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 20% 90%, black, transparent 75%);
+  }
+
+  .tx-hero__inner {
+    position: relative;
+    padding-top: 7rem;
+    padding-bottom: 3.5rem;
+  }
+  .tx-crumb {
+    display: flex;
+    gap: 0.6rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(244, 241, 236, 0.62);
+  }
+  .tx-crumb a:hover {
+    color: var(--color-cream);
+  }
+  .tx-hero__tag {
+    margin-top: 1.75rem;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--tx-accent);
+  }
+  .tx-hero__title {
+    margin-top: 0.9rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.02;
+    color: var(--color-cream);
+  }
+  .tx-hero__intro {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+    font-size: 17px;
+    line-height: 1.8;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .tx-hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  /* ---------- facts ---------- */
+  .tx-facts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+  }
+  @media (min-width: 900px) {
+    .tx-facts {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    }
+  }
+  .tx-fact dt {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(244, 241, 236, 0.62);
+  }
+  .tx-fact dd {
+    margin-top: 0.7rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--color-cream);
+  }
+  .tx-fact--price dd {
+    color: var(--color-gold);
+  }
+  .tx-fact__note {
+    margin-top: 0.5rem;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(244, 241, 236, 0.62);
+  }
+
+  /* ---------- conditions ---------- */
+  .tx-cond {
+    display: flex;
+    gap: 1.1rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid rgba(244, 241, 236, 0.1);
+  }
+  .tx-cond:last-child {
+    border-bottom: 1px solid rgba(244, 241, 236, 0.1);
+  }
+  .tx-cond__mark {
+    margin-top: 0.65em;
+    height: 1px;
+    width: 1.4rem;
+    flex-shrink: 0;
+    background: var(--color-gold);
+  }
+  .tx-cond__mark.rose {
+    background: var(--color-rose);
+  }
+  .tx-cond__mark.teal {
+    background: var(--color-teal);
+  }
+  .tx-cond__clinical {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(244, 241, 236, 0.75);
+  }
+  .tx-cond__plain {
+    margin-top: 0.45rem;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.45;
+    color: rgba(244, 241, 236, 0.9);
+  }
+
+  /* ---------- steps ---------- */
+  .tx-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: rgba(244, 241, 236, 0.1);
+  }
+  @media (min-width: 700px) {
+    .tx-steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .tx-steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .tx-step {
+    background: var(--color-ink);
+    padding: 2rem 1.75rem;
+  }
+  .tx-step__n {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    color: var(--color-gold);
+  }
+  .tx-step__t {
+    margin-top: 0.9rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--color-cream);
+  }
+  .tx-step__d {
+    margin-top: 0.7rem;
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(244, 241, 236, 0.75);
+  }
+
+  /* ---------- benefits ---------- */
+  .tx-benefits {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+  @media (min-width: 700px) {
+    .tx-benefits {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem 2.5rem;
+    }
+  }
+  .tx-benefit {
+    display: flex;
+    gap: 0.9rem;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(244, 241, 236, 0.9);
+  }
+  .tx-benefit__tick {
+    color: var(--color-gold);
+    flex-shrink: 0;
+  }
+</style>
