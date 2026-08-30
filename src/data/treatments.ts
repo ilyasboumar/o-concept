@@ -78,6 +78,27 @@ export interface Treatment {
   faqs?: { q: string; a: string }[];
 
   /**
+   * Per-section switches for the CMS.
+   *
+   * Omitting content already hides a section — this is for the other case:
+   * keeping the content but taking the section off the page for now, without
+   * deleting work. Everything defaults to shown, so an older treatment file
+   * with no `show` block behaves exactly as before.
+   *
+   * Whatever is hidden, the page re-stripes itself: surfaces are assigned to
+   * the sections that actually render, so two same-coloured bands can never
+   * end up adjacent. See the `surface` map in pages/treatments/[slug].astro.
+   */
+  show?: {
+    facts?: boolean;
+    howItWorks?: boolean;
+    benefits?: boolean;
+    gallery?: boolean;
+    faqs?: boolean;
+    reassurance?: boolean;
+  };
+
+  /**
    * Clinical photography.
    *
    * `sensitive` marks explicit medical results — intimate anatomy, before and

@@ -41,6 +41,43 @@ const facts = [
   { k: 'Results', v: t.facts?.results },
 ].filter((f) => f.v);
 
+/* ------------------------------------------------------------------
+   Which sections render, and on what surface.
+
+   A section is shown when it has content AND has not been switched off in
+   the CMS. `show` defaults to true, so files without the block are unchanged.
+
+   The surfaces are then assigned to the sections that SURVIVE, rather than
+   hardcoded per section. That is the whole point: if the doctor hides the
+   middle section, the two either side would otherwise both be ink3 and merge
+   into one slab with a stray hairline through it. Striping the survivors
+   means any combination — all sections, one section, or none — comes out
+   looking deliberate.
+   ------------------------------------------------------------------ */
+const on = (flag: boolean | undefined, hasContent: unknown) => flag !== false && Boolean(hasContent);
+
+const visible = {
+  facts: on(t.show?.facts, facts.length > 0 || t.price),
+  conditions: true, // never hidden — it is why the patient is on the page
+  howItWorks: on(t.show?.howItWorks, t.howItWorks?.length),
+  benefits: on(t.show?.benefits, t.benefits?.length),
+  gallery: on(t.show?.gallery, t.gallery?.length),
+  faqs: on(t.show?.faqs, t.faqs?.length),
+  reassurance: t.show?.reassurance !== false,
+};
+
+type SectionId = keyof typeof visible;
+const ORDER: SectionId[] = ['facts', 'conditions', 'howItWorks', 'benefits', 'gallery', 'faqs', 'reassurance'];
+
+/* alternate ink2 / ink3 across whatever is actually on the page */
+const surface = {} as Record<SectionId, string>;
+let stripe = 0;
+for (const id of ORDER) {
+  if (!visible[id]) continue;
+  surface[id] = stripe % 2 === 0 ? 'bg-ink2' : 'bg-ink3';
+  stripe++;
+}
+
 const procedureSchema = {
   '@context': 'https://schema.org',
   '@type': 'MedicalProcedure',
@@ -98,8 +135,8 @@ const faqSchema = t.faqs?.length
 
   <!-- ============ FACTS + PRICE ============ -->
   {
-    (facts.length > 0 || t.price) && (
-      <section class="hairline-t bg-ink py-14 md:py-16">
+    visible.facts && (
+      <section class:list={['hairline-t py-14 md:py-16', surface.facts]}>
         <div class="wrap">
           <dl class="tx-facts">
             {facts.map((f) => (
@@ -131,7 +168,7 @@ const faqSchema = t.faqs?.length
   }
 
   <!-- ============ WHAT IT TREATS ============ -->
-  <section class="hairline-t relative bg-ink2 py-20 md:py-28">
+  <section class:list={['hairline-t relative py-20 md:py-28', surface.conditions]}>
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5" data-reveal>
@@ -161,8 +198,8 @@ const faqSchema = t.faqs?.length
 
   <!-- ============ HOW IT WORKS ============ -->
   {
-    t.howItWorks?.length && (
-      <section class="hairline-t bg-ink py-20 md:py-28">
+    visible.howItWorks && (
+      <section class:list={['hairline-t py-20 md:py-28', surface.howItWorks]}>
         <div class="wrap">
           <div class="max-w-2xl" data-reveal>
             <p class="eyebrow">How it works</p>
@@ -184,8 +221,8 @@ const faqSchema = t.faqs?.length
 
   <!-- ============ BENEFITS ============ -->
   {
-    t.benefits?.length && (
-      <section class="hairline-t bg-ink2 py-20 md:py-28">
+    visible.benefits && (
+      <section class:list={['hairline-t py-20 md:py-28', surface.benefits]}>
         <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div class="lg:col-span-4" data-reveal>
             <p class="eyebrow">Why patients choose it</p>
@@ -207,12 +244,12 @@ const faqSchema = t.faqs?.length
   }
 
   <!-- ============ GALLERY (consent-gated) ============ -->
-  {t.gallery?.length && <ClinicalGallery gallery={t.gallery} treatmentName={t.name} />}
+  {visible.gallery && <ClinicalGallery gallery={t.gallery!} treatmentName={t.name} surface={surface.gallery} />}
 
   <!-- ============ FAQ ============ -->
   {
-    t.faqs?.length && (
-      <section class="hairline-t bg-ink py-20 md:py-28">
+    visible.faqs && (
+      <section class:list={['hairline-t py-20 md:py-28', surface.faqs]}>
         <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div class="lg:col-span-4" data-reveal>
             <p class="eyebrow">Before you ask</p>
@@ -236,7 +273,7 @@ const faqSchema = t.faqs?.length
     )
   }
 
-  <Reassurance variant="guidance" surface="ink2" accent={accent === 'gold' ? 'gold' : accent} />
+  {visible.reassurance && <Reassurance variant="guidance" surface={surface.reassurance === 'bg-ink3' ? 'ink3' : 'ink2'} accent={accent} />}
 
   <FinalCTA
     heading={`Considering ${t.name}?`}
@@ -272,14 +309,16 @@ const faqSchema = t.faqs?.length
     height: 100%;
     width: 100%;
     object-fit: cover;
-    filter: brightness(0.5) saturate(0.85);
+    filter: brightness(0.72) saturate(1.02);
   }
   .tx-hero__veil {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to top, var(--color-ink) 4%, rgba(28, 30, 36, 0.45) 55%, rgba(28, 30, 36, 0.2)),
-      linear-gradient(to right, rgba(28, 30, 36, 0.85) 0%, rgba(28, 30, 36, 0.35) 55%, transparent 80%);
+      /* warm lift behind the copy — promise rather than weight */
+      radial-gradient(ellipse 70% 70% at 18% 62%, rgba(201, 169, 110, 0.13), transparent 66%),
+      linear-gradient(to top, var(--color-ink2) 2%, rgba(36, 38, 45, 0.34) 55%, rgba(36, 38, 45, 0.12)),
+      linear-gradient(to right, rgba(28, 30, 36, 0.74) 0%, rgba(28, 30, 36, 0.24) 55%, transparent 78%);
   }
   /* blueprint grid — the instrumentation language used across the site */
   .tx-hero__grid {
@@ -458,7 +497,7 @@ const faqSchema = t.faqs?.length
     }
   }
   .tx-step {
-    background: var(--color-ink);
+    background: var(--color-ink2);
     padding: 2rem 1.75rem;
   }
   .tx-step__n {

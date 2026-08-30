@@ -24,13 +24,15 @@ import type { Treatment } from '../data/treatments';
 interface Props {
   gallery: NonNullable<Treatment['gallery']>;
   treatmentName: string;
+  /** Surface class, assigned by the page so the stripe survives hidden sections. */
+  surface?: string;
 }
-const { gallery, treatmentName } = Astro.props;
+const { gallery, treatmentName, surface = 'bg-ink3' } = Astro.props;
 
 const hasSensitive = gallery.some((g) => g.sensitive);
 ---
 
-<section class="hairline-t bg-ink2 py-20 md:py-28" aria-labelledby="gallery-heading">
+<section class:list={['hairline-t py-20 md:py-28', surface]} aria-labelledby="gallery-heading">
   <div class="wrap">
     <div class="max-w-2xl" data-reveal>
       <p class="eyebrow">Clinical photography</p>
@@ -114,7 +116,7 @@ const hasSensitive = gallery.some((g) => g.sensitive);
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border: 1px solid rgba(244, 241, 236, 0.1);
-    background: var(--color-ink);
+    background: var(--color-ink2);
   }
   .tx-shot__img {
     display: block;
@@ -137,7 +139,7 @@ const hasSensitive = gallery.some((g) => g.sensitive);
     text-align: center;
     background:
       radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201, 169, 110, 0.07), transparent 70%),
-      var(--color-ink);
+      var(--color-ink2);
   }
   .tx-shot.is-revealed .tx-shot__gate {
     display: none;

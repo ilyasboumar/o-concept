@@ -164,6 +164,32 @@ collections_config:
           Turn on for explicit medical results. The photo stays hidden behind a
           warning and is never loaded until the visitor asks to view it.
 
+      # ---- section switches ----
+      # Hides a section without deleting the writing behind it, so it can come
+      # back later. The page re-stripes itself around whatever is hidden, so it
+      # can never end up with two matching bands side by side.
+      show:
+        type: object
+        label: Sections on this page
+        comment: >-
+          Turn a section off to take it off the page. Your writing is kept and
+          can be switched back on at any time.
+      howItWorks:
+        type: switch
+        label: Show the step-by-step section
+      benefits:
+        type: switch
+        label: Show the benefits section
+      gallery:
+        type: switch
+        label: Show the photographs
+      faqs:
+        type: switch
+        label: Show the questions
+      reassurance:
+        type: switch
+        label: Show the reassurance panel
+
   congresses:
     path: src/content/congresses
     glob: ['*.json']
