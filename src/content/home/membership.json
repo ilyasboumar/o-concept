@@ -1,0 +1,71 @@
+{
+  "show": true,
+  "eyebrow": "Membership — Silver · Gold · Platinum",
+  "heading": "A head-to-toe investment in your health.",
+  "intro": "Comprehensive diagnostics, priority access and ongoing optimisation — three tiers of continuous, physician-led care, each by application.",
+  "highlightLabel": "Most Chosen",
+  "applyLabelPrefix": "Apply for",
+  "tiers": [
+    {
+      "name": "Silver",
+      "price": "From £—",
+      "priceNote": "per month · by application",
+      "tagline": "The foundation: annual head-to-toe diagnostics, expertly maintained.",
+      "highlight": false,
+      "benefits": [
+        "Annual Endo Test diagnostic panel",
+        "Quarterly review consultations",
+        "Two maintenance ESWT sessions per year",
+        "Member rate on all treatments",
+        "Priority booking line"
+      ]
+    },
+    {
+      "name": "Gold",
+      "price": "From £—",
+      "priceNote": "per month · by application",
+      "tagline": "Our most chosen path. Active treatment and optimisation, continuously managed.",
+      "highlight": true,
+      "benefits": [
+        "Everything in Silver",
+        "Biannual full diagnostic panel",
+        "Monthly treatment session credit",
+        "Hormone & nutrition optimisation reviews",
+        "Dedicated care coordinator",
+        "48-hour priority appointments"
+      ]
+    },
+    {
+      "name": "Platinum",
+      "price": "From £—",
+      "priceNote": "per month · by application",
+      "tagline": "Complete, personal oversight by Dr Wakil — with the Concierge experience.",
+      "highlight": false,
+      "benefits": [
+        "Everything in Gold",
+        "Protocol reviews led personally by Dr Wakil",
+        "The O Concept™ Concierge — door-to-door",
+        "Same-day priority access",
+        "At-home phlebotomy for diagnostics",
+        "Partner assessment included",
+        "Discreet direct line, seven days a week"
+      ]
+    }
+  ],
+  "packages": {
+    "show": true,
+    "eyebrow": "No membership required",
+    "heading": "The O Concept™ is open to everyone.",
+    "text": "Membership is one way in — not the only way. Every treatment is available individually, or as a bundled package built around your diagnostics, with *0% finance available* on all plans. Come for a single session or a complete programme; the standard of care is identical.",
+    "points": [
+      "Single treatments",
+      "Bundled packages",
+      "0% finance available",
+      "No joining fee"
+    ],
+    "cta": {
+      "text": "Explore treatment packages",
+      "href": "treatments"
+    }
+  }
+}

@@ -25,6 +25,7 @@ const set = sets[variant];
 
 const bg = surface === 'ink' ? 'bg-ink' : surface === 'inkdeep' ? 'bg-inkdeep' : 'bg-ink2';
 const eyebrowClass = accent === 'teal' ? 'eyebrow-teal' : 'eyebrow';
+import { autoRowStyle } from '../lib/layout';
 ---
 
 <section class:list={['hairline-t relative', bg, 'py-20 md:py-28']} aria-labelledby={`assure-${variant}`}>
@@ -49,7 +50,7 @@ const eyebrowClass = accent === 'teal' ? 'eyebrow-teal' : 'eyebrow';
       </h2>
     </div>
 
-    <ul class="mt-14 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-14" data-reveal-child>
+    <ul class="auto-row mt-14" style={`${autoRowStyle(set.items.length)}; --row-gap:2.5rem`} data-reveal-child>
       {
         set.items.map((item) => (
           <li class="assure">

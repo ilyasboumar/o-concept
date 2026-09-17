@@ -44,6 +44,7 @@ const groups: { key: Pathway; label: string; items: typeof treatments }[] = show
   : [];
 
 const flat = items ?? (pathway === 'all' ? treatments : treatmentsByPathway(pathway));
+import { autoRowStyle } from '../lib/layout';
 ---
 
 {
@@ -71,7 +72,7 @@ const flat = items ?? (pathway === 'all' ? treatments : treatmentsByPathway(path
             <span class="tx2-group__rule" aria-hidden="true" />
             <span class="tx2-group__n">{g.items.length}</span>
           </header>
-          <div class="tx2-grid" data-reveal-child>
+          <div class="tx2-grid" style={autoRowStyle(g.items.length)} data-reveal-child>
             {g.items.map((t) => (
               <TreatmentCard treatment={t} keepCondition={keepCondition} />
             ))}
@@ -79,7 +80,7 @@ const flat = items ?? (pathway === 'all' ? treatments : treatmentsByPathway(path
         </section>
       ))
     ) : (
-      <div class="tx2-grid" data-reveal-child>
+      <div class="tx2-grid" style={autoRowStyle(flat.length)} data-reveal-child>
         {flat.map((t) => (
           <TreatmentCard treatment={t} keepCondition={keepCondition} />
         ))}

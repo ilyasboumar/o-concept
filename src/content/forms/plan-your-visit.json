@@ -1,0 +1,114 @@
+{
+  "title": "Plan your visit",
+  "eyebrow": "International patients",
+  "heading": "Plan your visit.",
+  "intro": "Tell us when you are travelling and what you would like to address, and the international patient team will build your visit around it — diagnostics, treatment and recovery inside your stay.",
+  "submitLabel": "Send my travel details",
+  "note": "Handled by the international patient team. Nothing is shared with anyone outside the clinic.",
+  "endpoint": "",
+  "success": {
+    "heading": "Thank you — we have your dates.",
+    "text": "The international team will reply within one working day with a proposed schedule for your stay, by whichever channel suits you."
+  },
+  "error": {
+    "heading": "That did not send.",
+    "text": "Please try again, or message the clinic on WhatsApp and we will take your details there."
+  },
+  "fields": [
+    {
+      "type": "text",
+      "name": "first_name",
+      "label": "First name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "given-name"
+    },
+    {
+      "type": "text",
+      "name": "last_name",
+      "label": "Last name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "family-name"
+    },
+    {
+      "type": "email",
+      "name": "email",
+      "label": "Email",
+      "required": true,
+      "width": "half",
+      "autocomplete": "email"
+    },
+    {
+      "type": "tel",
+      "name": "phone",
+      "label": "Phone or WhatsApp",
+      "required": true,
+      "width": "half",
+      "autocomplete": "tel"
+    },
+    {
+      "type": "text",
+      "name": "travelling_from",
+      "label": "Travelling from",
+      "width": "half",
+      "placeholder": "City and country",
+      "autocomplete": "country-name"
+    },
+    {
+      "type": "number",
+      "name": "party_size",
+      "label": "How many travelling",
+      "width": "half",
+      "placeholder": "1"
+    },
+    {
+      "type": "date",
+      "name": "arrival_date",
+      "label": "Arriving",
+      "width": "half"
+    },
+    {
+      "type": "date",
+      "name": "departure_date",
+      "label": "Leaving",
+      "width": "half"
+    },
+    {
+      "type": "select",
+      "name": "clinic",
+      "label": "Which clinic",
+      "width": "full",
+      "options": ["London — 77 Harley Street", "Dubai", "Cairo", "Not sure yet"],
+      "placeholder": "Please choose…"
+    },
+    {
+      "type": "checkboxes",
+      "name": "arrangements",
+      "label": "What should we arrange?",
+      "width": "full",
+      "options": [
+        "Airport reception and transfers",
+        "Accommodation",
+        "Interpreter",
+        "Partner assessment",
+        "Video consultation before I travel"
+      ]
+    },
+    {
+      "type": "textarea",
+      "name": "notes",
+      "label": "What would you like to address?",
+      "width": "full",
+      "help": "Optional. Anything you tell us here stays with the clinical team.",
+      "placeholder": "In your own words…"
+    },
+    {
+      "type": "checkbox",
+      "name": "consent",
+      "label": "I consent to being contacted about my visit. All communication is strictly confidential.",
+      "required": true,
+      "width": "full"
+    }
+  ]
+}

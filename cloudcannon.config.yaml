@@ -14,6 +14,747 @@ paths:
   uploads: public/images/uploads
 
 collections_config:
+  home:
+    path: src/content/home
+    glob: ['*.json']
+    name: The home page
+    icon: home
+    description: >-
+      Every word, photograph and card on the landing page, one section per file.
+      Nothing here can break the page: leave a field blank and that line simply
+      is not shown, and turning a section off keeps the writing for later.
+    _enabled_editors: [data]
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _inputs:
+      # ---- shared across every section --------------------------------------
+      show:
+        type: switch
+        label: Show this section on the page
+        comment: >-
+          Turn it off to take the whole section off the home page. Nothing you
+          have written is lost — switch it back on and it returns exactly as it
+          was.
+      eyebrow:
+        type: text
+        label: Small label above the heading
+        comment: A few words in capitals, for example "The method".
+      heading:
+        type: text
+        label: Heading
+        comment: >-
+          Put *asterisks* around any words you want in the accent colour, as in
+          "measured, *restored,* maintained". Type ™ and ® normally.
+      intro:
+        type: textarea
+        label: Opening paragraph
+      text:
+        type: textarea
+        label: Text
+        comment: Wrap words in *asterisks* to pick them out in the accent colour.
+      title:
+        type: text
+        label: Title
+      caption:
+        type: text
+        label: Caption
+      image:
+        type: image
+        label: Photograph
+        comment: Upload a photo, or paste a web address. It is resized automatically.
+      alt:
+        type: text
+        label: Photo description
+        comment: Describe the photo for patients using a screen reader.
+      href:
+        type: text
+        label: Where it goes
+        comment: >-
+          A page on this site (for-him, treatments, membership) or a place on this
+          page — #begin for the booking form, #finder for the treatment finder,
+          #science for the protocol.
+      accent:
+        type: select
+        label: Colour
+        comment: >-
+          Keeps a new card on-brand. Gold is the house colour, rose is For Her,
+          teal is science and longevity.
+        options:
+          values:
+            - { value: gold, label: Gold — the house colour }
+            - { value: rose, label: Rose — For Her }
+            - { value: teal, label: Teal — science and longevity }
+      points:
+        type: array
+        label: Short lines
+        comment: One short line per row. Three or four read best.
+      cta:
+        type: object
+        label: Button
+      primaryCta:
+        type: object
+        label: Main button
+      secondaryCta:
+        type: object
+        label: Second button
+      value:
+        type: text
+        label: The figure
+        comment: >-
+          Type it exactly as you want patients to read it — 25,000+ or 20+ or 1st
+          or 2025. Numbers count up on their own as the visitor scrolls.
+      label:
+        type: text
+        label: What the figure means
+        comment: A few words underneath, for example "cases worldwide".
+
+      # ---- hero --------------------------------------------------------------
+      headline:
+        type: text
+        label: Headline
+        comment: Wrap words in *asterisks* to put them in the accent colour.
+      sub:
+        type: textarea
+        label: Line under the headline
+      scrollCue:
+        type: text
+        label: Word by the scroll arrow
+        comment: One word, for example "Enter".
+      gates:
+        type: array
+        label: Pathway titles during the fly-through
+        comment: >-
+          The names that appear one after another as the camera flies through the
+          DNA rings. Three is the intended number; they space themselves out if
+          you add or remove one.
+        options:
+          structures: _structures.gate
+      body:
+        type: object
+        label: The second screen
+        comment: The panel with Dr Wakil's portrait, reached by scrolling the hero.
+      credentials:
+        type: array
+        label: Authority figures
+        comment: The short facts beside Dr Wakil's portrait. Three fit neatly.
+        options:
+          structures: _structures.credential
+      portrait:
+        type: object
+        label: Dr Wakil's portrait
+      name:
+        type: text
+        label: Name
+      role:
+        type: text
+        label: Role underneath the name
+      note:
+        type: text
+        label: Third line
+        comment: Optional. For example "World's most awarded protocol".
+
+      # ---- awards, testimonials, press ---------------------------------------
+      doctor:
+        type: object
+        label: Dr Wakil, at the start of the ribbon
+      includeVideos:
+        type: switch
+        label: Include the patient video testimonials
+        comment: >-
+          The patient videos are set up elsewhere, with their consent on file.
+          This only decides whether they appear in this ribbon.
+      awards:
+        type: array
+        label: Award badges
+        comment: >-
+          Add, remove or drag to reorder — the first leads the ribbon. Awards,
+          quotes and press names are shuffled together automatically, so the
+          ribbon always reads as a mixture rather than a row of badges.
+        options:
+          structures: _structures.award
+      quotes:
+        type: array
+        label: Patient quotes
+        comment: Short, in the patient's own words.
+        options:
+          structures: _structures.quote
+      who:
+        type: text
+        label: Who said it
+        comment: Initials, age and county — for example "Mrs L., 47, Surrey". Never a full name.
+      press:
+        type: array
+        label: Seen in
+        comment: One publication or channel per row.
+        options:
+          structures: _structures.press
+
+      # ---- positioning -------------------------------------------------------
+      quote:
+        type: textarea
+        label: The large quote
+        comment: Wrap words in *asterisks* to put them in gold.
+      photo:
+        type: object
+        label: Clinic photograph
+      pressBadge:
+        type: object
+        label: Press logo
+        comment: Sits on a cream panel beside the photograph, so a logo suits it best.
+      paragraphs:
+        type: array
+        label: Paragraphs
+        comment: One paragraph per row. Add or remove as many as you like.
+      stats:
+        type: array
+        label: The figures across the bottom
+        comment: Four fit on one row on a computer screen.
+        options:
+          structures: _structures.stat
+
+      # ---- the science -------------------------------------------------------
+      steps:
+        type: array
+        label: The steps of the protocol
+        comment: >-
+          Add, remove or reorder. They are numbered automatically, and the
+          scrolling animation lengthens or shortens to fit however many there are.
+        options:
+          structures: _structures.step
+      detail:
+        type: text
+        label: Line underneath, in capitals
+        comment: Optional. The treatments or tests involved, separated by ·.
+      handover:
+        type: object
+        label: Closing photograph
+      closing:
+        type: object
+        label: The panel at the end
+
+      # ---- three pathways ----------------------------------------------------
+      cards:
+        type: array
+        label: Pathway cards
+        comment: >-
+          Add, remove or drag to reorder. Up to three sit in one row and open as
+          the visitor points at them; a fourth and beyond wrap onto a second row.
+        options:
+          structures: _structures.pathwayCard
+      kicker:
+        type: text
+        label: Small label above the title
+        comment: For example "For Her". It takes the card's colour.
+      ctaLabel:
+        type: text
+        label: Link at the bottom of every card
+        comment: One wording for all the cards, for example "Explore the pathway".
+
+      # ---- find your treatment ----------------------------------------------
+      placeholder:
+        type: text
+        label: Faint text inside the search box
+        comment: >-
+          Examples of what to type. Show patients their own words, in quotes,
+          rather than medical terms.
+      catalogueNote:
+        type: text
+        label: Line under the conditions
+      catalogueLinkLabel:
+        type: text
+        label: The link at the end of that line
+      emptyNote:
+        type: text
+        label: When nothing matches — first part
+      emptyLinkLabel:
+        type: text
+        label: When nothing matches — the link
+      emptyNoteEnd:
+        type: text
+        label: When nothing matches — after the link
+
+      # ---- membership --------------------------------------------------------
+      highlightLabel:
+        type: text
+        label: Badge on the recommended tier
+        comment: For example "Most Chosen". Clear it to show no badge at all.
+      applyLabelPrefix:
+        type: text
+        label: Start of the button on each tier
+        comment: Apply for + the tier's name, so the Gold tier reads "Apply for Gold".
+      tiers:
+        type: array
+        label: Membership tiers
+        comment: Add, remove or reorder. Three fit side by side on a computer screen.
+        options:
+          structures: _structures.tier
+      price:
+        type: text
+        label: Price
+        comment: >-
+          Free text, so "From £450", "£5,000 a year" and "By application" are all
+          fine.
+      priceNote:
+        type: text
+        label: Wording beside the price
+        comment: For example "per month · by application".
+      tagline:
+        type: text
+        label: One line describing the tier
+      highlight:
+        type: switch
+        label: Mark this as the most chosen tier
+        comment: >-
+          Wears the badge, stands slightly taller and takes the gold button. Only
+          one tier can have it — switch on a second and the first one keeps it.
+      benefits:
+        type: array
+        label: What is included
+        comment: One line per benefit.
+      packages:
+        type: object
+        label: The "no membership required" panel
+        comment: >-
+          Sits under the tiers, and has its own switch — so it can be hidden
+          without hiding the tiers.
+
+  pages:
+    path: src/content/pages
+    glob: ['*.json']
+    name: Other pages
+    icon: description
+    description: >-
+      The pages that are not the home page. Everything written on them is here.
+      The membership tiers themselves are not — they are edited once, under the
+      home page, and appear on both places so the two can never disagree.
+    _enabled_editors: [data]
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _inputs:
+      show:
+        type: switch
+        label: Show this section on the page
+        comment: >-
+          Turn it off to take the section off the page. Your writing is kept and
+          comes back exactly as it was when you switch it on again.
+      hero:
+        type: object
+        label: Top of the page
+      eyebrow:
+        type: text
+        label: Small label above the heading
+      heading:
+        type: text
+        label: Heading
+        comment: >-
+          Put *asterisks* around any words you want in gold, as in "Care that
+          *continues.*". Type ™ and ® normally.
+      sub:
+        type: textarea
+        label: Paragraph under the heading
+      note:
+        type: text
+        label: Quiet line underneath
+        comment: Small capitals. Leave it empty and no line is shown.
+      packages:
+        type: object
+        label: The "open to everyone" panel
+        comment: What it says is edited under the home page; this only decides whether it appears here.
+      comparison:
+        type: object
+        label: The comparison table
+      featureLabel:
+        type: text
+        label: Heading for the first column
+        comment: For example "Benefit".
+      rows:
+        type: array
+        label: Rows of the table
+        comment: >-
+          One row per benefit. The columns are your membership tiers, in the
+          order they appear on the page, and their names and prices come from
+          the tiers themselves — so you never retype a price here.
+        options:
+          structures: _structures.comparisonRow
+      feature:
+        type: text
+        label: What is being compared
+      values:
+        type: array
+        label: One answer per tier, in order
+        comment: >-
+          First box is the first tier, second box the second, and so on. Short
+          answers read best — "Annual", "2 per month", "✓", or "—" for a tier
+          that does not include it. Leave a box out and it shows as "—".
+      concierge:
+        type: object
+        label: The Concierge section
+      faqs:
+        type: object
+        label: Questions and answers
+      items:
+        type: array
+        label: The questions
+        comment: >-
+          Add, remove or drag to reorder. These also help the page appear in
+          Google's question results.
+        options:
+          structures: _structures.faqItem
+      q:
+        type: text
+        label: Question
+      a:
+        type: textarea
+        label: Answer
+      finalCta:
+        type: object
+        label: The closing invitation
+
+      tagline:
+        type: textarea
+        label: Line under the name
+      portrait:
+        type: object
+        label: Portrait photograph
+      photo:
+        type: object
+        label: Photograph
+      image:
+        type: image
+        label: Photograph
+        comment: Upload a photo, or paste a web address. It is resized automatically.
+      alt:
+        type: text
+        label: Photo description
+        comment: Describe the photo for patients using a screen reader.
+      caption:
+        type: text
+        label: Caption under the photo
+        comment: Optional. Leave it empty and no caption is shown.
+      awards:
+        type: object
+        label: The award badges
+        comment: >-
+          The ring of badges under the name. Switch the whole thing off, or add
+          and remove badges — the ring spaces itself around however many there are.
+      physician:
+        type: object
+        label: "Section: the physician"
+      credentials:
+        type: object
+        label: "Section: credentials & memberships"
+      milestones:
+        type: object
+        label: "Section: milestones"
+      promise:
+        type: object
+        label: "Section: our promise"
+      team:
+        type: object
+        label: "Section: the clinical team"
+      paragraphs:
+        type: array
+        label: Paragraphs
+        comment: One paragraph per row. Add or remove as many as you like.
+      chips:
+        type: array
+        label: The short lines underneath
+        comment: One per row, shown in small capitals.
+      items:
+        type: array
+        label: The entries
+        comment: >-
+          Add, remove or drag to reorder. Credentials are plain lines; milestones
+          have a gold line and a sentence; awards are badge images.
+      mark:
+        type: text
+        label: The gold line
+        comment: A year, a count or a name — "2025", "25,000+", "First in the UK".
+      members:
+        type: array
+        label: The people
+        comment: >-
+          One card each. Add someone, drag them into order, or remove someone who
+          has moved on. A card needs a photograph, a name and a role; the short
+          paragraph is optional and simply is not shown when empty.
+        options:
+          structures: _structures.teamMember
+      name:
+        type: text
+        label: Name and surname
+      brief:
+        type: textarea
+        label: A sentence or two about them
+        comment: Optional. Leave empty and the card shows just the photograph, name and role.
+      stats:
+        type: array
+        label: The three figures
+        comment: The scale of the teaching. Only figures the clinic can stand behind.
+        options:
+          structures: _structures.teachingStat
+      value:
+        type: text
+        label: The figure
+        comment: Typed exactly as you want it read — "3,000+", "Max 6", "Global".
+      label:
+        type: text
+        label: What the figure means
+      note:
+        type: text
+        label: Small print under the figure
+      chips:
+        type: array
+        label: The short credential lines
+        comment: One per row, shown as small boxes under the heading.
+      banner:
+        type: object
+        label: "Section: the wide photograph"
+      positioning:
+        type: object
+        label: "Section: from the source"
+      audience:
+        type: array
+        label: Who the training is for
+        comment: One line per kind of practitioner.
+      fellowship:
+        type: object
+        label: "Section: the fellowship"
+      steps:
+        type: array
+        label: The stages
+        comment: >-
+          Add, remove or drag to reorder. They are numbered automatically, so
+          removing the middle one does not leave a gap in the numbering.
+        options:
+          structures: _structures.step
+      iaagsw:
+        type: object
+        label: "Section: the IAAGSW"
+      facts:
+        type: array
+        label: The facts panel
+        comment: >-
+          The two-column table. Each row is a label and its answer; add or remove
+          rows and the panel re-forms around them.
+        options:
+          structures: _structures.factRow
+      k:
+        type: text
+        label: Label
+      v:
+        type: text
+        label: Answer
+      link:
+        type: object
+        label: The button
+      delegates:
+        type: object
+        label: "Section: what delegates say"
+        comment: The video itself is set up with the other patient videos.
+      apply:
+        type: object
+        label: "Section: apply to train"
+        comment: >-
+          The questions this form asks are edited under Forms → Training
+          fellowship application.
+      tagline:
+        type: text
+        label: Line under the heading
+      curriculumEyebrow:
+        type: text
+        label: Label above the course list
+        comment: The courses themselves are edited under Training programmes.
+      congressesEyebrow:
+        type: text
+        label: Label above the congress list
+        comment: The engagements themselves are edited under Congresses & lectures.
+      title:
+        type: text
+        label: Role or title
+        comment: For example Consultant Gynaecologist, or Patient Care Lead.
+
+  forms:
+    path: src/content/forms
+    glob: ['*.json']
+    name: Forms
+    icon: edit_note
+    description: >-
+      The questions each form asks, and what the answers are called. Add a
+      question, reorder them, mark one required, change a dropdown's choices —
+      the form on the website changes to match.
+    _enabled_editors: [data]
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _inputs:
+      title:
+        type: text
+        label: What this form is for
+        comment: Only you see this. It names the form in this list.
+      eyebrow:
+        type: text
+        label: Small label above the heading
+      heading:
+        type: text
+        label: Heading
+      intro:
+        type: textarea
+        label: Paragraph under the heading
+        comment: What you need from them, and what happens next.
+      submitLabel:
+        type: text
+        label: Wording on the button
+        options:
+          required: true
+          required_message: A button with no wording cannot be pressed.
+      note:
+        type: text
+        label: Reassurance under the button
+        comment: The quiet line about confidentiality. Leave it empty to show nothing.
+      endpoint:
+        type: text
+        label: Where completed forms are sent
+        comment: >-
+          Leave this EMPTY and nothing is sent anywhere — the form shows its
+          thank-you and the answers go no further. That is how the site is set up
+          today. To start receiving enquiries, paste in the web address your form
+          service or CRM gives you, and this form begins sending to it
+          immediately. Ask your developer which address to use.
+      success:
+        type: object
+        label: What they see after sending
+      error:
+        type: object
+        label: What they see if sending fails
+        comment: Only ever shown when the form is actually sending somewhere.
+      text:
+        type: textarea
+        label: Message
+      fields:
+        type: array
+        label: The questions this form asks
+        comment: >-
+          Add, remove or drag to reorder. Each row is one question. "Add a
+          question" lets you pick what kind it is — a short answer, a dropdown, a
+          date, a tick box, and so on.
+        options:
+          structures: _structures.formField
+      label:
+        type: text
+        label: The question, as the patient reads it
+        options:
+          required: true
+          required_message: A question with no wording is not shown on the form.
+      name:
+        type: text
+        label: What to call this answer
+        comment: >-
+          The name this answer arrives under when an enquiry reaches you — for
+          example first_name, phone, arrival_date. Lowercase, no spaces, and no
+          two questions on the same form should share one.
+        options:
+          required: true
+          required_message: Without a name, the answer arrives with nothing to label it.
+      type:
+        type: select
+        label: Kind of question
+        comment: Decides the box the patient is given and how their answer is checked.
+        options:
+          required: true
+          values:
+            - { value: text, label: Short answer }
+            - { value: email, label: Email address }
+            - { value: tel, label: Phone number }
+            - { value: number, label: Number }
+            - { value: date, label: Date }
+            - { value: time, label: Time }
+            - { value: textarea, label: Long answer }
+            - { value: select, label: Dropdown — pick one }
+            - { value: radio, label: Buttons — pick one }
+            - { value: checkboxes, label: Tick boxes — pick any }
+            - { value: checkbox, label: Single tick box — for consent }
+      required:
+        type: switch
+        label: They must answer this
+      width:
+        type: select
+        label: How wide
+        comment: Two half-width questions sit side by side on a computer screen.
+        options:
+          values:
+            - { value: half, label: Half width }
+            - { value: full, label: Full width }
+      placeholder:
+        type: text
+        label: Faint example inside the box
+        comment: Optional. For a dropdown this is the "Please choose…" line.
+      help:
+        type: text
+        label: Small note under the question
+      options:
+        type: array
+        label: The choices
+        comment: >-
+          One per row. Only used by dropdowns, pick-one buttons and tick boxes.
+      optionsFrom:
+        type: select
+        label: Take the choices from the site instead
+        comment: >-
+          Set this to the membership tiers and the choices become your Silver,
+          Gold and Platinum cards — so adding or renaming a tier updates this
+          question on its own, and the form can never offer a membership you no
+          longer sell. Leave it empty to type your own choices above.
+        options:
+          values:
+            - { value: '', label: Type my own choices }
+            - { value: membershipTiers, label: The membership tiers }
+      autocomplete:
+        type: text
+        label: Let browsers fill this in
+        comment: >-
+          Optional, and technical: a word like email, tel or given-name lets a
+          patient's browser offer what it already knows. Leave it empty if unsure.
+
+  assurances:
+    path: src/content/assurances
+    glob: ['*.json']
+    name: Reassurance panels
+    icon: volunteer_activism
+    description: >-
+      The three calm panels that repeat across the site — "You are in the right
+      place", "This is more common than you think", "Why patients travel for
+      this". Each one appears on several pages, so a wording changed here changes
+      everywhere it is used.
+    _enabled_editors: [data]
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _inputs:
+      eyebrow:
+        type: text
+        label: Small label above the heading
+      heading:
+        type: text
+        label: Heading
+      items:
+        type: array
+        label: The three reassurances
+        comment: >-
+          Each is a short title and a sentence or two saying why it is true.
+          Three fit the row; more will wrap.
+        options:
+          structures: _structures.assurance
+      title:
+        type: text
+        label: The line that lands
+        comment: Short enough to read at a glance.
+      body:
+        type: textarea
+        label: Why it is true
+        comment: One or two sentences. No promises about outcomes.
+
   treatments:
     path: src/content/treatments
     glob: ['*.json']
@@ -36,15 +777,23 @@ collections_config:
         type: text
         label: Short name for the web address
         comment: Lowercase, hyphens instead of spaces. For example p-shot.
+        options:
+          required: true
+          required_message: A treatment needs a web address before it can have a page.
       name:
         type: text
         label: Treatment name
         comment: Exactly as you want patients to see it.
+        options:
+          required: true
+          required_message: Patients see this everywhere the treatment appears.
       pathway:
         type: select
         label: Which pathway
         comment: Decides the colour and which group it appears under.
         options:
+          required: true
+          required_message: Decides which pathway page and which colour the treatment gets.
           values:
             - { value: him, label: For Him }
             - { value: her, label: For Her }
@@ -53,31 +802,78 @@ collections_config:
         type: text
         label: Type of treatment
         comment: For example Regenerative, Energy-based, Hormonal.
+        options:
+          required: true
+          required_message: Shown above the name on the card and the page.
       desc:
         type: textarea
         label: Short description
         comment: One or two sentences. Keep under about 120 characters so the cards stay even.
+        options:
+          required: true
+          required_message: The sentence under the name on every card.
       image:
         type: image
         label: Photograph
         comment: Upload a photo. It is resized automatically.
+        options:
+          required: true
+          required_message: Every card shows a photograph; without one it is an empty square.
       imageAlt:
         type: text
         label: Photo description
         comment: Describe the photo for patients using a screen reader.
+        options:
+          required: true
+          required_message: Required so patients using a screen reader know what the photo shows.
+      heroImage:
+        type: image
+        label: Background photograph at the top of the page
+        comment: >-
+          The wide photograph behind the treatment's name on its own page. Leave
+          it empty and the card photograph is used. A calm, wide picture works
+          best, because the treatment's name and opening paragraph sit on top of
+          it — anything busy in the left half makes the writing hard to read.
+      heroImageAlt:
+        type: text
+        label: Background photo description
+        comment: Optional. Describe it for patients using a screen reader.
+      alt:
+        type: text
+        label: Photo description
+        comment: >-
+          Describe the photograph for patients using a screen reader. Left empty,
+          the treatment's own photo description is used.
+      keywords:
+        type: array
+        label: Words patients search for
+        comment: >-
+          Words someone might type into the treatment finder that appear nowhere
+          else on this treatment: impotence, ED, leaking, a brand they arrive
+          asking for, a common misspelling. Patients never see these — they only
+          make the finder recognise more ways of asking. One word or phrase per
+          row, and it works the moment you save.
       conditions:
         type: array
         label: What this treats
         comment: Add one row per concern. Both wordings appear on the card.
+        options:
+          structures: _structures.condition
       clinical:
         type: text
         label: Medical term
         comment: For example Erectile dysfunction.
+        options:
+          required: true
+          required_message: Half a condition cannot be shown.
       plain:
         type: text
         label: In a patient's words
         comment: How someone would describe it themselves — for example difficulty getting or keeping an erection.
 
+        options:
+          required: true
+          required_message: The patient's own wording is the point of the card.
       # ---- the treatment's own page ----
       # All optional. Leave any of it blank and the page still looks finished —
       # so a treatment can go live today and be written up later.
@@ -129,23 +925,39 @@ collections_config:
         type: array
         label: How it works, step by step
         comment: Add one row per step. They are numbered automatically in order.
+        options:
+          structures: _structures.step
       title:
         type: text
         label: Step name
         comment: One or two words — for example Diagnose, Draw, Deliver.
+        options:
+          required: true
+          required_message: A step needs a name and what happens in it — one without the other is not shown.
       detail:
         type: textarea
         label: What happens in this step
+        options:
+          required: true
+          required_message: A step needs a name and what happens in it — one without the other is not shown.
       faqs:
         type: array
         label: Questions about this treatment
         comment: These also help the page appear in Google's question results.
+        options:
+          structures: _structures.faqItem
       q:
         type: text
         label: Question
+        options:
+          required: true
+          required_message: A question without an answer is not shown.
       a:
         type: textarea
         label: Answer
+        options:
+          required: true
+          required_message: A question without an answer is not shown.
       gallery:
         type: array
         label: Photographs
@@ -154,6 +966,8 @@ collections_config:
           those are hidden behind a warning and are not downloaded until the
           visitor chooses to see them. Only publish patient photographs you hold
           written consent for.
+        options:
+          structures: _structures.photo
       caption:
         type: text
         label: Caption under the photo
@@ -174,16 +988,19 @@ collections_config:
         comment: >-
           Turn a section off to take it off the page. Your writing is kept and
           can be switched back on at any time.
-      howItWorks:
+      practicalFacts:
+        type: switch
+        label: Show the practical facts
+      steps:
         type: switch
         label: Show the step-by-step section
-      benefits:
+      whyChoose:
         type: switch
         label: Show the benefits section
-      gallery:
+      photographs:
         type: switch
         label: Show the photographs
-      faqs:
+      questions:
         type: switch
         label: Show the questions
       reassurance:
@@ -251,10 +1068,224 @@ collections_config:
     _enabled_editors: [data]
 
 collection_groups:
+  - heading: Pages
+    collections: [home, pages, assurances]
   - heading: Your content
     collections: [treatments, congresses, programmes]
+  - heading: Enquiries
+    collections: [forms]
   - heading: Clinic
     collections: [site]
+
+# What "add a row" creates.
+#
+# Without these, CloudCannon can copy an existing row but not create a fresh
+# one — which is the difference between "you may edit what is there" and "this
+# is yours". Each structure is a blank of the right shape, so an added award,
+# quote, step, pathway card or tier arrives complete and correctly coloured
+# rather than as an empty object the page then has to survive.
+_structures:
+  gate:
+    values:
+      - label: Pathway title
+        icon: label
+        value:
+          title: ''
+          text: ''
+          accent: gold
+  credential:
+    values:
+      - label: Authority figure
+        icon: verified
+        value:
+          value: ''
+          label: ''
+  award:
+    values:
+      - label: Award badge
+        icon: military_tech
+        value:
+          image: ''
+          alt: Award recognising Dr SW Clinics
+  quote:
+    values:
+      - label: Patient quote
+        icon: format_quote
+        value:
+          text: ''
+          who: ''
+  press:
+    values:
+      - label: Publication
+        icon: newspaper
+        value:
+          name: ''
+  stat:
+    values:
+      - label: Figure
+        icon: insights
+        value:
+          value: ''
+          label: ''
+  step:
+    values:
+      - label: Step
+        icon: timeline
+        value:
+          title: ''
+          text: ''
+          detail: ''
+  pathwayCard:
+    values:
+      - label: For Him — gold
+        icon: male
+        value:
+          kicker: For Him
+          title: ''
+          text: ''
+          accent: gold
+          href: for-him
+          points: []
+      - label: For Her — rose
+        icon: female
+        value:
+          kicker: For Her
+          title: ''
+          text: ''
+          accent: rose
+          href: for-her
+          points: []
+      - label: Longevity — teal
+        icon: favorite
+        value:
+          kicker: Longevity
+          title: ''
+          text: ''
+          accent: teal
+          href: longevity
+          points: []
+  condition:
+    values:
+      - label: Concern
+        icon: healing
+        value:
+          clinical: ''
+          plain: ''
+  step:
+    values:
+      - label: Step
+        icon: format_list_numbered
+        value:
+          title: ''
+          detail: ''
+  photo:
+    values:
+      - label: Photograph
+        icon: photo_camera
+        value:
+          image: ''
+          alt: ''
+          caption: ''
+          sensitive: false
+  formField:
+    values:
+      - label: Short answer
+        icon: short_text
+        value: { type: text, name: '', label: '', required: false, width: half, placeholder: '' }
+      - label: Email address
+        icon: alternate_email
+        value: { type: email, name: email, label: Email, required: true, width: half, autocomplete: email }
+      - label: Phone number
+        icon: call
+        value: { type: tel, name: phone, label: Phone, required: true, width: half, autocomplete: tel }
+      - label: Number
+        icon: pin
+        value: { type: number, name: '', label: '', required: false, width: half, placeholder: '' }
+      - label: Date
+        icon: event
+        value: { type: date, name: '', label: '', required: false, width: half }
+      - label: Time
+        icon: schedule
+        value: { type: time, name: '', label: '', required: false, width: half }
+      - label: Long answer
+        icon: notes
+        value: { type: textarea, name: '', label: '', required: false, width: full, placeholder: '', help: '' }
+      - label: Dropdown — pick one
+        icon: arrow_drop_down_circle
+        value: { type: select, name: '', label: '', required: false, width: full, placeholder: 'Please choose…', options: [] }
+      - label: Buttons — pick one
+        icon: radio_button_checked
+        value: { type: radio, name: '', label: '', required: false, width: full, options: [] }
+      - label: Tick boxes — pick any
+        icon: check_box
+        value: { type: checkboxes, name: '', label: '', required: false, width: full, options: [] }
+      - label: Single tick box — for consent
+        icon: rule
+        value: { type: checkbox, name: consent, label: 'I consent to being contacted about my enquiry.', required: true, width: full }
+  factRow:
+    values:
+      - label: Fact
+        icon: table_rows
+        value:
+          k: ''
+          v: ''
+  teamMember:
+    values:
+      - label: Team member
+        icon: person
+        value:
+          image: ''
+          alt: ''
+          name: ''
+          title: ''
+          brief: ''
+  milestone:
+    values:
+      - label: Milestone
+        icon: flag
+        value:
+          mark: ''
+          text: ''
+  teachingStat:
+    values:
+      - label: Figure
+        icon: school
+        value:
+          value: ''
+          label: ''
+          note: ''
+  assurance:
+    values:
+      - label: Reassurance
+        icon: favorite_border
+        value:
+          title: ''
+          body: ''
+  comparisonRow:
+    values:
+      - label: Row
+        icon: table_rows
+        value:
+          feature: ''
+          values: []
+  faqItem:
+    values:
+      - label: Question
+        icon: help
+        value:
+          q: ''
+          a: ''
+  tier:
+    values:
+      - label: Membership tier
+        icon: workspace_premium
+        value:
+          name: ''
+          price: 'From £—'
+          priceNote: per month · by application
+          tagline: ''
+          highlight: false
+          benefits: []
 
 # Structural files are never editable. The design, the motion and the code stay
 # with the studio — this is what stops the site drifting off-brand.

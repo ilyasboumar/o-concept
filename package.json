@@ -9,7 +9,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "placeholders:fill": "node scripts/placeholders.mjs fill",
+    "placeholders:clear": "node scripts/placeholders.mjs clear"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

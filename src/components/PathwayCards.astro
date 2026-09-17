@@ -1,0 +1,112 @@
+---
+/**
+ * Three pathways — For Him · For Her · Longevity.
+ *
+ * Content: src/content/home/pathways.json. Cards are an array: remove one and
+ * the row closes up, add one and it takes its share of the row.
+ *
+ * The card's whole look follows a single "accent" field the owner picks from a
+ * list of the three brand colours, because the alternative is asking a doctor to
+ * paste a CSS gradient. Each accent carries its border, its label colour, its
+ * bullet rule and its background wash — the exact three treatments that were
+ * written by hand, now keyed rather than copied. So a new card is a colour
+ * choice, not a design job, and it cannot land on the page unstyled.
+ *
+ * Colour still means what it means everywhere else on the site: gold is the
+ * brand, rose is For Her, teal is science and longevity.
+ */
+import { withBase } from '../lib/url';
+import { pathways } from '../data/home';
+import Copy from './Copy.astro';
+import type { Accent } from '../data/home';
+
+const ACCENT: Record<Accent, { border: string; text: string; rule: string; bg: string }> = {
+  gold: {
+    border: 'hairline',
+    text: 'text-gold',
+    rule: 'bg-gold',
+    bg: `radial-gradient(ellipse 90% 70% at 80% 0%, rgba(201,169,110,0.16), transparent 60%),
+         linear-gradient(160deg, #2b2e36, #1c1e24 70%)`,
+  },
+  rose: {
+    border: 'border border-rose/25',
+    text: 'text-rose',
+    rule: 'bg-rose',
+    bg: `radial-gradient(ellipse 90% 70% at 20% 0%, rgba(110,30,43,0.4), transparent 62%),
+         radial-gradient(ellipse 60% 45% at 85% 100%, rgba(217,164,164,0.08), transparent 65%),
+         linear-gradient(200deg, #2b2e36, #1c1e24 70%)`,
+  },
+  teal: {
+    border: 'hairline-teal',
+    text: 'text-teal',
+    rule: 'bg-teal',
+    bg: `radial-gradient(ellipse 90% 70% at 50% 0%, rgba(45,212,191,0.13), transparent 62%),
+         radial-gradient(ellipse 60% 45% at 15% 100%, rgba(14,165,233,0.07), transparent 65%),
+         linear-gradient(180deg, #2b2e36, #1c1e24 70%)`,
+  },
+};
+
+const cards = pathways.cards.map((c) => ({ ...c, style: ACCENT[c.accent] ?? ACCENT.gold }));
+
+/* Three cards were sized by hand to line up: one row, fixed copy widths, and
+   bullets that never wrap. Past three there is no room for that at tablet width,
+   so the row wraps into pairs and the fixed widths and the nowrap come off,
+   rather than letting a bullet run out the side of its card. `.pathway` sets
+   flex:1 for the equal-share row, so the pairs need an explicit basis. */
+const roomy = cards.length <= 3;
+const copyWidth = roomy ? 'md:min-h-[4.9em] md:max-w-[280px]' : '';
+const titleWidth = roomy ? 'md:min-h-[2.3em] md:max-w-[280px]' : '';
+const bullets = roomy ? 'whitespace-nowrap' : '';
+const basis = roomy ? '' : 'md:basis-[calc(50%-0.625rem)]';
+---
+
+<section id="pathways" class="hairline-t relative bg-ink">
+  <div class="wrap py-24 md:py-32">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">{pathways.eyebrow}</p>
+      <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">{pathways.heading}</h2>
+    </div>
+
+    <div
+      class:list={['mt-16 flex flex-col gap-5 md:flex-row', roomy ? 'md:h-[560px]' : 'md:flex-wrap']}
+      data-reveal
+    >
+      {
+        cards.map((card) => (
+          <a
+            href={card.href.startsWith('#') ? card.href : withBase(card.href)}
+            class:list={[
+              'pathway group relative flex min-h-[380px] flex-col justify-end overflow-hidden p-9 md:p-11',
+              card.style.border,
+              basis,
+            ]}
+            style={`background: ${card.style.bg};`}
+          >
+            <p class:list={['text-[11px] font-semibold tracking-[0.22em] uppercase', card.style.text]}>{card.kicker}</p>
+            <h3 class:list={['mt-4 font-serif text-3xl text-cream md:text-4xl', titleWidth]}>
+              <Copy text={card.title} em={card.style.text} sup={`text-[0.45em] ${card.style.text}`} />
+            </h3>
+            <p class:list={['mt-4 max-w-sm text-sm leading-relaxed text-cream/75', copyWidth]}>{card.text}</p>
+            {card.points?.length > 0 && (
+              <div class="pathway-more mt-6">
+                <ul class:list={['space-y-2.5 text-sm text-cream/75', bullets]}>
+                  {card.points.map((point) => (
+                    <li class="flex items-center gap-3">
+                      <span class:list={['h-px w-5 shrink-0', card.style.rule]} />
+                      <span>
+                        <Copy text={point} em={card.style.text} />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <span class:list={['mt-7 inline-flex items-center gap-3 text-[12px] font-semibold tracking-[0.16em] uppercase', card.style.text]}>
+              {pathways.ctaLabel} <span class="transition-transform duration-500 group-hover:translate-x-2">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

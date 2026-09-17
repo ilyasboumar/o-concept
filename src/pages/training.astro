@@ -1,51 +1,39 @@
 ---
-import { site } from '../data/site';
+/**
+ * Training & IAAGSW.
+ *
+ * Every word, photograph, list and fact comes from src/content/pages/training.json,
+ * and the application form from src/content/forms/training-application.json —
+ * so the fellowship's steps, the IAAGSW facts panel and the questions asked of
+ * applicants are all the clinic's to change.
+ *
+ * "Teaching & speaking" below is the shared block (teaching.json), and the
+ * curriculum list is hidden here because this page covers it in full.
+ */
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FinalCTA from '../components/FinalCTA.astro';
-import { withBase } from '../lib/url';
-import { trainingVideo } from '../data/videos';
 import TeachingRecord from '../components/TeachingRecord.astro';
+import Form from '../components/Form.astro';
+import Copy from '../components/Copy.astro';
+import { imageUrl } from '../lib/url';
+import { trainingVideo } from '../data/videos';
+import { trainingPage as t } from '../data/pages';
+import { shown } from '../data/home';
+import { autoRowStyle } from '../lib/layout';
 
-const fellowship = [
-  {
-    n: '01',
-    title: 'Masterclasses',
-    body: 'Intensive, small-group teaching in the theory and evidence behind The O Concept™ — vascular, hormonal and regenerative medicine as one integrated discipline.',
-  },
-  {
-    n: '02',
-    title: 'Hands-on Harley Street Training',
-    body: 'Supervised clinical training at 77 Harley Street, working alongside Dr Wakil and his team on the exact techniques he introduced to the UK — O-Shot®, P-Shot®, energy-based devices and combination protocols.',
-  },
-  {
-    n: '03',
-    title: 'Certification',
-    body: 'Assessed certification in The O Concept™ protocol, with ongoing mentorship, case review and access to the IAAGSW professional community after graduation.',
-  },
-];
-
-const audience = [
-  'Doctors & surgeons entering sexual-wellbeing medicine',
-  'Aesthetic physicians extending into intimate health',
-  'Gynaecologists & urologists adding regenerative protocols',
-  'International clinics licensing The O Concept™ approach',
-];
+const heroTitle = t.hero.heading.replace(/\*(.+?)\*/g, "<em class='text-gold'>$1</em>");
 ---
 
 <Base
   title="Training & IAAGSW — Learn The O Concept™ from its Creator | Dr Sherif Wakil"
   description="The O Concept™ Training Fellowship: masterclasses, hands-on Harley Street training and certification for medical professionals — taught by Dr Sherif Wakil, creator of the protocol and President & Founder of the IAAGSW."
 >
-  <PageHero
-    eyebrow="Training & IAAGSW"
-    title="Training the world in <em class='text-gold'>The O Concept™.</em>"
-    sub="Doctors don't learn this field from a textbook. They learn it from the physician who built it — the creator of the protocol, teaching the medicine he pioneered."
-  >
+  <PageHero eyebrow={t.hero.eyebrow} title={heroTitle} sub={t.hero.sub}>
     <!-- authority hook — in the first viewport, not two scrolls down -->
     <ul class="flex flex-wrap gap-3" aria-label="Training credentials">
       {
-        ['Creator of The O Concept™', 'President & Founder, IAAGSW', '25,000+ cases behind the teaching'].map((item) => (
+        t.hero.chips.map((item) => (
           <li class="hairline bg-ink/60 px-5 py-3 text-[11px] font-semibold tracking-[0.14em] text-gold/85 uppercase backdrop-blur-sm">
             {item}
           </li>
@@ -57,17 +45,17 @@ const audience = [
   <!-- cinematic band — real training photography, directly under the hero -->
   <section class="relative overflow-hidden" aria-label="The O Concept™ training in session">
     <img
-      src={withBase('images/training-congress.jpg')}
-      alt="Dr Wakil teaching medical professionals at an IAAGSW training session"
+      src={imageUrl(t.banner.image)}
+      alt={t.banner.alt}
       class="h-[46vh] w-full object-cover md:h-[56vh]"
       data-parallax="-5"
     />
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/30" aria-hidden="true"></div>
     <div class="absolute right-0 bottom-8 left-0 md:bottom-10">
       <div class="wrap">
-        <p class="eyebrow !text-[11px]" data-reveal>In session · The O Concept™ Training</p>
+        <p class="eyebrow !text-[11px]" data-reveal>{t.banner.eyebrow}</p>
         <p class="mt-2 max-w-lg font-serif text-2xl leading-snug text-cream md:text-3xl" data-reveal data-delay="0.1">
-          The field&rsquo;s founder, teaching the field.
+          <Copy text={t.banner.caption} em="text-gold" italic />
         </p>
       </div>
     </div>
@@ -78,47 +66,39 @@ const audience = [
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
       <div class="lg:col-span-7" data-reveal>
-        <p class="eyebrow">From the source</p>
+        <p class="eyebrow">{t.positioning.eyebrow}</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-          The originator, <span class="text-gold italic">not an instructor.</span>
+          <Copy text={t.positioning.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
         </h2>
         <div class="mt-8 space-y-6 text-[16px] leading-[1.9] text-cream/75">
-          <p>
-            Every field has its teachers, and then it has its source. Dr Sherif Wakil created The O Concept™, brought
-            the O-Shot® and P-Shot® to the United Kingdom, and has more than 25,000 cases worldwide. When
-            physicians train with him, they are not learning a version of the protocol — they are learning the
-            protocol, from the person who wrote it.
-          </p>
-          <p>
-            As an international trainer and speaker, Dr Wakil has taught these techniques to doctors across Europe,
-            the Middle East and beyond. The training fellowship formalises that teaching into a structured pathway for
-            medical professionals.
-          </p>
+          {t.positioning.paragraphs.map((para) => (
+            <p>
+              <Copy text={para} em="text-gold" />
+            </p>
+          ))}
         </div>
         <ul class="mt-9 space-y-3" data-reveal-child>
-          {
-            audience.map((a) => (
-              <li class="flex items-center gap-3 text-sm text-cream/75">
-                <span class="h-px w-6 shrink-0 bg-gold" aria-hidden="true" />
-                {a}
-              </li>
-            ))
-          }
+          {t.positioning.audience.map((a) => (
+            <li class="flex items-center gap-3 text-sm text-cream/75">
+              <span class="h-px w-6 shrink-0 bg-gold" aria-hidden="true" />
+              {a}
+            </li>
+          ))}
         </ul>
       </div>
       <div class="lg:col-span-5" data-reveal data-delay="0.15">
         <figure class="hairline p-2">
           <div class="overflow-hidden">
             <img
-              src="https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg"
-              alt="Dr Sherif Wakil teaching in clinic at Harley Street"
+              src={imageUrl(t.positioning.photo.image)}
+              alt={t.positioning.photo.alt}
               class="aspect-[4/5] w-full scale-[1.06] object-cover"
               loading="lazy"
               data-parallax="-4"
             />
           </div>
           <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
-            Dr Sherif Wakil · International trainer &amp; speaker
+            {t.positioning.photo.caption}
           </figcaption>
         </figure>
       </div>
@@ -130,44 +110,41 @@ const audience = [
     <div class="wrap">
       <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
         <div class="max-w-2xl lg:col-span-7" data-reveal>
-          <p class="eyebrow">For medical professionals</p>
+          <p class="eyebrow">{t.fellowship.eyebrow}</p>
           <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-            The O Concept<sup class="text-[0.45em] text-gold">™</sup> Training Fellowship
+            <Copy text={t.fellowship.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
           </h2>
-          <p class="mt-6 text-[16px] leading-relaxed text-cream/75">
-            A structured pathway from foundation to certification, for clinicians who intend to practise this medicine
-            at the standard it deserves.
-          </p>
+          <p class="mt-6 text-[16px] leading-relaxed text-cream/75">{t.fellowship.intro}</p>
         </div>
         <figure class="hairline p-2 lg:col-span-5" data-reveal data-delay="0.15">
           <div class="overflow-hidden">
             <img
-              src={withBase('images/training-2.jpg')}
-              alt="Hands-on clinical training on The O Concept™ fellowship"
+              src={imageUrl(t.fellowship.photo.image)}
+              alt={t.fellowship.photo.alt}
               class="aspect-[3/2] w-full object-cover"
               loading="lazy"
             />
           </div>
           <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
-            Hands-on training · Small cohorts
+            {t.fellowship.photo.caption}
           </figcaption>
         </figure>
       </div>
 
-      <div class="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3" data-reveal-child>
-        {
-          fellowship.map((f) => (
-            <div class="hairline flex flex-col bg-ink p-9" data-tilt>
-              <span class="font-serif text-4xl text-gold">{f.n}</span>
-              <h3 class="mt-5 font-serif text-2xl text-cream">{f.title}</h3>
-              <p class="mt-4 text-sm leading-[1.85] text-cream/75">{f.body}</p>
-            </div>
-          ))
-        }
+      <div class="auto-row mt-16" style={autoRowStyle(t.fellowship.steps.length)} data-reveal-child>
+        {t.fellowship.steps.map((f, i) => (
+          <div class="hairline flex flex-col bg-ink p-9" data-tilt>
+            <span class="font-serif text-4xl text-gold">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-5 font-serif text-2xl text-cream">{f.title}</h3>
+            <p class="mt-4 text-sm leading-[1.85] text-cream/75">
+              <Copy text={f.text} em="text-gold" />
+            </p>
+          </div>
+        ))}
       </div>
-      <p class="mt-10 text-[11px] tracking-[0.16em] text-cream/62 uppercase" data-reveal>
-        Cohort sizes are deliberately small · Applications reviewed personally by Dr Wakil
-      </p>
+      {t.fellowship.note && (
+        <p class="mt-10 text-[11px] tracking-[0.16em] text-cream/62 uppercase" data-reveal>{t.fellowship.note}</p>
+      )}
     </div>
   </section>
 
@@ -176,21 +153,15 @@ const audience = [
     <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
     <div class="wrap relative grid grid-cols-1 gap-14 lg:grid-cols-12">
       <div class="lg:col-span-6" data-reveal>
-        <p class="eyebrow-teal">The professional body</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">IAAGSW</h2>
-        <p class="mt-4 font-serif text-2xl leading-snug text-cream/90 italic">
-          The International Association of Aesthetic Gynaecology and Sexual Well-being.
-        </p>
+        <p class="eyebrow-teal">{t.iaagsw.eyebrow}</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">{t.iaagsw.heading}</h2>
+        <p class="mt-4 font-serif text-2xl leading-snug text-cream/90 italic">{t.iaagsw.tagline}</p>
         <div class="mt-7 space-y-6 text-[16px] leading-[1.9] text-cream/75">
-          <p>
-            Founded and presided over by Dr Wakil, the IAAGSW is the global professional body for aesthetic gynaecology
-            and sexual-wellbeing medicine — setting standards, connecting practitioners across continents, and giving a
-            young field the scientific rigour and ethical framework it needs to mature.
-          </p>
-          <p>
-            Fellowship graduates join a worldwide community of IAAGSW practitioners: shared case forums, annual
-            scientific meetings, and a professional standard patients can trust wherever they are treated.
-          </p>
+          {t.iaagsw.paragraphs.map((para) => (
+            <p>
+              <Copy text={para} em="text-teal" />
+            </p>
+          ))}
         </div>
       </div>
       <div class="flex flex-col justify-center gap-6 lg:col-span-6" data-reveal data-delay="0.15">
@@ -198,26 +169,24 @@ const audience = [
         <figure class="hairline-teal bg-ink p-2">
           <div class="overflow-hidden">
             <img
-              src={withBase('images/iaagsw-congress.jpg')}
-              alt="Delegates at the 1st World IAAGSW Congress at the Royal Society of Medicine, London"
+              src={imageUrl(t.iaagsw.photo.image)}
+              alt={t.iaagsw.photo.alt}
               class="aspect-[16/9] w-full object-cover"
               loading="lazy"
             />
           </div>
           <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
-            1st World IAAGSW Congress — Royal Society of Medicine
+            {t.iaagsw.photo.caption}
           </figcaption>
         </figure>
 
-        <div class="hairline-teal grid grid-cols-2 gap-px bg-teal/15">
+        {/* each cell carries its own hairline: the container's background used to
+            show through the 1px gaps, which meant removing a fact left a
+            coloured rectangle where the cell had been */}
+        <div class="auto-row" style={`${autoRowStyle(t.iaagsw.facts.length, 2)}; --row-gap:1px`}>
           {
-            [
-              { k: 'Founded & presided over by', v: 'Dr Sherif Wakil' },
-              { k: 'Scope', v: 'Global' },
-              { k: 'Field', v: 'Aesthetic gynaecology & sexual well-being' },
-              { k: 'Role', v: 'Standards · community · science' },
-            ].map((cell) => (
-              <div class="bg-ink p-8">
+            t.iaagsw.facts.map((cell) => (
+              <div class="hairline-teal bg-ink p-8">
                 <p class="text-[11px] font-semibold tracking-[0.17em] text-teal/80 uppercase">{cell.k}</p>
                 <p class="mt-3 font-serif text-xl leading-snug text-cream">{cell.v}</p>
               </div>
@@ -225,8 +194,8 @@ const audience = [
           }
         </div>
         <div>
-          <a href="https://iaagsw.com" target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
-            Visit the IAAGSW ↗
+          <a href={t.iaagsw.link.href} target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
+            {t.iaagsw.link.text}
           </a>
         </div>
       </div>
@@ -238,8 +207,10 @@ const audience = [
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5" data-reveal>
-        <p class="eyebrow">What delegates say</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">From the course, in their words.</h2>
+        <p class="eyebrow">{t.delegates.eyebrow}</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          <Copy text={t.delegates.heading} em="text-gold" italic />
+        </h2>
         <blockquote class="mt-8">
           <p class="font-serif text-2xl leading-snug text-cream/90 italic">
             <span class="mr-1 font-serif text-4xl leading-none text-gold" aria-hidden="true">“</span>
@@ -281,23 +252,28 @@ const audience = [
       aria-hidden="true"
     >
     </div>
-    <div class="wrap relative text-center">
-      <p class="eyebrow" data-reveal>For practitioners</p>
-      <h2 class="mx-auto mt-6 max-w-3xl font-serif text-5xl leading-[1.05] text-cream md:text-6xl" data-reveal data-delay="0.1">
-        Learn it from the man who <span class="text-gold italic">made it.</span>
-      </h2>
-      <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-cream/75" data-reveal data-delay="0.2">
-        Applications for the next fellowship cohort are open to registered medical professionals.
-      </p>
-      <div class="mt-12" data-reveal data-delay="0.3">
-        <a href="mailto:{site.email}?subject=Training%20Fellowship%20Application" class="btn btn-gold" data-magnetic>
-          Apply to train with Dr Wakil
-        </a>
+    <div class="wrap relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow" data-reveal>{t.apply.eyebrow}</p>
+        <h2 class="mt-6 font-serif text-5xl leading-[1.05] text-cream md:text-6xl" data-reveal data-delay="0.1">
+          <Copy text={t.apply.heading} em="text-gold" italic sup="text-[0.4em] text-gold" />
+        </h2>
+        <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-cream/75" data-reveal data-delay="0.2">
+          {t.apply.sub}
+        </p>
+      </div>
+
+      {/* the application itself — every question of it edited in the CMS.
+          It used to be a mailto link, and a broken one: the address was written
+          inside a quoted attribute, so it never interpolated and the button
+          opened a blank email addressed to the literal text. */}
+      <div class="hairline mx-auto mt-14 max-w-3xl bg-ink2 p-8 md:p-12" data-reveal data-delay="0.3">
+        <Form form="training-application" compact />
       </div>
     </div>
   </section>
 
   <TeachingRecord showProgrammes={false} />
 
-  <FinalCTA heading="Patients welcome too." sub="Looking for treatment rather than training? Begin with a confidential consultation at 77 Harley Street." />
+  <FinalCTA heading={t.finalCta.heading} sub={t.finalCta.sub} />
 </Base>

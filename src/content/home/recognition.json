@@ -1,0 +1,90 @@
+{
+  "show": true,
+  "doctor": {
+    "image": "https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg",
+    "alt": "Dr Sherif Wakil",
+    "name": "Dr Sherif Wakil",
+    "role": "Creator of The O Concept™",
+    "note": "World’s most awarded protocol"
+  },
+  "includeVideos": true,
+  "awards": [
+    {
+      "image": "images/award-2025-global-excellence.png",
+      "alt": "Global Excellence Award 2025 — The O Concept™ Protocol"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2024/06/award-1.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2023/06/New-Award-1b.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2023/06/New-Award-2.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2022/08/award1.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2022/08/award2.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2022/08/award3.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2022/08/award4.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    },
+    {
+      "image": "https://drswclinics.com/wp-content/uploads/2022/08/award5.png",
+      "alt": "Industry award recognising Dr SW Clinics"
+    }
+  ],
+  "quotes": [
+    {
+      "text": "One consultation changed everything. Six months on, I feel like myself again.",
+      "who": "Mr A., 54, London"
+    },
+    {
+      "text": "Nothing was rushed, nothing was assumed. The results quietly transformed my confidence.",
+      "who": "Mrs L., 47, Surrey"
+    },
+    {
+      "text": "He treated the cause, not the symptom — for both of us.",
+      "who": "Mr & Mrs D., Kensington"
+    },
+    {
+      "text": "You are quite clearly in the hands of the person who wrote the field.",
+      "who": "Patient, Harley Street"
+    }
+  ],
+  "press": [
+    {
+      "name": "Channel 4"
+    },
+    {
+      "name": "The Times"
+    },
+    {
+      "name": "Daily Mail"
+    },
+    {
+      "name": "Tatler"
+    },
+    {
+      "name": "Harper’s Bazaar"
+    },
+    {
+      "name": "GQ"
+    },
+    {
+      "name": "Sky News"
+    }
+  ]
+}

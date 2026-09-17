@@ -1,0 +1,111 @@
+{
+  "title": "Training fellowship application",
+  "eyebrow": "For practitioners",
+  "heading": "Apply to train with Dr Wakil.",
+  "intro": "Cohorts are small and every application is reviewed personally by Dr Wakil. Tell us where you practise and what you intend to add to it.",
+  "submitLabel": "Submit my application",
+  "note": "Open to registered medical professionals. Your details stay with the training team and are never shared.",
+  "endpoint": "",
+  "success": {
+    "heading": "Thank you — application received.",
+    "text": "The training team will be in touch about the next cohort, its dates and what to prepare."
+  },
+  "error": {
+    "heading": "That did not send.",
+    "text": "Please try again, or email the clinic directly and we will take your application that way."
+  },
+  "fields": [
+    {
+      "type": "text",
+      "name": "first_name",
+      "label": "First name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "given-name"
+    },
+    {
+      "type": "text",
+      "name": "last_name",
+      "label": "Last name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "family-name"
+    },
+    {
+      "type": "email",
+      "name": "email",
+      "label": "Email",
+      "required": true,
+      "width": "half",
+      "autocomplete": "email"
+    },
+    {
+      "type": "tel",
+      "name": "phone",
+      "label": "Phone or WhatsApp",
+      "required": true,
+      "width": "half",
+      "autocomplete": "tel"
+    },
+    {
+      "type": "text",
+      "name": "country",
+      "label": "Where you practise",
+      "required": true,
+      "width": "half",
+      "placeholder": "City and country"
+    },
+    {
+      "type": "text",
+      "name": "registration",
+      "label": "Medical registration number",
+      "width": "half",
+      "help": "GMC, or the equivalent body in your country."
+    },
+    {
+      "type": "select",
+      "name": "profession",
+      "label": "Your speciality",
+      "required": true,
+      "width": "full",
+      "placeholder": "Please choose…",
+      "options": [
+        "Doctor or surgeon",
+        "Aesthetic physician",
+        "Gynaecologist",
+        "Urologist",
+        "Nurse prescriber",
+        "Clinic owner or licensee",
+        "Other"
+      ]
+    },
+    {
+      "type": "checkboxes",
+      "name": "interest",
+      "label": "What are you applying for?",
+      "width": "full",
+      "options": [
+        "Masterclasses",
+        "Hands-on Harley Street training",
+        "Full certification pathway",
+        "IAAGSW membership",
+        "Licensing The O Concept™ for my clinic"
+      ]
+    },
+    {
+      "type": "textarea",
+      "name": "experience",
+      "label": "Your experience, and what you want from the fellowship",
+      "width": "full",
+      "help": "Optional. A short paragraph is plenty at this stage.",
+      "placeholder": "In your own words…"
+    },
+    {
+      "type": "checkbox",
+      "name": "consent",
+      "label": "I confirm I am a registered medical professional and consent to being contacted about the fellowship.",
+      "required": true,
+      "width": "full"
+    }
+  ]
+}

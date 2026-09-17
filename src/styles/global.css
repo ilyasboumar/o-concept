@@ -1158,6 +1158,55 @@ html:not(.js) .award-static {
 }
 
 /* ============================================================
+   Auto-balancing rows
+   ------------------------------------------------------------
+   A row of cards that re-forms itself around however many cards
+   there are — because every one of these lists is edited in the
+   CMS, and the count changes without anyone touching the markup.
+
+   Two things happen automatically:
+
+     · the column count comes from the item count (see
+       src/lib/layout.ts), so four cards go 2 + 2 rather than
+       3 + a straggler;
+     · the last row centres, so a remainder reads as a deliberate
+       short row instead of a hole on the right.
+
+   Flex rather than grid for exactly that second reason: a grid
+   keeps empty tracks on the last row, and any card technique that
+   paints the container — hairline gaps, for one — then shows those
+   empty tracks as grey rectangles where a card is missing.
+   ============================================================ */
+.auto-row {
+  --cols: 1;
+  --row-gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--row-gap);
+  list-style: none;
+  padding: 0;
+}
+.auto-row > * {
+  flex: 0 1 calc((100% - (var(--cols) - 1) * var(--row-gap)) / var(--cols));
+  min-width: 0;
+  /* A card keeps the size it has in a full row. Without this, one search
+     result stretches the width of the page and stops looking like a card at
+     all — the row is what shrinks when there is little in it, not the card. */
+  max-width: var(--item-max, none);
+}
+@media (min-width: 640px) {
+  .auto-row {
+    --cols: var(--cols-sm, 2);
+  }
+}
+@media (min-width: 1024px) {
+  .auto-row {
+    --cols: var(--cols-lg, 3);
+  }
+}
+
+/* ============================================================
    Treatment squares — the diagnostic card (.tx2)
    ------------------------------------------------------------
    At rest: clinical medicine. Engaged: the card reads the tissue —
@@ -1212,19 +1261,30 @@ html:not(.js) .award-static {
   font-variant-numeric: tabular-nums;
 }
 
+/* the catalogue rows balance like every other row on the site — and because
+   the pathway filter hides cards rather than removing them, the last visible
+   row still centres on its own (main.js re-balances the column count) */
 .tx2-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+  --cols: 1;
+  --row-gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--row-gap);
+}
+.tx2-grid > * {
+  flex: 0 1 calc((100% - (var(--cols) - 1) * var(--row-gap)) / var(--cols));
+  min-width: 0;
+  max-width: var(--item-max, 26rem);
 }
 @media (min-width: 768px) {
   .tx2-grid {
-    grid-template-columns: repeat(2, 1fr);
+    --cols: var(--cols-sm, 2);
   }
 }
 @media (min-width: 1120px) {
   .tx2-grid {
-    grid-template-columns: repeat(3, 1fr);
+    --cols: var(--cols-lg, 3);
   }
 }
 

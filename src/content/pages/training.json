@@ -1,0 +1,98 @@
+{
+  "hero": {
+    "eyebrow": "Training & IAAGSW",
+    "heading": "Training the world in *The O Concept™.*",
+    "sub": "Doctors don’t learn this field from a textbook. They learn it from the physician who built it — the creator of the protocol, teaching the medicine he pioneered.",
+    "chips": ["Creator of The O Concept™", "President & Founder, IAAGSW", "25,000+ cases behind the teaching"]
+  },
+  "banner": {
+    "show": true,
+    "image": "images/training-congress.jpg",
+    "alt": "Dr Wakil teaching medical professionals at an IAAGSW training session",
+    "eyebrow": "In session · The O Concept™ Training",
+    "caption": "The field’s founder, teaching the field."
+  },
+  "positioning": {
+    "show": true,
+    "eyebrow": "From the source",
+    "heading": "The originator, *not an instructor.*",
+    "paragraphs": [
+      "Every field has its teachers, and then it has its source. Dr Sherif Wakil created The O Concept™, brought the O-Shot® and P-Shot® to the United Kingdom, and has more than 25,000 cases worldwide. When physicians train with him, they are not learning a version of the protocol — they are learning the protocol, from the person who wrote it.",
+      "As an international trainer and speaker, Dr Wakil has taught these techniques to doctors across Europe, the Middle East and beyond. The training fellowship formalises that teaching into a structured pathway for medical professionals."
+    ],
+    "audience": [
+      "Doctors & surgeons entering sexual-wellbeing medicine",
+      "Aesthetic physicians extending into intimate health",
+      "Gynaecologists & urologists adding regenerative protocols",
+      "International clinics licensing The O Concept™ approach"
+    ],
+    "photo": {
+      "image": "https://drswclinics.com/wp-content/uploads/2024/09/AK-MIN.jpg",
+      "alt": "Dr Sherif Wakil teaching in clinic at Harley Street",
+      "caption": "Dr Sherif Wakil · International trainer & speaker"
+    }
+  },
+  "fellowship": {
+    "show": true,
+    "eyebrow": "For medical professionals",
+    "heading": "The O Concept™ Training Fellowship",
+    "intro": "A structured pathway from foundation to certification, for clinicians who intend to practise this medicine at the standard it deserves.",
+    "photo": {
+      "image": "images/training-2.jpg",
+      "alt": "Hands-on clinical training on The O Concept™ fellowship",
+      "caption": "Hands-on training · Small cohorts"
+    },
+    "steps": [
+      {
+        "title": "Masterclasses",
+        "text": "Intensive, small-group teaching in the theory and evidence behind The O Concept™ — vascular, hormonal and regenerative medicine as one integrated discipline."
+      },
+      {
+        "title": "Hands-on Harley Street Training",
+        "text": "Supervised clinical training at 77 Harley Street, working alongside Dr Wakil and his team on the exact techniques he introduced to the UK — O-Shot®, P-Shot®, energy-based devices and combination protocols."
+      },
+      {
+        "title": "Certification",
+        "text": "Assessed certification in The O Concept™ protocol, with ongoing mentorship, case review and access to the IAAGSW professional community after graduation."
+      }
+    ],
+    "note": "Cohort sizes are deliberately small · Applications reviewed personally by Dr Wakil"
+  },
+  "iaagsw": {
+    "show": true,
+    "eyebrow": "The professional body",
+    "heading": "IAAGSW",
+    "tagline": "The International Association of Aesthetic Gynaecology and Sexual Well-being.",
+    "paragraphs": [
+      "Founded and presided over by Dr Wakil, the IAAGSW is the global professional body for aesthetic gynaecology and sexual-wellbeing medicine — setting standards, connecting practitioners across continents, and giving a young field the scientific rigour and ethical framework it needs to mature.",
+      "Fellowship graduates join a worldwide community of IAAGSW practitioners: shared case forums, annual scientific meetings, and a professional standard patients can trust wherever they are treated."
+    ],
+    "photo": {
+      "image": "images/iaagsw-congress.jpg",
+      "alt": "Delegates at the 1st World IAAGSW Congress at the Royal Society of Medicine, London",
+      "caption": "1st World IAAGSW Congress — Royal Society of Medicine"
+    },
+    "facts": [
+      { "k": "Founded & presided over by", "v": "Dr Sherif Wakil" },
+      { "k": "Scope", "v": "Global" },
+      { "k": "Field", "v": "Aesthetic gynaecology & sexual well-being" },
+      { "k": "Role", "v": "Standards · community · science" }
+    ],
+    "link": { "text": "Visit the IAAGSW ↗", "href": "https://iaagsw.com" }
+  },
+  "delegates": {
+    "show": true,
+    "eyebrow": "What delegates say",
+    "heading": "From the course, in their words."
+  },
+  "apply": {
+    "show": true,
+    "eyebrow": "For practitioners",
+    "heading": "Learn it from the man who *made it.*",
+    "sub": "Applications for the next fellowship cohort are open to registered medical professionals."
+  },
+  "finalCta": {
+    "heading": "Patients welcome too.",
+    "sub": "Looking for treatment rather than training? Begin with a confidential consultation at 77 Harley Street."
+  }
+}

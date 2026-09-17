@@ -1,43 +1,35 @@
 ---
 import DnaHelix from './DnaHelix.astro';
+import { science } from '../data/home';
+import Copy from './Copy.astro';
+import { imageUrl } from '../lib/url';
 /**
  * "The Science of The O Concept™" — split-scroll pinned section.
  *
  * Desktop (lg+): the LEFT visual column pins (CSS sticky — reliable under
- * Lenis) while the RIGHT column scrolls through four panels
+ * Lenis) while the RIGHT column scrolls through the steps
  * (Diagnose → Regenerate → Restore → Optimise). The pin then hands over:
  * the right column's closing panel freezes while the left column's
  * imagery block scrolls through. GSAP ScrollTrigger (main.js) drives the
  * step indicator states as each panel enters.
  *
  * Below lg everything falls back to a simple stacked flow.
+ *
+ * THE STEPS ARE CONTENT, AND THE SCROLL LENGTH FOLLOWS THEM.
+ * src/content/home/science.json holds however many steps the protocol has;
+ * add a fifth and it gets its panel, its row in the indicator, and its number
+ * (they are numbered from position, never typed). The spacer that holds the
+ * left column pinned is measured per step — 65vh of scroll each — because it
+ * used to be a hardcoded 260vh for exactly four: a fifth step would have
+ * scrolled past the end of the pin and the sticky visual would have unstuck
+ * mid-section, which is the sort of breakage that makes an owner stop editing
+ * his own site.
  */
-const panels = [
-  {
-    step: '01',
-    title: 'Diagnose',
-    body: 'Every protocol begins with the Endo Test — a comprehensive hormonal, metabolic and vascular panel. We measure before we treat, because sexual function is physiology, and physiology leaves evidence.',
-    detail: 'Full endocrine panel · vascular assessment · lifestyle and psychological screening',
-  },
-  {
-    step: '02',
-    title: 'Regenerate',
-    body: 'Platelet-rich plasma, growth factors and the body’s own blood products regenerate vascular and nerve tissue at the source. This is the regenerative core Dr Wakil introduced to the UK — the O-Shot® and P-Shot®.',
-    detail: 'O-Shot® · P-Shot® · stem cells & growth factors · autologous blood products',
-  },
-  {
-    step: '03',
-    title: 'Restore',
-    body: 'Energy-based medicine restores what time and physiology have taken: low-intensity shockwave rebuilds blood supply, radiofrequency and laser restore tissue quality, electromagnetic therapy rebuilds the pelvic floor.',
-    detail: 'ESWT shockwave · Ultra Femme 360 · CO2RE Intima · O Concept™ Chair',
-  },
-  {
-    step: '04',
-    title: 'Optimise',
-    body: 'Results are maintained, not merely achieved. Hormonal optimisation, nutrition, supplementation and scheduled diagnostics keep function — and confidence — quietly compounding year on year.',
-    detail: 'Hormone optimisation · IV nutrition · dietician programmes · ongoing review',
-  },
-];
+const steps = science.steps;
+const num = (i: number) => String(i + 1).padStart(2, '0');
+
+/* 65vh of pinned scroll per step — 4 steps reproduces the 260vh set by hand. */
+const spacer = `${steps.length * 65}vh`;
 ---
 
 <section id="science" class="hairline-teal-t relative bg-ink" aria-labelledby="science-heading">
@@ -45,51 +37,50 @@ const panels = [
 
   <div class="wrap relative pt-24 md:pt-32">
     <div class="max-w-3xl" data-reveal>
-      <p class="eyebrow-teal">The method</p>
-      <h2 id="science-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-6xl">
-        The Science of The&nbsp;O&nbsp;Concept<sup class="text-[0.45em] text-teal">™</sup>
+      <p class="eyebrow-teal">{science.eyebrow}</p>
+      <h2 id="science-heading" class="mt-5 font-serif text-4xl leading-tight text-cream text-balance md:text-6xl">
+        <Copy text={science.heading} em="text-teal" italic sup="text-[0.45em] text-teal" />
       </h2>
-      <p class="mt-6 max-w-xl text-[16px] leading-relaxed text-cream/75">
-        Four clinical phases, one coherent protocol — created by Dr Wakil, and now taught by him to physicians
-        worldwide.
-      </p>
+      <p class="mt-6 max-w-xl text-[16px] leading-relaxed text-cream/75">{science.intro}</p>
     </div>
   </div>
 
   <div class="wrap relative grid grid-cols-1 gap-10 pt-14 pb-24 md:pb-32 lg:grid-cols-2 lg:gap-16 lg:pt-6">
-    <!-- LEFT — pinned visual -->
+    {/* LEFT — pinned visual */}
     <div>
-      <!-- sticky boundary: the pin must release at the end of the spacer,
-           BEFORE the handover figure — otherwise the pinned block slides
-           down over the figure and the two overlap -->
+      {/* sticky boundary: the pin must release at the end of the spacer,
+          BEFORE the handover figure — otherwise the pinned block slides
+          down over the figure and the two overlap */}
       <div>
       <div class="science-sticky flex flex-col justify-center py-10 lg:py-0">
         <div class="hairline-teal relative overflow-hidden bg-ink2">
           <img
-            src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-9-e1733484520778.jpg"
-            alt="Advanced clinical technology at Dr SW Clinics, Harley Street"
+            src={imageUrl(science.image.image)}
+            alt={science.image.alt}
             class="h-[300px] w-full object-cover opacity-60 md:h-[380px]"
             loading="lazy"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true"></div>
-          <!-- dark panel gradient so the helix reads clearly without fighting the photo -->
+          {/* dark panel gradient so the helix reads clearly without fighting the photo */}
           <div class="absolute inset-y-0 right-0 w-[55%] bg-gradient-to-l from-ink/90 via-ink/45 to-transparent" aria-hidden="true"></div>
-          <!-- interactive DNA helix — persistent in the pinned column while panels scroll -->
+          {/* interactive DNA helix — persistent in the pinned column while panels scroll */}
           <div class="absolute inset-y-0 right-0 w-[52%]" aria-hidden="true">
             <DnaHelix nodeCount={82} opacity={1} interactive mobile="reduced" mobileNodes={40} />
           </div>
-          <div class="absolute bottom-5 left-6 right-6">
-            <p class="text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">Regenerative · Energy-based · Hormonal</p>
-          </div>
+          {science.image.caption && (
+            <div class="absolute bottom-5 left-6 right-6">
+              <p class="text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">{science.image.caption}</p>
+            </div>
+          )}
         </div>
 
-        <!-- step indicator, driven by ScrollTrigger -->
+        {/* step indicator, driven by ScrollTrigger */}
         <ol class="mt-8 space-y-4" data-science-steps>
           {
-            panels.map((p, i) => (
+            steps.map((p, i) => (
               <li class:list={['science-step', i === 0 && 'active']} data-step={i}>
                 <div class="flex items-baseline gap-4">
-                  <span class="science-step-num font-serif text-lg text-cream/62">{p.step}</span>
+                  <span class="science-step-num font-serif text-lg text-cream/62">{num(i)}</span>
                   <span class="text-[12px] font-semibold tracking-[0.18em] text-cream uppercase">{p.title}</span>
                 </div>
                 <span class="science-step-bar mt-2 block h-px w-full bg-gradient-to-r from-teal to-tealdeep/40" aria-hidden="true" />
@@ -99,57 +90,64 @@ const panels = [
         </ol>
       </div>
 
-      <!-- spacer keeps the visual pinned through the right column's panels (desktop only) -->
-      <div class="hidden lg:block lg:h-[260vh]" aria-hidden="true"></div>
+      {/* spacer keeps the visual pinned through the right column's panels
+          (desktop only — it is display:none below lg, so the height is inert there) */}
+      <div class="hidden lg:block" style={`height:${spacer}`} aria-hidden="true"></div>
       </div>
 
-      <!-- handover content — scrolls through while the right panel freezes -->
+      {/* handover content — scrolls through while the right panel freezes */}
       <figure class="relative mt-10 hidden overflow-hidden lg:block lg:min-h-[90vh]">
         <img
-          src="https://drswclinics.com/wp-content/uploads/2024/12/Homepage-10.jpg"
-          alt="Treatment suite at Dr SW Clinics"
+          src={imageUrl(science.handover.image)}
+          alt={science.handover.alt}
           class="h-[70vh] w-full object-cover"
           loading="lazy"
         />
         <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/40" aria-hidden="true"></div>
-        <figcaption class="relative z-10 mt-6">
-          <p class="font-serif text-3xl leading-snug font-medium text-cream">
-            Twenty-five thousand cases of evidence — <span class="text-teal italic">one</span> protocol.
-          </p>
-        </figcaption>
+        {science.handover.caption && (
+          <figcaption class="relative z-10 mt-6">
+            <p class="font-serif text-3xl leading-snug font-medium text-cream">
+              <Copy text={science.handover.caption} em="text-teal" italic sup="text-[0.45em] text-teal" />
+            </p>
+          </figcaption>
+        )}
       </figure>
     </div>
 
-    <!-- RIGHT — scrolling panels -->
+    {/* RIGHT — scrolling panels */}
     <div>
       {
-        panels.map((p, i) => (
+        steps.map((p, i) => (
           <article class="science-panel flex flex-col justify-center py-14 lg:min-h-[85vh] lg:py-0" data-panel={i}>
             <div class="hairline-teal relative bg-ink2/60 p-9 backdrop-blur-sm md:p-12">
-              <span class="absolute -top-4 left-8 bg-ink px-3 font-serif text-4xl text-teal">{p.step}</span>
+              <span class="absolute -top-4 left-8 bg-ink px-3 font-serif text-4xl text-teal">{num(i)}</span>
               <h3 class="mt-2 font-serif text-3xl text-cream md:text-4xl">{p.title}</h3>
-              <p class="mt-5 text-[16px] leading-[1.9] text-cream/75">{p.body}</p>
-              <p class="hairline-teal-t mt-7 pt-5 text-[11px] font-semibold tracking-[0.14em] text-teal/80 uppercase">{p.detail}</p>
+              <p class="mt-5 text-[16px] leading-[1.9] text-cream/75">
+                <Copy text={p.text} em="text-teal" />
+              </p>
+              {p.detail && (
+                <p class="hairline-teal-t mt-7 pt-5 text-[11px] font-semibold tracking-[0.14em] text-teal/80 uppercase">{p.detail}</p>
+              )}
             </div>
           </article>
         ))
       }
 
-      <!-- closing panel — freezes while the left column scrolls through -->
+      {/* closing panel — freezes while the left column scrolls through */}
       <div class="science-final flex flex-col justify-center py-14 lg:min-h-[calc(100vh-5rem)] lg:py-0">
         <div class="gold-glow relative bg-ink2 p-9 md:p-12">
-          <p class="eyebrow !text-[11px]">The result</p>
+          <p class="eyebrow !text-[11px]">{science.closing.eyebrow}</p>
           <p class="mt-5 font-serif text-3xl leading-snug text-cream md:text-4xl">
-            Function, sensation and confidence — <span class="text-gold italic">measured, restored, maintained.</span>
+            <Copy text={science.closing.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
           </p>
-          <p class="mt-6 text-sm leading-[1.85] text-cream/75">
-            Not a procedure but a protocol: diagnostics first, regeneration at the cause, restoration with energy-based
-            medicine, and optimisation that never stands still. This is the method the world now trains in — with the
-            physician who created it.
-          </p>
+          <p class="mt-6 text-sm leading-[1.85] text-cream/75">{science.closing.text}</p>
           <div class="mt-9 flex flex-col gap-4 sm:flex-row">
-            <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
-            <a href="#finder" class="btn btn-teal" data-magnetic>Find Your Treatment</a>
+            {science.closing.primaryCta?.text && (
+              <a href={science.closing.primaryCta.href} class="btn btn-gold" data-magnetic>{science.closing.primaryCta.text}</a>
+            )}
+            {science.closing.secondaryCta?.text && (
+              <a href={science.closing.secondaryCta.href} class="btn btn-teal" data-magnetic>{science.closing.secondaryCta.text}</a>
+            )}
           </div>
         </div>
       </div>

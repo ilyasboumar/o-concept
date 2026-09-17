@@ -1,0 +1,82 @@
+{
+  "title": "Membership application",
+  "eyebrow": "Membership",
+  "heading": "Apply, in confidence.",
+  "intro": "Tell us a little about you and the team will be in touch privately to arrange your consultation and diagnostics. Nothing is shared without your written consent.",
+  "submitLabel": "Submit application",
+  "note": "Held in strict medical confidence. We will never contact you from an identifiable number or address without your say-so.",
+  "endpoint": "",
+  "success": {
+    "heading": "Thank you — that is with us.",
+    "text": "A member of Dr Wakil's team will contact you within one working day, discreetly, on whichever channel you chose."
+  },
+  "error": {
+    "heading": "That did not send.",
+    "text": "Please try again, or call the clinic directly and we will take your details by phone."
+  },
+  "fields": [
+    {
+      "type": "text",
+      "name": "first_name",
+      "label": "First name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "given-name"
+    },
+    {
+      "type": "text",
+      "name": "last_name",
+      "label": "Last name",
+      "required": true,
+      "width": "half",
+      "autocomplete": "family-name"
+    },
+    {
+      "type": "email",
+      "name": "email",
+      "label": "Email",
+      "required": true,
+      "width": "half",
+      "autocomplete": "email"
+    },
+    {
+      "type": "tel",
+      "name": "phone",
+      "label": "Phone",
+      "required": true,
+      "width": "half",
+      "autocomplete": "tel"
+    },
+    {
+      "type": "select",
+      "name": "tier",
+      "label": "Which membership",
+      "required": true,
+      "width": "full",
+      "optionsFrom": "membershipTiers",
+      "placeholder": "Please choose…"
+    },
+    {
+      "type": "radio",
+      "name": "preferred_contact",
+      "label": "How should we contact you?",
+      "width": "full",
+      "options": ["Phone", "Email", "WhatsApp"]
+    },
+    {
+      "type": "textarea",
+      "name": "goals",
+      "label": "What would you like to address?",
+      "width": "full",
+      "help": "Optional. As much or as little as you wish to say at this stage.",
+      "placeholder": "In your own words…"
+    },
+    {
+      "type": "checkbox",
+      "name": "consent",
+      "label": "I consent to being contacted about my enquiry. All communication is strictly confidential.",
+      "required": true,
+      "width": "full"
+    }
+  ]
+}

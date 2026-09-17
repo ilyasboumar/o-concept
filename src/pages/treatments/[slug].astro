@@ -56,13 +56,16 @@ const facts = [
    ------------------------------------------------------------------ */
 const on = (flag: boolean | undefined, hasContent: unknown) => flag !== false && Boolean(hasContent);
 
+/* The switches are named for the act of switching, never for the field they
+   govern: a setting called `gallery` and a photo list called `gallery` are one
+   name in the CMS, and the switch wins — which left the photo list unreachable. */
 const visible = {
-  facts: on(t.show?.facts, facts.length > 0 || t.price),
+  facts: on(t.show?.practicalFacts, facts.length > 0 || t.price?.from),
   conditions: true, // never hidden — it is why the patient is on the page
-  howItWorks: on(t.show?.howItWorks, t.howItWorks?.length),
-  benefits: on(t.show?.benefits, t.benefits?.length),
-  gallery: on(t.show?.gallery, t.gallery?.length),
-  faqs: on(t.show?.faqs, t.faqs?.length),
+  howItWorks: on(t.show?.steps, t.howItWorks?.length),
+  benefits: on(t.show?.whyChoose, t.benefits?.length),
+  gallery: on(t.show?.photographs, t.gallery?.length),
+  faqs: on(t.show?.questions, t.faqs?.length),
   reassurance: t.show?.reassurance !== false,
 };
 
@@ -110,7 +113,7 @@ const faqSchema = t.faqs?.length
   <!-- ============ HERO ============ -->
   <section class:list={['tx-hero', t.pathway]}>
     <div class="tx-hero__media" aria-hidden="true">
-      <img src={imageUrl(t.image)} alt="" loading="eager" decoding="async" />
+      <img src={imageUrl(t.heroImage || t.image)} alt="" loading="eager" decoding="async" />
       <span class="tx-hero__veil"></span>
       <span class="tx-hero__grid"></span>
     </div>
@@ -145,11 +148,11 @@ const faqSchema = t.faqs?.length
                 <dd>{f.v}</dd>
               </div>
             ))}
-            {t.price && (
+            {t.price?.from && (
               <div class="tx-fact tx-fact--price">
                 <dt>Investment</dt>
                 <dd>
-                  {t.price.from || 'On consultation'}
+                  {t.price.from}
                   {t.price.unit && <span class="tx-fact__unit">{t.price.unit}</span>}
                 </dd>
                 {t.price.finance && (

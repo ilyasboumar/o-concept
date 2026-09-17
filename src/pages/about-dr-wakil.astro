@@ -1,47 +1,27 @@
 ---
+/**
+ * About Dr Sherif Wakil.
+ *
+ * Every word, photograph, credential, milestone and award badge on this page
+ * comes from src/content/pages/about.json, and the clinical team from the same
+ * file. Teaching & speaking is shared with the Training page and lives in
+ * teaching.json; the curriculum and the congress list stay one file per entry
+ * in their own collections, so adding a lecture is adding a file.
+ *
+ * Each block has a show switch, and every list is an array: add a credential,
+ * reorder the milestones, remove a team member who has moved on.
+ */
 import Base from '../layouts/Base.astro';
 import FinalCTA from '../components/FinalCTA.astro';
-import { withBase } from '../lib/url';
 import Reassurance from '../components/Reassurance.astro';
 import TeachingRecord from '../components/TeachingRecord.astro';
+import Team from '../components/Team.astro';
+import Copy from '../components/Copy.astro';
+import AwardRing from '../components/AwardRing.astro';
+import { imageUrl } from '../lib/url';
+import { aboutPage as a } from '../data/pages';
+import { shown } from '../data/home';
 
-const credentials = [
-  'Registered with the General Medical Council (GMC)',
-  'Fellow of the International College of Surgeons',
-  'Member, British College of Aesthetic Medicine (BCAM)',
-  'Member, American Cosmetic Cellular Medicine Association',
-  'Member, British Association of Body Sculpting (BABS)',
-  'President & Founder, IAAGSW',
-  'Aesthetic Awards & MyFaceMyBody Awards finalist',
-];
-
-const milestones = [
-  { mark: '20+ Years', text: 'Two decades in medicine across leading hospitals in the UK and Middle East, including The Royal London Hospital NHS Trust.' },
-  { mark: 'First in the UK', text: 'The physician who brought the P-Shot® and O-Shot® to Britain.' },
-  { mark: 'Soft Surgery', text: 'Pioneer of the “soft surgery” approach in the UK, including non-surgical blepharoplasty.' },
-  { mark: 'IAAGSW', text: 'President and Founder of the International Association of Aesthetic Gynaecology and Sexual Well-being.' },
-  { mark: 'The O Concept™', text: 'Creator of the holistic, multi-modality protocol for male and female sexual dysfunction.' },
-  { mark: '1st June', text: 'Founder of Andropause Recognition Day — bringing the "male menopause" into the open.' },
-  { mark: '25,000+', text: 'Cases worldwide — with patients travelling from every continent to see him, across clinics in London, Dubai and Egypt.' },
-  { mark: '2024', text: 'Global Excellence Award — World’s Best Sexual Rejuvenation Clinic.' },
-  { mark: '2025', text: 'Global Excellence Awards — The O Concept™ Protocol.' },
-];
-
-/* EVERY award badge — presented in the hero's interactive 3D carousel.
-   Index 0 (the 2025 O Concept™ Protocol flagship) is the default front face. */
-const allBadges = [
-  { src: withBase('images/award-2025-global-excellence.png'), alt: 'Global Excellence Awards 2025 — The O Concept™ Protocol winner badge' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2024/06/award-1.png', alt: '2024 World’s Best Sexual Rejuvenation Clinic award badge' },
-  { src: withBase('images/award-ghp-2024.png'), alt: 'GHP 2024 award badge — Dr SW Clinics' },
-  { src: withBase('images/award-ghp-2024-b.png'), alt: 'GHP 2024 award badge — The O Concept™' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-1b.png', alt: 'GHP Global Excellence award badge recognising Dr SW Clinics' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2023/06/New-Award-2.png', alt: 'GHP award badge recognising Dr SW Clinics' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2022/08/award1.png', alt: '2020 Awards Winner medal recognising Dr SW Clinics' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2022/08/award2.png', alt: 'GHP 2022 Global Excellence award badge' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2022/08/award3.png', alt: '2019 Award Winner medal recognising Dr SW Clinics' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2022/08/award4.png', alt: 'Aesthetics Awards 2016 finalist badge' },
-  { src: 'https://drswclinics.com/wp-content/uploads/2022/08/award5.png', alt: 'MyFaceMyBody Awards 2016 finalist badge' },
-];
 ---
 
 <Base
@@ -61,12 +41,12 @@ const allBadges = [
 
     <div class="wrap relative grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
       <div class="min-w-0 lg:col-span-8">
-        <p class="eyebrow" data-reveal>Founder &amp; Medical Director</p>
+        <p class="eyebrow" data-reveal>{a.hero.eyebrow}</p>
         <h1 class="mt-5 font-serif text-5xl leading-[1.03] text-cream sm:text-6xl md:text-7xl" data-reveal data-delay="0.1">
-          Dr Sherif <span class="text-gold italic">Wakil</span>
+          <Copy text={a.hero.heading} em="text-gold" italic sup="text-[0.4em] text-gold" />
         </h1>
-        <p class="mt-5 max-w-xl font-serif text-xl leading-snug text-cream/90 sm:text-2xl md:text-[1.65rem]" data-reveal data-delay="0.2">
-          Pioneer of sexual rejuvenation medicine in the United Kingdom. Creator of The&nbsp;O&nbsp;Concept<sup class="text-[0.5em] text-gold">™</sup>.
+        <p class="mt-5 max-w-xl font-serif text-xl leading-snug text-cream/90 text-balance sm:text-2xl md:text-[1.65rem]" data-reveal data-delay="0.2">
+          <Copy text={a.hero.tagline} em="text-gold" italic sup="text-[0.5em] text-gold" />
         </p>
       </div>
 
@@ -74,125 +54,85 @@ const allBadges = [
         <figure class="hairline mx-auto max-w-[15rem] p-2 lg:mx-0 lg:ml-auto">
           <div class="overflow-hidden">
             <img
-              src="https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg"
-              alt="Dr Sherif Wakil, Founder and Medical Director of Dr SW Clinics"
+              src={imageUrl(a.hero.portrait.image)}
+              alt={a.hero.portrait.alt}
               class="aspect-[4/5] w-full object-cover object-[42%_top]"
               fetchpriority="high"
             />
           </div>
           <figcaption class="px-2 pt-3 pb-1 text-[11px] tracking-[0.16em] text-cream/62 uppercase">
-            Dr Sherif Wakil · 77 Harley Street
+            {a.hero.portrait.caption}
           </figcaption>
         </figure>
       </div>
     </div>
 
     <!-- every award, in one interactive 3D ring — drag to spin, arrows to rotate -->
-    <div class="wrap relative mt-8" data-reveal data-delay="0.3">
-      <div
-        class="award-stage"
-        data-award-ring
-        tabindex="0"
-        role="group"
-        aria-roledescription="carousel"
-        aria-label={`Awards recognising Dr Wakil — ${allBadges.length} badges. Use the arrow keys, or drag, to rotate.`}
-      >
-        <div class="award-ring" style={`--ring-step:${(360 / allBadges.length).toFixed(3)}deg`}>
-          {
-            allBadges.map((badge, i) => (
-              <div class="award-tile" style={`--i:${i}`}>
-                <img src={badge.src} alt={badge.alt} loading={i === 0 ? undefined : 'lazy'} draggable="false" />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <!-- reduced-motion / no-JS fallback: the same badges as a clean static grid -->
-      <div class="award-static flex-wrap items-center justify-center gap-3">
-        {
-          allBadges.map((badge) => (
-            <div class="flex h-20 w-[5.6rem] items-center justify-center rounded-md bg-cream/95 p-2.5">
-              <img src={badge.src} alt={badge.alt} class="max-h-full max-w-full object-contain" loading="lazy" />
-            </div>
-          ))
-        }
-      </div>
-
-      <p class="mt-5 text-center text-[11px] font-semibold tracking-[0.15em] text-gold uppercase">
-        Global Excellence Awards 2025 — The O Concept™ Protocol
-        <span class="text-cream/75">· 2024 World&rsquo;s Best Sexual Rejuvenation Clinic</span>
-      </p>
-    </div>
+    <AwardRing />
   </section>
 
   <!-- ============ BIO ============ -->
-  <section class="bg-ink py-24 md:py-32">
-    <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
-      <div class="lg:col-span-7" data-reveal>
-        <p class="eyebrow">The physician</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">Creating beauty is an art.</h2>
-        <div class="mt-8 space-y-6 text-[16px] leading-[1.9] text-cream/75">
-          <p>
-            Dr Sherif El Wakil is the founder and medical director of Dr SW Clinics on London&rsquo;s Harley Street,
-            with more than two decades of experience across leading hospitals in the UK and Middle East, including
-            The Royal London Hospital NHS Trust.
-          </p>
-          <p>
-            Holding degrees in both medicine and the arts, Dr Wakil applies a simple philosophy to his practice: that
-            creating beauty is an art. His keen personal interest in art and sculpting allows him to deliver
-            natural-looking results, so patients never look overdone — which is why they travel from around the world
-            to see him. He offers only treatments that are safe, effective and minimally invasive, carefully tailored
-            to each individual.
-          </p>
-          <p>
-            He is a pioneer of many techniques, often the first to introduce them to the United Kingdom — most
-            significantly The O Concept™ for treating male and female sexual dysfunction. He was also the first UK
-            practitioner to introduce the &ldquo;soft surgery&rdquo; approach, including non-surgical blepharoplasty,
-            and PRP therapies such as the Vampire Facelift™ and Vampire Breast Lift™. With more than 25,000 cases
-            worldwide — across clinics in London, Dubai and Egypt, headquartered at 77 Harley Street — he is an
-            international trainer and speaker, and the President and Founder of the International Association of
-            Aesthetic Gynaecology and Sexual Well-being (IAAGSW).
-          </p>
-        </div>
-      </div>
+  {
+    shown(a.physician) && (
+      <section class="bg-ink py-24 md:py-32">
+        <div class="wrap grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
+          <div class="lg:col-span-7" data-reveal>
+            <p class="eyebrow">{a.physician.eyebrow}</p>
+            <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+              <Copy text={a.physician.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
+            </h2>
+            <div class="mt-8 space-y-6 text-[16px] leading-[1.9] text-cream/75">
+              {a.physician.paragraphs.map((para) => (
+                <p>
+                  <Copy text={para} em="text-gold" />
+                </p>
+              ))}
+            </div>
+          </div>
 
-      <div class="lg:col-span-5" data-reveal data-delay="0.15">
-        <div class="hairline p-2">
-          <div class="overflow-hidden">
-            <img
-              src={withBase('images/dr-wakil-about.jpg')}
-              alt="Dr Sherif Wakil at Dr SW Clinics, before his wall of awards"
-              class="aspect-[4/5] w-full object-cover object-[68%_center]"
-              loading="lazy"
-            />
+          <div class="lg:col-span-5" data-reveal data-delay="0.15">
+            <div class="hairline p-2">
+              <div class="overflow-hidden">
+                <img
+                  src={imageUrl(a.physician.photo.image)}
+                  alt={a.physician.photo.alt}
+                  class="aspect-[4/5] w-full object-cover object-[68%_center]"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            {a.physician.photo.caption && (
+              <p class="mt-4 text-[11px] tracking-[0.16em] text-cream/62 uppercase">{a.physician.photo.caption}</p>
+            )}
           </div>
         </div>
-        <p class="mt-4 text-[11px] tracking-[0.16em] text-cream/62 uppercase">Dr Sherif Wakil · Clinics in London, Dubai &amp; Egypt</p>
-      </div>
-    </div>
 
-    <!-- credentials strip -->
-    <div class="wrap mt-20">
-      <p class="eyebrow" data-reveal>Credentials &amp; memberships</p>
-      <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
-        {
-          credentials.map((credential) => (
-            <li class="hairline px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-cream/75 uppercase">
-              {credential}
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
+        {/* credentials strip */}
+        {shown(a.credentials) && a.credentials.items.length > 0 && (
+          <div class="wrap mt-20">
+            <p class="eyebrow" data-reveal>{a.credentials.eyebrow}</p>
+            <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
+              {a.credentials.items.map((credential) => (
+                <li class="hairline px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-cream/75 uppercase">
+                  {credential}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+    )
+  }
 
   <!-- ============ MILESTONES ============ -->
+  {shown(a.milestones) && a.milestones.items.length > 0 && (
   <section class="hairline-t bg-ink2 py-24 md:py-32">
     <div class="wrap">
       <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow">Milestones</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">A career in first times.</h2>
+        <p class="eyebrow">{a.milestones.eyebrow}</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+          <Copy text={a.milestones.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
+        </h2>
       </div>
 
       <div class="relative mt-16 pl-8 md:pl-12">
@@ -200,11 +140,15 @@ const allBadges = [
         <div class="absolute top-1 left-[5px] h-full w-px bg-gold md:left-[7px]" data-line-draw-y aria-hidden="true"></div>
         <ol class="space-y-12" data-reveal-child>
           {
-            milestones.map((m) => (
+            a.milestones.items.map((m) => (
               <li class="relative">
                 <span class="absolute top-1.5 -left-8 block h-[11px] w-[11px] rounded-full border border-gold bg-ink md:-left-12 md:h-[15px] md:w-[15px]" aria-hidden="true" />
-                <p class="font-serif text-3xl text-gold">{m.mark}</p>
-                <p class="mt-2 max-w-2xl text-[16px] leading-relaxed text-cream/75">{m.text}</p>
+                <p class="font-serif text-3xl text-gold">
+                  <Copy text={m.mark} sup="text-[0.45em]" />
+                </p>
+                <p class="mt-2 max-w-2xl text-[16px] leading-relaxed text-cream/75">
+                  <Copy text={m.text} em="text-gold" />
+                </p>
               </li>
             ))
           }
@@ -212,11 +156,13 @@ const allBadges = [
       </div>
     </div>
   </section>
+  )}
 
   <!-- (The former static award wall was removed — the hero's 3D ring is now the
        single, complete awards presentation; milestones above carry the depth.) -->
 
   <!-- ============ OUR PROMISE ============ -->
+  {shown(a.promise) && (
   <section class="hairline-t relative overflow-hidden bg-ink2 py-24 md:py-32">
     <div class="pointer-events-none absolute inset-0 glow-gold" aria-hidden="true"></div>
     <div class="wrap relative grid grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-20">
@@ -224,37 +170,35 @@ const allBadges = [
         <figure class="hairline p-2">
           <div class="overflow-hidden">
             <img
-              src={withBase('images/clinic-doctor.jpg')}
-              alt="A physician in consultation at Dr SW Clinics, Harley Street"
+              src={imageUrl(a.promise.photo.image)}
+              alt={a.promise.photo.alt}
               class="aspect-[4/5] w-full object-cover"
               loading="lazy"
               data-parallax="-4"
             />
           </div>
-          <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
-            In consultation · 77 Harley Street
-          </figcaption>
+          {a.promise.photo.caption && (
+            <figcaption class="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-[0.18em] text-cream/62 uppercase">
+              {a.promise.photo.caption}
+            </figcaption>
+          )}
         </figure>
       </div>
       <div class="lg:col-span-7">
-        <p class="eyebrow" data-reveal>Our promise</p>
+        <p class="eyebrow" data-reveal>{a.promise.eyebrow}</p>
         <h2 class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl" data-reveal data-delay="0.1">
-          Natural results. <span class="text-gold italic">Always.</span>
+          <Copy text={a.promise.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
         </h2>
         <div class="mt-7 space-y-5 text-[16px] leading-[1.9] text-cream/75" data-reveal data-delay="0.2">
-          <p>
-            Our mission is simple to state and demanding to keep: to provide real solutions for sexual dysfunction and
-            to enhance sexual wellness — with kindness, discretion and privacy at every step.
-          </p>
-          <p>
-            Every patient is treated as a unique individual, with a bespoke solution built from their own diagnostics —
-            never a menu, never a template. And one promise holds above all: you will never leave looking
-            &ldquo;overdone&rdquo; or artificial. Natural results, always.
-          </p>
+          {a.promise.paragraphs.map((para) => (
+            <p>
+              <Copy text={para} em="text-gold" />
+            </p>
+          ))}
         </div>
         <ul class="mt-8 flex flex-wrap gap-3" data-reveal-child>
           {
-            ['Kindness, discretion & privacy', 'A bespoke solution for every patient', 'Never "overdone" — natural, always'].map((item) => (
+            a.promise.chips.map((item) => (
               <li class="hairline px-5 py-3 text-[11px] font-semibold tracking-[0.13em] text-gold/85 uppercase">{item}</li>
             ))
           }
@@ -262,10 +206,13 @@ const allBadges = [
       </div>
     </div>
   </section>
+  )}
+
+  {shown(a.team) && <Team />}
 
   <TeachingRecord />
 
   <Reassurance variant="authority" surface="ink2" accent="gold" />
 
-  <FinalCTA heading="Meet him, privately." sub="Consultations with Dr Wakil and his clinical team are available at 77 Harley Street and by video." />
+  <FinalCTA heading={a.finalCta.heading} sub={a.finalCta.sub} />
 </Base>

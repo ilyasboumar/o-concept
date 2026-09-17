@@ -3,35 +3,44 @@
  * "Treatment Packages" strip — the accessible entry point beneath the
  * membership tiers. Warmer tone: The O Concept™ is open to everyone,
  * no membership required, 0% finance available.
+ *
+ * Content: the `packages` block of src/content/home/membership.json. The chips
+ * are an array, so they can be added to or emptied out entirely, and *starred*
+ * words in the paragraph come through in teal.
  */
 import { withBase } from '../lib/url';
+import { membership } from '../data/home';
+import Copy from './Copy.astro';
+
+const p = membership.packages;
+const href = p.cta.href.startsWith('#') ? p.cta.href : withBase(p.cta.href);
 ---
 
 <div class="hairline-teal relative overflow-hidden bg-ink" data-reveal>
   <div class="pointer-events-none absolute inset-0 glow-teal" aria-hidden="true"></div>
   <div class="relative grid grid-cols-1 gap-10 p-9 md:p-14 lg:grid-cols-12 lg:items-center">
     <div class="lg:col-span-8">
-      <p class="eyebrow-teal">No membership required</p>
-      <h3 class="mt-4 font-serif text-3xl leading-tight text-cream md:text-4xl">
-        The O Concept<sup class="text-[0.5em] text-teal">™</sup> is open to everyone.
+      <p class="eyebrow-teal">{p.eyebrow}</p>
+      <h3 class="mt-4 font-serif text-3xl leading-tight text-cream text-balance md:text-4xl">
+        <Copy text={p.heading} em="text-teal" italic sup="text-[0.5em] text-teal" />
       </h3>
       <p class="mt-5 max-w-2xl text-[16px] leading-[1.9] text-cream/75">
-        Membership is one way in — not the only way. Every treatment is available individually, or as a bundled
-        package built around your diagnostics, with <span class="text-teal">0% finance available</span> on all plans.
-        Come for a single session or a complete programme; the standard of care is identical.
+        <Copy text={p.text} em="text-teal" />
       </p>
-      <ul class="mt-7 flex flex-wrap gap-3">
-        {
-          ['Single treatments', 'Bundled packages', '0% finance available', 'No joining fee'].map((item) => (
-            <li class="border border-cream/12 px-4 py-2.5 text-[11px] font-semibold tracking-[0.13em] text-cream/75 uppercase">
-              {item}
-            </li>
-          ))
-        }
-      </ul>
+      {
+        p.points.length > 0 && (
+          <ul class="mt-7 flex flex-wrap gap-3">
+            {p.points.map((item) => (
+              <li class="border border-cream/12 px-4 py-2.5 text-[11px] font-semibold tracking-[0.13em] text-cream/75 uppercase">
+                {item}
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </div>
     <div class="flex lg:col-span-4 lg:justify-end">
-      <a href={withBase('treatments')} class="btn btn-teal" data-magnetic>Explore treatment packages</a>
+      <a href={href} class="btn btn-teal" data-magnetic>{p.cta.text}</a>
     </div>
   </div>
 </div>

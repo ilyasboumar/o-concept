@@ -1,0 +1,43 @@
+---
+/**
+ * A content-defined form, in a dialog.
+ *
+ * Used where the form is an answer to something the patient just clicked rather
+ * than a destination in its own right — "Apply for Gold" opens the membership
+ * application here, with Gold already chosen, so applying never costs the
+ * patient a page load or the work of finding the tier again in a dropdown.
+ *
+ * Open/close, the scroll lock and Escape all come from the site's existing
+ * modal handling in main.js; this adds nothing of its own.
+ */
+import Form from './Form.astro';
+import { getForm } from '../data/forms';
+
+interface Props {
+  /** File name in src/content/forms, without .json */
+  form: string;
+  /** DOM id the opening buttons point at. */
+  id: string;
+}
+
+const { form: slug, id } = Astro.props;
+const def = getForm(slug);
+const headingId = `${id}-title`;
+---
+
+{
+  def && def.fields.length > 0 && (
+    <div id={id} class="modal" data-modal role="dialog" aria-modal="true" aria-labelledby={headingId} aria-hidden="true">
+      <div class="modal-card max-w-2xl p-8 md:p-12">
+        <button
+          data-close
+          class="absolute top-5 right-5 cursor-pointer text-xl font-light text-cream/62 transition-colors duration-300 hover:text-gold"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+        <Form form={slug} headingId={headingId} compact />
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,100 @@
+---
+/**
+ * The clinical team — one card per person.
+ *
+ * Content: the `team` block of src/content/pages/about.json. Add a person, drag
+ * them into order, remove one who has moved on: all of it is rows in the CMS.
+ *
+ * A card is complete with a photograph, a name and a title. The short paragraph
+ * is optional per person and simply isn't there when it's empty — so a team of
+ * four where only the lead has a biography still reads as a deliberate row
+ * rather than three cards with a hole in them.
+ *
+ * Layout is the shared `.auto-row` primitive: the column count comes from how
+ * many people there are, and a short last row centres. Five people read as
+ * three and two, not three and a gap.
+ */
+import { aboutPage, teamMembers } from '../data/pages';
+import { imageUrl } from '../lib/url';
+import Copy from './Copy.astro';
+import { autoRowStyle } from '../lib/layout';
+
+const t = aboutPage.team;
+---
+
+{
+  teamMembers.length > 0 && (
+    <section class="hairline-t bg-ink py-24 md:py-32" aria-labelledby="team-heading">
+      <div class="wrap">
+        <div class="max-w-2xl" data-reveal>
+          <p class="eyebrow">{t.eyebrow}</p>
+          <h2 id="team-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
+            <Copy text={t.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
+          </h2>
+          {t.intro && <p class="mt-6 text-[16px] leading-relaxed text-cream/75">{t.intro}</p>}
+        </div>
+
+        <ul class="auto-row mt-16" style={`${autoRowStyle(teamMembers.length, 4)}; --item-max:22rem`} data-reveal-child>
+          {teamMembers.map((m) => (
+            <li class="team-card">
+              <figure class="hairline p-2">
+                <div class="overflow-hidden">
+                  <img
+                    src={imageUrl(m.image)}
+                    alt={m.alt || `${m.name}, Dr SW Clinics`}
+                    class="team-card__img"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </figure>
+              <p class="team-card__name font-serif text-cream">{m.name}</p>
+              {m.title && <p class="team-card__role">{m.title}</p>}
+              {m.brief && <p class="team-card__brief">{m.brief}</p>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .team-card__img {
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .team-card:hover .team-card__img {
+    transform: scale(1.04);
+  }
+  .team-card__name {
+    margin-top: 1.15rem;
+    font-size: 1.3rem;
+    line-height: 1.25;
+  }
+  .team-card__role {
+    margin-top: 0.45rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .team-card__brief {
+    margin-top: 0.85rem;
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(244, 241, 236, 0.75);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-card__img,
+    .team-card:hover .team-card__img {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

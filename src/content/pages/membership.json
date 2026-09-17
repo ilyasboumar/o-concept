@@ -1,0 +1,67 @@
+{
+  "hero": {
+    "eyebrow": "Membership",
+    "heading": "Care that *continues.*",
+    "sub": "Silver, Gold and Platinum — three tiers of head-to-toe health investment: comprehensive diagnostics, priority access, and optimisation that never stands still. Each by application.",
+    "note": "Pricing confirmed at application · No joining fees"
+  },
+  "packages": {
+    "show": true
+  },
+  "comparison": {
+    "show": true,
+    "eyebrow": "Compare in detail",
+    "heading": "Every benefit, side by side.",
+    "featureLabel": "Benefit",
+    "note": "All membership pricing is confirmed at application",
+    "rows": [
+      { "feature": "Endo Test diagnostic panel", "values": ["Annual", "Biannual", "Quarterly"] },
+      { "feature": "Review consultations", "values": ["Quarterly", "Monthly", "On demand"] },
+      { "feature": "Treatment session credits", "values": ["—", "1 per month", "2 per month"] },
+      { "feature": "Maintenance ESWT sessions", "values": ["2 per year", "4 per year", "As prescribed"] },
+      { "feature": "Hormone & nutrition optimisation reviews", "values": ["—", "✓", "✓"] },
+      { "feature": "Member rate on treatments", "values": ["✓", "✓✓", "✓✓✓"] },
+      { "feature": "Priority appointments", "values": ["Priority line", "48 hours", "Same day"] },
+      { "feature": "Dedicated care coordinator", "values": ["—", "✓", "✓"] },
+      { "feature": "Reviews led personally by Dr Wakil", "values": ["—", "—", "✓"] },
+      { "feature": "The O Concept™ Concierge — door-to-door", "values": ["—", "—", "✓"] },
+      { "feature": "At-home phlebotomy", "values": ["—", "—", "✓"] },
+      { "feature": "Partner assessment included", "values": ["—", "—", "✓"] },
+      { "feature": "Discreet direct line, 7 days", "values": ["—", "—", "✓"] }
+    ]
+  },
+  "concierge": {
+    "show": true
+  },
+  "faqs": {
+    "show": true,
+    "eyebrow": "Questions, answered",
+    "heading": "Asked quietly, often.",
+    "items": [
+      {
+        "q": "Is my membership — and everything discussed — confidential?",
+        "a": "Entirely. Your records are held under strict medical confidentiality, correspondence is unmarked, invoices are discreetly worded, and private entrance appointments are available on request. Nothing is ever shared without your explicit written consent."
+      },
+      {
+        "q": "What does “by application” mean?",
+        "a": "Membership places are limited so the clinical team can genuinely know every member. You apply, we hold a brief confidential conversation about your goals and diagnostics, and Dr Wakil’s team confirms the tier that fits. Pricing is confirmed at application."
+      },
+      {
+        "q": "Do I need a membership to be treated?",
+        "a": "No. The O Concept™ is open to everyone — single treatments and bundled packages are available to all patients, with 0% finance, and the standard of care is identical. Membership adds continuity: scheduled diagnostics, priority access and ongoing optimisation."
+      },
+      {
+        "q": "Do you offer finance?",
+        "a": "Yes. 0% finance is available on all treatment plans, subject to status, and memberships are billed monthly with no long-term lock-in. Our patient care team will structure whatever arrangement suits you best."
+      },
+      {
+        "q": "Can I pause or cancel my membership?",
+        "a": "Of course. Memberships run month to month after an initial three-month term. You may pause for up to three months a year — travel, work, life — and cancellation requires only 30 days’ notice, in writing or by phone."
+      }
+    ]
+  },
+  "finalCta": {
+    "heading": "Apply, quietly.",
+    "sub": "Begin with a consultation and Endo Test — the right tier will make itself obvious."
+  }
+}

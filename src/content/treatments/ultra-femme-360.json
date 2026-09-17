@@ -6,6 +6,17 @@
   "desc": "Complete 360° radiofrequency rejuvenation, internal and external, in a course of comfortable eight-minute sessions.",
   "image": "images/tx-vaginal-rejuv.jpg",
   "imageAlt": "Radiofrequency vaginal rejuvenation treatment at Dr SW Clinics",
+  "keywords": [
+    "ultra femme",
+    "radiofrequency",
+    "vaginal tightening",
+    "laxity",
+    "looseness",
+    "external tightening",
+    "eight minute sessions",
+    "non surgical",
+    "sensation"
+  ],
   "conditions": [
     {
       "clinical": "Vaginal laxity",
@@ -20,72 +31,82 @@
       "plain": "loss of tone in the external intimate area"
     }
   ],
-  "intro": "PLACEHOLDER — write the opening paragraph for this treatment. Two or three sentences on what it is and who it is for.",
+  "gallery": [
+    {
+      "image": "images/tx-vaginal-rejuv.jpg",
+      "alt": "Radiofrequency vaginal rejuvenation treatment at Dr SW Clinics"
+    },
+    {
+      "image": "images/placeholder-photo.webp",
+      "alt": "(this is a placeholder — an ordinary clinic photograph)",
+      "caption": "(this is a placeholder — a caption)",
+      "sensitive": false
+    },
+    {
+      "image": "images/placeholder-photo.webp",
+      "alt": "(this is a placeholder — a clinical photograph, held behind the consent gate)",
+      "caption": "(this is a placeholder — a caption — this one needs consent)",
+      "sensitive": true
+    }
+  ],
+  "show": {
+    "practicalFacts": true,
+    "steps": true,
+    "whyChoose": true,
+    "photographs": true,
+    "questions": true,
+    "reassurance": true
+  },
+  "intro": "(this is a placeholder — the opening paragraph a patient reads first)",
   "facts": {
-    "duration": "Add session time",
-    "sessions": "Add course length",
-    "downtime": "Add downtime",
-    "anaesthetic": "Add anaesthetic",
-    "results": "Add when results show"
+    "duration": "(this is a placeholder — how long a session takes)",
+    "sessions": "(this is a placeholder — how many sessions)",
+    "downtime": "(this is a placeholder — downtime)",
+    "anaesthetic": "(this is a placeholder — anaesthetic)",
+    "results": "(this is a placeholder — when results appear)"
   },
   "price": {
-    "from": "From £X,XXX",
-    "unit": "per session",
-    "finance": "0% finance available over 12 months",
-    "note": "PLACEHOLDER — set the price in the CMS. Confirmed at consultation."
+    "from": "(this is a placeholder — the price)",
+    "unit": "(this is a placeholder — what the price covers)",
+    "finance": "(this is a placeholder — finance terms)",
+    "note": "(this is a placeholder — the note under the price)"
   },
   "benefits": [
-    "PLACEHOLDER — the main reason a patient chooses this treatment",
-    "PLACEHOLDER — what it does that alternatives do not",
-    "PLACEHOLDER — the practical advantage, e.g. no downtime",
-    "PLACEHOLDER — the reassurance, e.g. performed by Dr Wakil"
+    "(this is a placeholder — reason 1 a patient chooses this treatment)",
+    "(this is a placeholder — reason 2 a patient chooses this treatment)",
+    "(this is a placeholder — reason 3 a patient chooses this treatment)",
+    "(this is a placeholder — reason 4 a patient chooses this treatment)"
   ],
   "howItWorks": [
     {
-      "title": "Diagnose",
-      "detail": "PLACEHOLDER — what assessment happens before treatment begins."
+      "title": "(this is a placeholder — step 1)",
+      "detail": "(this is a placeholder — what happens in step 1)"
     },
     {
-      "title": "Prepare",
-      "detail": "PLACEHOLDER — what is prepared, and how."
+      "title": "(this is a placeholder — step 2)",
+      "detail": "(this is a placeholder — what happens in step 2)"
     },
     {
-      "title": "Treat",
-      "detail": "PLACEHOLDER — what happens during the appointment."
+      "title": "(this is a placeholder — step 3)",
+      "detail": "(this is a placeholder — what happens in step 3)"
     },
     {
-      "title": "Review",
-      "detail": "PLACEHOLDER — the follow-up and what to expect after."
+      "title": "(this is a placeholder — step 4)",
+      "detail": "(this is a placeholder — what happens in step 4)"
     }
   ],
   "faqs": [
     {
-      "q": "PLACEHOLDER — a question patients actually ask",
-      "a": "PLACEHOLDER — the answer, in plain language. These also help the page show up in Google."
+      "q": "(this is a placeholder — question 1 patients ask about this treatment)",
+      "a": "(this is a placeholder — the answer to question 1, in plain language)"
     },
     {
-      "q": "PLACEHOLDER — a second common question",
-      "a": "PLACEHOLDER — the answer."
-    }
-  ],
-  "gallery": [
-    {
-      "image": "images/tx-vaginal-rejuv.jpg",
-      "alt": "Radiofrequency vaginal rejuvenation treatment at Dr SW Clinics",
-      "caption": "PLACEHOLDER — add a caption, or remove this photo.",
-      "sensitive": false
+      "q": "(this is a placeholder — question 2 patients ask about this treatment)",
+      "a": "(this is a placeholder — the answer to question 2, in plain language)"
     },
     {
-      "image": "images/placeholder-photo.webp",
-      "alt": "PLACEHOLDER — replace with a clinic photograph",
-      "caption": "PLACEHOLDER — an empty photo slot.",
-      "sensitive": false
-    },
-    {
-      "image": "images/placeholder-photo.webp",
-      "alt": "PLACEHOLDER — replace with a consented clinical photograph",
-      "caption": "PLACEHOLDER — a consent-gated clinical image.",
-      "sensitive": true
+      "q": "(this is a placeholder — question 3 patients ask about this treatment)",
+      "a": "(this is a placeholder — the answer to question 3, in plain language)"
     }
   ]
 }

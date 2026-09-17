@@ -3,14 +3,19 @@
  * TeachingRecord.astro — "the doctor who teaches the doctors".
  *
  * The client's ask: show the scale of the training, and list the congresses
- * spoken at. Both read from src/data/credentials.ts, so adding an engagement
- * is one object in an array — no template edit, and one CMS block later.
+ * spoken at. The heading, the invitation and the three figures are content
+ * (src/content/pages/teaching.json) and shared with the About page, so they are
+ * written once. The curriculum and the congress list stay one file per entry in
+ * their own collections — adding a lecture is adding a file.
  *
  * The speaking list renders only what is confirmed. It is deliberately built
  * to look correct with three entries or thirty, so a short list reads as
  * selective rather than as a gap waiting to be filled.
  */
-import { trainingStats, programmes, speaking } from '../data/credentials';
+import { programmes, speaking } from '../data/credentials';
+import { teaching } from '../data/pages';
+import Copy from './Copy.astro';
+import { autoRowStyle } from '../lib/layout';
 
 interface Props {
   /** Hide the programme grid where the page already covers the curriculum. */
@@ -18,7 +23,7 @@ interface Props {
 }
 const { showProgrammes = true } = Astro.props;
 
-const stats = [trainingStats.clinicians, trainingStats.cohort, trainingStats.reach];
+const stats = (teaching.stats ?? []).filter((s) => s?.value?.trim());
 ---
 
 <section class="hairline-t relative overflow-hidden bg-ink py-24 md:py-32" aria-labelledby="teaching-heading">
@@ -26,25 +31,23 @@ const stats = [trainingStats.clinicians, trainingStats.cohort, trainingStats.rea
 
   <div class="wrap relative">
     <div class="max-w-2xl" data-reveal>
-      <p class="eyebrow">Teaching &amp; speaking</p>
+      <p class="eyebrow">{teaching.eyebrow}</p>
       <h2 id="teaching-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-        The doctor the doctors learn from.
+        <Copy text={teaching.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
       </h2>
       <p class="mt-6 text-[16px] leading-relaxed text-cream/75">
-        Dr Wakil created The O Concept™ and brought the O&#8209;Shot<sup class="text-[0.5em]">®</sup> and
-        P&#8209;Shot<sup class="text-[0.5em]">®</sup> to the UK. Clinicians travel from around the world to learn
-        these techniques from him directly — and the standard he teaches is the standard the clinic runs on.
+        <Copy text={teaching.intro} em="text-gold" sup="text-[0.5em]" />
       </p>
     </div>
 
     <!-- the scale of it -->
-    <dl class="hairline-t mt-16 grid grid-cols-1 gap-x-10 gap-y-12 pt-14 md:grid-cols-3" data-reveal-child>
+    <dl class="auto-row hairline-t mt-16 pt-14" style={`${autoRowStyle(stats.length)}; --row-gap:2.5rem`} data-reveal-child>
       {
         stats.map((s) => (
           <div class="flex flex-col">
             <dt class="order-2 mt-3 text-[11px] font-semibold tracking-[0.18em] text-cream/75 uppercase">{s.label}</dt>
             <dd class="order-1 font-serif text-5xl leading-none text-gold md:text-6xl">{s.value}</dd>
-            <dd class="order-3 mt-3 max-w-[30ch] text-sm leading-relaxed text-cream/62">{s.note}</dd>
+            {s.note && <dd class="order-3 mt-3 max-w-[30ch] text-sm leading-relaxed text-cream/62">{s.note}</dd>}
           </div>
         ))
       }
@@ -53,10 +56,14 @@ const stats = [trainingStats.clinicians, trainingStats.cohort, trainingStats.rea
     {
       showProgrammes && (
         <div class="mt-20">
-          <p class="eyebrow-teal" data-reveal>The curriculum</p>
-          <ul class="mt-8 grid grid-cols-1 gap-px bg-cream/10 md:grid-cols-2 lg:grid-cols-3" data-reveal-child>
+          <p class="eyebrow-teal" data-reveal>{teaching.curriculumEyebrow}</p>
+          {/* The dividers used to be the container's own background showing
+              through 1px gaps — which meant a missing card showed the
+              background too, as a grey rectangle. Each card carries its own
+              hairline now, and the row balances itself around the count. */}
+          <ul class="auto-row mt-8" style={autoRowStyle(programmes.length)} data-reveal-child>
             {programmes.map((p) => (
-              <li class="bg-ink p-8">
+              <li class="hairline bg-ink p-8">
                 <h3 class="font-serif text-xl leading-snug text-cream">{p.name}</h3>
                 <p class="mt-3 text-sm leading-relaxed text-cream/75">{p.detail}</p>
               </li>
@@ -69,7 +76,7 @@ const stats = [trainingStats.clinicians, trainingStats.cohort, trainingStats.rea
     {
       speaking.length > 0 && (
         <div class="mt-20">
-          <p class="eyebrow" data-reveal>Selected congresses &amp; invited lectures</p>
+          <p class="eyebrow" data-reveal>{teaching.congressesEyebrow}</p>
           <ul class="hairline-t mt-8 divide-y divide-cream/10 border-cream/10" data-reveal-child>
             {speaking.map((e) => (
               <li class="flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:justify-between md:gap-8">

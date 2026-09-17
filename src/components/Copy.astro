@@ -1,0 +1,42 @@
+---
+/**
+ * One editable string, rendered.
+ *
+ * Content in src/content/ holds no HTML (see src/lib/copy.ts for why), so the
+ * two pieces of presentation that copy genuinely needs are written as ordinary
+ * characters and turned into markup here: *asterisks* become accented emphasis,
+ * and ™ / ® become superscripts — but only where the original typography had
+ * them superscripted.
+ *
+ * That last restraint is deliberate. Shrinking a glyph inside 11px uppercase
+ * takes it under the type floor this site was re-tuned to for patients in their
+ * 50s to 70s, so `sup` is opt-in per use rather than automatic: headlines and
+ * display type pass a size, small labels and body copy leave it out and the
+ * symbol stays at full size, exactly as it was set by hand.
+ */
+import { segments } from '../lib/copy';
+
+interface Props {
+  text?: string | null;
+  /** Classes for *starred* words. Omit and emphasis renders as plain text. */
+  em?: string;
+  /** Italicise the emphasis (an <em>) rather than only colouring it. */
+  italic?: boolean;
+  /** Classes for ™ / ® superscripts. Omit to leave them at full size;
+   *  pass "" for a plain <sup> at the browser's own size. */
+  sup?: string;
+}
+
+const { text = '', em, italic = false, sup } = Astro.props;
+---
+{
+  segments(text).map((s) =>
+    s.sup && sup !== undefined ? (
+      <sup class={sup || undefined}>{s.text}</sup>
+    ) : s.em && em ? (
+      italic ? <em class={em}>{s.text}</em> : <span class={em}>{s.text}</span>
+    ) : (
+      s.text
+    )
+  )
+}

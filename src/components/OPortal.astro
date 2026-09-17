@@ -22,7 +22,10 @@
  * ------------------------------------------------------------------
  */
 
-import { withBase } from '../lib/url';
+import { imageUrl } from '../lib/url';
+import { hero } from '../data/home';
+import { ordinal } from '../lib/copy';
+import Copy from './Copy.astro';
 
 interface Props {
   scrollLength?: number;
@@ -31,11 +34,18 @@ interface Props {
 
 const { scrollLength = 3.2, minWidth = 860 } = Astro.props;
 
-const gates = [
-  { title: 'For Him', body: 'Function, performance and vitality — restored.', accent: 'gold' },
-  { title: 'For Her', body: 'Comfort, sensation and confidence — at every stage.', accent: 'rose' },
-  { title: 'Longevity', body: 'Energy, hormones and healthy years — optimised.', accent: 'teal' },
-];
+/**
+ * All hero copy comes from src/content/home/hero.json — the headline, the
+ * pathway titles that fade past during the fly-through, the second-screen
+ * paragraph, the three authority figures and Dr Wakil's caption.
+ *
+ * `gates` is an array and the script spaces their cue points from its length, so
+ * a fourth pathway can be added without anything landing at an undefined scroll
+ * position. The 3D scene itself is untouched by this: the rings are geometry,
+ * the gates are captions that pass in front of them.
+ */
+const gates = hero.gates;
+const creds = hero.body.credentials.map((c) => ({ ...c, ord: ordinal(c.value) }));
 ---
 
 <section
@@ -67,12 +77,14 @@ const gates = [
     </div>
 
     <div class="dnaj__intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-      <p class="eyebrow dnaj__ce" style="opacity:0">The O Concept™ · Harley Street</p>
-      <h1 class="dnaj__ce mt-6 max-w-[16ch] font-serif text-5xl leading-[1.03] text-cream md:text-7xl" style="opacity:0">Step into the O.</h1>
-      <p class="dnaj__ce mt-6 max-w-sm text-[16px] leading-relaxed text-cream/75" style="opacity:0">Wholeness, vitality and flow — the regenerative protocol the world now trains in.</p>
+      <p class="eyebrow dnaj__ce" style="opacity:0">{hero.eyebrow}</p>
+      <h1 class="dnaj__ce mt-6 max-w-[16ch] font-serif text-5xl leading-[1.03] text-cream md:text-7xl" style="opacity:0">
+        <Copy text={hero.headline} em="text-gold" italic sup="text-[0.4em]" />
+      </h1>
+      <p class="dnaj__ce mt-6 max-w-sm text-[16px] leading-relaxed text-cream/75" style="opacity:0">{hero.sub}</p>
       <div class="dnaj__ce pointer-events-auto mt-9 flex flex-col gap-4 sm:flex-row" style="opacity:0">
-        <a href="#begin" class="btn btn-gold" data-magnetic>Book a Confidential Consultation</a>
-        <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
+        {hero.primaryCta?.text && <a href={hero.primaryCta.href} class="btn btn-gold" data-magnetic>{hero.primaryCta.text}</a>}
+        {hero.secondaryCta?.text && <a href={hero.secondaryCta.href} class="btn btn-teal" data-magnetic>{hero.secondaryCta.text}</a>}
       </div>
     </div>
 
@@ -83,7 +95,7 @@ const gates = [
             <p class={`text-[12px] font-semibold uppercase tracking-[0.22em] ${g.accent === 'teal' ? 'text-teal' : g.accent === 'rose' ? 'text-rose' : 'text-gold'}`}>Pathway 0{i + 1}</p>
             <h2 class="mt-4 font-serif text-4xl text-cream md:text-6xl">{g.title}</h2>
             <span class={`mt-5 block h-px w-14 ${g.accent === 'teal' ? 'bg-teal' : g.accent === 'rose' ? 'bg-rose' : 'bg-gold'}`} />
-            <p class="mx-auto mt-5 max-w-sm text-[16px] leading-relaxed text-cream/75">{g.body}</p>
+            <p class="mx-auto mt-5 max-w-sm text-[16px] leading-relaxed text-cream/75">{g.text}</p>
           </div>
         ))
       }
@@ -100,33 +112,47 @@ const gates = [
       <div class="wrap">
        <div class="dnaj__layout">
         <div class="dnaj__col">
-          <p class="eyebrow-teal">The Science of Regeneration</p>
-          <h2 class="mt-6 font-serif text-5xl leading-[1.04] text-cream md:text-6xl">Your body&rsquo;s own biology, <span class="text-teal italic">reactivated.</span></h2>
+          <p class="eyebrow-teal">{hero.body.eyebrow}</p>
+          <h2 class="mt-6 font-serif text-5xl leading-[1.04] text-cream md:text-6xl">
+            <Copy text={hero.body.headline} em="text-teal" italic sup="text-[0.4em] text-teal" />
+          </h2>
           <p class="mt-7 max-w-md text-[16px] leading-[1.9] text-cream/75">
-            Platelet-rich plasma, growth factors and your own cells — precisely deployed to reawaken cellular repair.
-            New vessels, new tissue, restored function. Not masking the symptom; rebuilding the biology beneath it.
+            <Copy text={hero.body.text} />
           </p>
-          <div class="pointer-events-auto mt-9">
-            <a href="#science" class="btn btn-teal" data-magnetic>Explore the Science</a>
-          </div>
+          {
+            hero.body.cta?.text && (
+              <div class="pointer-events-auto mt-9">
+                <a href={hero.body.cta.href} class="btn btn-teal" data-magnetic>{hero.body.cta.text}</a>
+              </div>
+            )
+          }
 
-        <!-- Authority markers. The brief is "a global authority, not just another
-             sexual clinic" — so the claim is made with verifiable specifics
-             rather than adjectives. -->
-        <ul class="dnaj__creds">
-          <li>
-            <strong>25,000+</strong>
-            <span>cases worldwide</span>
-          </li>
-          <li>
-            <strong>1<sup>st</sup></strong>
-            <span>O&#8209;Shot<sup>®</sup> &amp; P&#8209;Shot<sup>®</sup> in the UK</span>
-          </li>
-          <li>
-            <strong>IAAGSW</strong>
-            <span>President &amp; Founder</span>
-          </li>
-        </ul>
+        {/* Authority markers. The brief is "a global authority, not just another
+            sexual clinic" — so the claim is made with verifiable specifics
+            rather than adjectives. Each is one CMS field, typed as it reads. */}
+        {
+          creds.length > 0 && (
+            <ul class="dnaj__creds">
+              {creds.map((c) => (
+                <li>
+                  <strong>
+                    {c.ord ? (
+                      <>
+                        {c.ord.number}
+                        <sup>{c.ord.suffix}</sup>
+                      </>
+                    ) : (
+                      c.value
+                    )}
+                  </strong>
+                  <span>
+                    <Copy text={c.label} sup="" />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
         </div>
 
         <!--
@@ -139,15 +165,15 @@ const gates = [
         -->
         <figure class="dnaj__figure">
           <img
-            src={withBase('images/dr-wakil-hero.webp')}
-            alt="Dr Sherif Wakil at his desk, beneath a wall of professional certifications"
+            src={imageUrl(hero.portrait.image)}
+            alt={hero.portrait.alt}
             width="1100"
             height="1650"
             decoding="async"
           />
           <figcaption class="dnaj__figcap">
-            <span class="dnaj__figname">Dr Sherif Wakil</span>
-            <span class="dnaj__figrole">Founder · The O Concept™</span>
+            <span class="dnaj__figname">{hero.portrait.name}</span>
+            <span class="dnaj__figrole">{hero.portrait.role}</span>
           </figcaption>
         </figure>
        </div>
@@ -155,7 +181,7 @@ const gates = [
     </div>
 
     <div class="dnaj__cue pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2" aria-hidden="true">
-      <span class="text-[11px] font-semibold tracking-[0.22em] text-cream/62 uppercase">Enter</span>
+      <span class="text-[11px] font-semibold tracking-[0.22em] text-cream/62 uppercase">{hero.scrollCue}</span>
       <span class="relative block h-10 w-px overflow-hidden bg-cream/10">
         <span class="scroll-cue-dot absolute top-0 left-0 block h-2 w-px bg-gold"></span>
       </span>
@@ -199,6 +225,16 @@ const gates = [
     const bodyEl = section.querySelector<HTMLElement>(".dnaj__body");
     const cue = section.querySelector<HTMLElement>(".dnaj__cue");
     if (!canvas) return;
+
+    /* Where each pathway caption peaks, as a fraction of the pinned scroll.
+       Three were placed by hand at 0.20 / 0.36 / 0.50 and stay exactly there;
+       any other number is spread evenly across the same window, so the captions
+       are a content decision. Without this an added fourth gate read
+       centers[3] === undefined and faded to NaN — i.e. never appeared. */
+    const phaseCenters =
+      phaseEls.length === 3
+        ? [0.2, 0.36, 0.5]
+        : phaseEls.map((_, i) => 0.2 + (0.3 * i) / Math.max(1, phaseEls.length - 1));
 
     const scrollLength = Number(section.dataset.scrollLength ?? 3.2);
     const minWidth = Number(section.dataset.minWidth ?? 860);
@@ -462,8 +498,7 @@ const gates = [
         intro.style.opacity = String(1 - smooth(0.02, 0.1, p));
         intro.style.transform = `scale(${(1 + p * 0.4).toFixed(3)})`;
       }
-      const centers = [0.2, 0.36, 0.5];
-      for (let i = 0; i < phaseEls.length; i++) phaseEls[i].style.opacity = pulse(p, centers[i]).toFixed(3);
+      for (let i = 0; i < phaseEls.length; i++) phaseEls[i].style.opacity = pulse(p, phaseCenters[i]).toFixed(3);
       if (bodyEl) bodyEl.style.opacity = smooth(0.8, 0.95, p).toFixed(3);
       if (cue) cue.style.opacity = String(1 - smooth(0.02, 0.14, p));
       if (bg) bg.style.transform = `translateY(${(-p * 30 - ptr.y * 8).toFixed(1)}px) scale(1.08)`;

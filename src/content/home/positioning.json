@@ -1,0 +1,24 @@
+{
+  "show": true,
+  "quote": "More than *25,000 cases worldwide.* The doctor who brought the O‑Shot® and P‑Shot® to the UK.",
+  "photo": {
+    "image": "https://drswclinics.com/wp-content/uploads/2025/02/image00026-1.jpg",
+    "alt": "The clinic at 77 Harley Street, London",
+    "caption": "77 Harley Street"
+  },
+  "pressBadge": {
+    "image": "https://drswclinics.com/wp-content/uploads/2023/07/E4-photo-e1688490158998.png",
+    "alt": "Dr Sherif Wakil featured on Channel 4"
+  },
+  "eyebrow": "A protocol, not a procedure",
+  "paragraphs": [
+    "The O Concept™ is a holistic, multi-modality programme of sexual rejuvenation and regenerative medicine — the culmination of two decades of clinical practice by Dr Sherif Wakil. It combines platelet-rich plasma therapy, low-intensity shockwave, hormonal optimisation and advanced energy-based devices into a single, coherent protocol.",
+    "Where others treat a symptom, we diagnose a system. Every programme begins with comprehensive diagnostics — the Endo Test — so that treatment addresses cause, not consequence. The result is restoration of function, sensation and confidence that is measured, maintained and entirely private."
+  ],
+  "stats": [
+    { "value": "25,000+", "label": "Cases worldwide" },
+    { "value": "20+", "label": "Years of clinical practice" },
+    { "value": "1st", "label": "To bring the O-Shot® & P-Shot® to the UK" },
+    { "value": "2025", "label": "Global Excellence Awards — The O Concept™ Protocol" }
+  ]
+}

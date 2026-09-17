@@ -1,6 +1,7 @@
 ---
 import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
+import Form from '../components/Form.astro';
 import { withBase } from '../lib/url';
 
 /* Canonical home of the international/concierge content — the homepage and
@@ -97,7 +98,43 @@ const internationalSchema = [
         Patients travel from around the world to 77 Harley Street. We make the journey effortless.
       </p>
       <div class="mt-10" data-reveal data-delay="0.3">
-        <a href={site.phone.href} class="btn btn-gold" data-magnetic>Plan Your Visit</a>
+        <a href="#begin" class="btn btn-gold" data-magnetic>Plan Your Visit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PLAN YOUR VISIT — where the hero's button lands ============
+       Every field of this form is content: src/content/forms/plan-your-visit.json,
+       edited in the CMS. NOTE: the parked layout below carries its own closing
+       CTA with the same #begin anchor — if that layout is ever restored, keep
+       one of the two, not both. -->
+  <section id="begin" class="hairline-t relative overflow-hidden bg-inkdeep py-24 md:py-32">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(201,169,110,0.13), transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="wrap relative grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-7" data-reveal>
+        <Form form="plan-your-visit" />
+      </div>
+
+      <div class="lg:col-span-5" data-reveal data-delay="0.15">
+        <p class="eyebrow">The O Concept™ — worldwide</p>
+        <h2 class="mt-6 font-serif text-4xl leading-[1.08] text-cream md:text-5xl">
+          London. Dubai. Cairo.<br />One standard of care.
+        </h2>
+        <p class="mt-7 max-w-md text-base leading-relaxed text-cream/75">
+          Prefer to speak to someone first? The international patient team answers by phone, WhatsApp or video, in
+          complete confidence.
+        </p>
+        <div class="mt-9 flex flex-col gap-4 sm:flex-row lg:flex-col xl:flex-row">
+          <a href={site.phone.href} class="btn btn-ghost" data-magnetic>{site.phone.display}</a>
+          <a href="https://wa.me/442030068459" target="_blank" rel="noopener" class="btn btn-ghost" data-magnetic>
+            WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </section>

@@ -1,0 +1,51 @@
+{
+  "show": true,
+  "eyebrow": "The method",
+  "heading": "The Science of The O Concept™",
+  "intro": "Four clinical phases, one coherent protocol — created by Dr Wakil, and now taught by him to physicians worldwide.",
+  "image": {
+    "image": "https://drswclinics.com/wp-content/uploads/2024/12/Homepage-9-e1733484520778.jpg",
+    "alt": "Advanced clinical technology at Dr SW Clinics, Harley Street",
+    "caption": "Regenerative · Energy-based · Hormonal"
+  },
+  "steps": [
+    {
+      "title": "Diagnose",
+      "text": "Every protocol begins with the Endo Test — a comprehensive hormonal, metabolic and vascular panel. We measure before we treat, because sexual function is physiology, and physiology leaves evidence.",
+      "detail": "Full endocrine panel · vascular assessment · lifestyle and psychological screening"
+    },
+    {
+      "title": "Regenerate",
+      "text": "Platelet-rich plasma, growth factors and the body’s own blood products regenerate vascular and nerve tissue at the source. This is the regenerative core Dr Wakil introduced to the UK — the O-Shot® and P-Shot®.",
+      "detail": "O-Shot® · P-Shot® · stem cells & growth factors · autologous blood products"
+    },
+    {
+      "title": "Restore",
+      "text": "Energy-based medicine restores what time and physiology have taken: low-intensity shockwave rebuilds blood supply, radiofrequency and laser restore tissue quality, electromagnetic therapy rebuilds the pelvic floor.",
+      "detail": "ESWT shockwave · Ultra Femme 360 · CO2RE Intima · O Concept™ Chair"
+    },
+    {
+      "title": "Optimise",
+      "text": "Results are maintained, not merely achieved. Hormonal optimisation, nutrition, supplementation and scheduled diagnostics keep function — and confidence — quietly compounding year on year.",
+      "detail": "Hormone optimisation · IV nutrition · dietician programmes · ongoing review"
+    }
+  ],
+  "handover": {
+    "image": "https://drswclinics.com/wp-content/uploads/2024/12/Homepage-10.jpg",
+    "alt": "Treatment suite at Dr SW Clinics",
+    "caption": "Twenty-five thousand cases of evidence — *one* protocol."
+  },
+  "closing": {
+    "eyebrow": "The result",
+    "heading": "Function, sensation and confidence — *measured, restored, maintained.*",
+    "text": "Not a procedure but a protocol: diagnostics first, regeneration at the cause, restoration with energy-based medicine, and optimisation that never stands still. This is the method the world now trains in — with the physician who created it.",
+    "primaryCta": {
+      "text": "Book a Confidential Consultation",
+      "href": "#begin"
+    },
+    "secondaryCta": {
+      "text": "Find Your Treatment",
+      "href": "#finder"
+    }
+  }
+}

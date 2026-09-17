@@ -1,76 +1,47 @@
 ---
 /**
- * Membership tiers — Silver · Gold · Platinum.
- * Pricing is deliberately structured as "From £—/month · By application"
- * placeholders: when the client finalises numbers, replace each tier's
- * `price` string and nothing else needs to move.
+ * Membership tiers — content-driven, any number of them.
+ *
+ * Everything here comes from src/content/home/membership.json: the tiers, what
+ * each one includes, the price strings (deliberately strings, so "From £—",
+ * "£450" and "By application" are all sayable), and which single tier wears the
+ * "Most Chosen" badge. Adding a fourth tier is adding a row in the CMS.
  */
-import { withBase } from '../lib/url';
+import { membership } from '../data/home';
+import Copy from './Copy.astro';
+import FormModal from './FormModal.astro';
 
-const tiers = [
-  {
-    name: 'Silver',
-    price: 'From £—',
-    priceNote: 'per month · by application',
-    tagline: 'The foundation: annual head-to-toe diagnostics, expertly maintained.',
-    featured: false,
-    benefits: [
-      'Annual Endo Test diagnostic panel',
-      'Quarterly review consultations',
-      'Two maintenance ESWT sessions per year',
-      'Member rate on all treatments',
-      'Priority booking line',
-    ],
-  },
-  {
-    name: 'Gold',
-    price: 'From £—',
-    priceNote: 'per month · by application',
-    tagline: 'Our most chosen path. Active treatment and optimisation, continuously managed.',
-    featured: true,
-    benefits: [
-      'Everything in Silver',
-      'Biannual full diagnostic panel',
-      'Monthly treatment session credit',
-      'Hormone & nutrition optimisation reviews',
-      'Dedicated care coordinator',
-      '48-hour priority appointments',
-    ],
-  },
-  {
-    name: 'Platinum',
-    price: 'From £—',
-    priceNote: 'per month · by application',
-    tagline: 'Complete, personal oversight by Dr Wakil — with the Concierge experience.',
-    featured: false,
-    benefits: [
-      'Everything in Gold',
-      'Protocol reviews led personally by Dr Wakil',
-      'The O Concept™ Concierge — door-to-door',
-      'Same-day priority access',
-      'At-home phlebotomy for diagnostics',
-      'Partner assessment included',
-      'Discreet direct line, seven days a week',
-    ],
-  },
-];
+/* One dialog per page, opened by whichever tier's button was pressed. The tiers
+   render on the home page and the membership page, and each renders this
+   component once, so the form is mounted exactly where the cards are. */
+const APPLY_MODAL = 'membership-apply';
+
+const tiers = membership.tiers;
+/* Three tiers sit side by side; a fourth would be cramped at lg, so past three
+   the grid keeps two columns and wraps. The taller highlighted card only lifts
+   out of the row when the row is a single line of cards. */
+const cols = tiers.length >= 4 ? 'lg:grid-cols-2 xl:grid-cols-4' : tiers.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
+const lifts = tiers.length <= 3;
 ---
 
-<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch" data-reveal-child>
+<div class:list={['grid grid-cols-1 gap-6 lg:items-stretch', cols]} data-reveal-child>
   {
     tiers.map((tier) => (
       <div
         class:list={[
           'hairline relative flex flex-col bg-ink2 p-9 md:p-10',
-          tier.featured && 'gold-glow lg:-my-5 lg:py-14',
+          tier.highlight && 'gold-glow',
+          tier.highlight && lifts && 'lg:-my-5 lg:py-14',
         ]}
       >
-        {tier.featured && (
+        {tier.highlight && membership.highlightLabel && (
           <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold px-4 py-1.5 text-[11px] font-bold tracking-[0.18em] text-ink uppercase">
-            Most Chosen
+            {membership.highlightLabel}
           </span>
         )}
-        <h3 class="font-serif text-3xl text-gold">{tier.name}</h3>
+        <h3 class="font-serif text-3xl text-gold">
+          <Copy text={tier.name} sup="text-[0.45em]" />
+        </h3>
         <p class="mt-2 min-h-10 text-xs leading-relaxed text-cream/62">{tier.tagline}</p>
         <p class="mt-6 flex items-baseline gap-3">
           <span class="font-serif text-4xl text-cream">{tier.price}</span>
@@ -80,14 +51,26 @@ const tiers = [
           {tier.benefits.map((benefit) => (
             <li class="flex items-start gap-3">
               <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold" aria-hidden="true" />
-              {benefit}
+              <span>
+                <Copy text={benefit} em="text-gold" />
+              </span>
             </li>
           ))}
         </ul>
-        <a href={withBase('membership')} class:list={['btn mt-10', tier.featured ? 'btn-gold' : 'btn-ghost']} data-magnetic>
-          Apply for {tier.name}
-        </a>
+        {/* the tier travels with the click, so the form opens already answered */}
+        <button
+          type="button"
+          class:list={['btn mt-10', tier.highlight ? 'btn-gold' : 'btn-ghost']}
+          data-open-form={APPLY_MODAL}
+          data-preset-tier={tier.name}
+          data-magnetic
+        >
+          {membership.applyLabelPrefix} {tier.name}
+        </button>
       </div>
     ))
   }
 </div>
+
+{/* one dialog for the whole grid, not one per card */}
+<FormModal form="membership-application" id={APPLY_MODAL} />

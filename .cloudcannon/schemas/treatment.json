@@ -1,0 +1,44 @@
+{
+  "slug": "new-treatment",
+  "name": "New treatment",
+  "pathway": "him",
+  "tag": "Regenerative",
+  "desc": "One or two sentences a patient can understand, under about 120 characters.",
+  "image": "images/placeholder-photo.webp",
+  "imageAlt": "Describe the photograph for patients using a screen reader.",
+  "heroImage": "",
+  "heroImageAlt": "",
+  "keywords": [],
+  "conditions": [
+    {
+      "clinical": "Erectile dysfunction",
+      "plain": "difficulty getting or keeping an erection"
+    }
+  ],
+  "intro": "",
+  "facts": {
+    "duration": "",
+    "sessions": "",
+    "downtime": "",
+    "anaesthetic": "",
+    "results": ""
+  },
+  "price": {
+    "from": "",
+    "unit": "",
+    "finance": "",
+    "note": ""
+  },
+  "benefits": [],
+  "howItWorks": [],
+  "faqs": [],
+  "gallery": [],
+  "show": {
+    "practicalFacts": true,
+    "steps": true,
+    "whyChoose": true,
+    "photographs": true,
+    "questions": true,
+    "reassurance": true
+  }
+}

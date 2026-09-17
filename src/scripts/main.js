@@ -2,6 +2,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { treatments, findTreatments, PATHWAY_LABELS } from '../data/treatments';
+import { balancedColumns } from '../lib/layout';
 import { site } from '../data/site';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -597,6 +598,36 @@ document.querySelectorAll('[data-open-quiz]').forEach((btn) => {
   btn.addEventListener('click', () => openModal(quizModal));
 });
 
+/* Form dialogs — [data-open-form="<modal id>"].
+   A button may carry an answer with it: "Apply for Gold" opens the membership
+   application with Gold already selected, so the patient is never asked again
+   for something they just told us by clicking. The preset is matched by value
+   against whatever the select currently holds, which means it keeps working
+   when the tiers are renamed in the CMS. */
+document.querySelectorAll('[data-open-form]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const modal = document.getElementById(btn.dataset.openForm);
+    if (!modal) return;
+    const tier = btn.dataset.presetTier;
+    if (tier) {
+      const select = modal.querySelector('select');
+      if (select && [...select.options].some((o) => o.value === tier)) select.value = tier;
+    }
+    openModal(modal);
+    /* Focus moves into the dialog only once it is really visible.
+       .modal transitions visibility over half a second, and focus() on a
+       visibility:hidden element silently does nothing — so this waits for the
+       transition to end rather than guessing a delay that would break the day
+       the timing changes in CSS. The timer is the fallback for when no
+       transition runs at all (reduced motion, or a backgrounded tab).
+       The close button rather than the first field: it puts screen reader users
+       inside the dialog without opening a keyboard on a phone. */
+    const focusIn = () => (modal.querySelector('[data-close]') || modal).focus({ preventScroll: true });
+    modal.addEventListener('transitionend', focusIn, { once: true });
+    setTimeout(focusIn, 600);
+  });
+});
+
 /* ============================================================
    Welcome popup — once per session, 6s or 40% scroll
    ============================================================ */
@@ -626,13 +657,44 @@ if (welcome && !sessionStorage.getItem(WELCOME_KEY)) {
    ============================================================ */
 
 document.querySelectorAll('form[data-demo]').forEach((form) => {
-  form.addEventListener('submit', (e) => {
+  const errorBox = form.querySelector('.oc-form__error');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
-    form.classList.add('submitted');
+
+    /* Where the answers go is content, not code: a form with no endpoint set
+       shows its thank-you and sends nothing, which is the honest prototype
+       state. Paste a form-handling URL into the CMS and the same form starts
+       posting there — no rebuild, no developer. */
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      form.classList.add('submitted');
+      return;
+    }
+
+    const submit = form.querySelector('[type="submit"]');
+    errorBox?.setAttribute('hidden', '');
+    if (submit) submit.disabled = true;
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.classList.add('submitted');
+    } catch {
+      /* the patient is told, and keeps everything they typed */
+      if (errorBox) errorBox.removeAttribute('hidden');
+      else form.classList.add('submitted');
+    } finally {
+      if (submit) submit.disabled = false;
+    }
   });
 });
 
@@ -640,6 +702,23 @@ document.querySelectorAll('form[data-demo]').forEach((form) => {
 const BASE = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : import.meta.env.BASE_URL + '/';
+
+/* ============================================================
+   Rows that re-balance after the page has loaded
+   ------------------------------------------------------------
+   Server-rendered rows get their column count from Astro. These
+   two change count in the browser — search results appear, the
+   pathway filter hides cards — so they recompute it here, with
+   the same rule, rather than keeping a column count that was
+   right for a list that is no longer on screen.
+   ============================================================ */
+
+function balanceRow(el, count, max = 3) {
+  if (!el) return;
+  const lg = balancedColumns(count, max);
+  el.style.setProperty('--cols-lg', lg);
+  el.style.setProperty('--cols-sm', Math.min(balancedColumns(count, 2), lg));
+}
 
 /* ============================================================
    Condition finder — instant, client-side, nothing stored
@@ -687,6 +766,9 @@ if (finderInput) {
     }
     const matches = findTreatments(q).slice(0, 6);
     results.innerHTML = matches.map((t) => card(t, q)).join('');
+    /* the row re-balances around however many answers there were: two matches
+       sit as a centred pair, not stranded against the left edge */
+    balanceRow(results, matches.length);
     empty?.classList.toggle('hidden', matches.length > 0);
   };
 
@@ -749,6 +831,11 @@ if (filterWrap) {
           card.classList.toggle('hidden', !show);
           if (show) visible++;
         });
+        /* filtering changes how many cards are on screen, so the row that
+           holds them is re-balanced for the number that survived */
+        document.querySelectorAll('[data-treatment-grid] .tx2-grid').forEach((grid) =>
+          balanceRow(grid, grid.querySelectorAll('[data-pathway]:not(.hidden)').length)
+        );
       }
 
       emptyMsg?.classList.toggle('hidden', visible > 0);

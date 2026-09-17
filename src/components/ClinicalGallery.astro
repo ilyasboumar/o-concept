@@ -29,6 +29,11 @@ interface Props {
 }
 const { gallery, treatmentName, surface = 'bg-ink3' } = Astro.props;
 
+/* The grid never opens more columns than there are photographs. Most treatments
+   start with one, and a lone 4:3 frame in the left third of a three-column grid
+   reads as two missing photographs rather than one deliberate plate. */
+const cols = Math.min(gallery.length, 3);
+
 const hasSensitive = gallery.some((g) => g.sensitive);
 ---
 
@@ -50,7 +55,7 @@ const hasSensitive = gallery.some((g) => g.sensitive);
       }
     </div>
 
-    <div class="tx-gallery mt-12" data-gallery>
+    <div class="tx-gallery mt-12" data-gallery data-cols={cols}>
       {
         gallery.map((g) => (
           <figure class:list={['tx-shot', g.sensitive && 'is-gated']}>
@@ -97,13 +102,19 @@ const hasSensitive = gallery.some((g) => g.sensitive);
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
+  /* A single photograph is a plate, not a column: held to a readable width so
+     it looks chosen, rather than stretched across the page to fill a row. */
+  .tx-gallery[data-cols='1'] {
+    max-width: 44rem;
+  }
   @media (min-width: 700px) {
-    .tx-gallery {
+    .tx-gallery[data-cols='2'],
+    .tx-gallery[data-cols='3'] {
       grid-template-columns: repeat(2, 1fr);
     }
   }
   @media (min-width: 1100px) {
-    .tx-gallery {
+    .tx-gallery[data-cols='3'] {
       grid-template-columns: repeat(3, 1fr);
     }
   }

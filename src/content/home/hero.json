@@ -1,0 +1,60 @@
+{
+  "eyebrow": "The O Concept™ · Harley Street",
+  "headline": "Step into the O.",
+  "sub": "Wholeness, vitality and flow — the regenerative protocol the world now trains in.",
+  "primaryCta": {
+    "text": "Book a Confidential Consultation",
+    "href": "#begin"
+  },
+  "secondaryCta": {
+    "text": "Explore the Science",
+    "href": "#science"
+  },
+  "scrollCue": "Enter",
+  "gates": [
+    {
+      "title": "For Him",
+      "text": "Function, performance and vitality — restored.",
+      "accent": "gold"
+    },
+    {
+      "title": "For Her",
+      "text": "Comfort, sensation and confidence — at every stage.",
+      "accent": "rose"
+    },
+    {
+      "title": "Longevity",
+      "text": "Energy, hormones and healthy years — optimised.",
+      "accent": "teal"
+    }
+  ],
+  "body": {
+    "eyebrow": "The Science of Regeneration",
+    "headline": "Your body’s own biology, *reactivated.*",
+    "text": "Platelet-rich plasma, growth factors and your own cells — precisely deployed to reawaken cellular repair. New vessels, new tissue, restored function. Not masking the symptom; rebuilding the biology beneath it.",
+    "cta": {
+      "text": "Explore the Science",
+      "href": "#science"
+    },
+    "credentials": [
+      {
+        "value": "25,000+",
+        "label": "cases worldwide"
+      },
+      {
+        "value": "1st",
+        "label": "O‑Shot® & P‑Shot® in the UK"
+      },
+      {
+        "value": "IAAGSW",
+        "label": "President & Founder"
+      }
+    ]
+  },
+  "portrait": {
+    "image": "images/dr-wakil-hero.webp",
+    "alt": "Dr Sherif Wakil at his desk, beneath a wall of professional certifications",
+    "name": "Dr Sherif Wakil",
+    "role": "Founder · The O Concept™"
+  }
+}

@@ -1,0 +1,57 @@
+---
+/**
+ * The award wall, as one interactive ring.
+ *
+ * Content: the `awards` block of src/content/pages/about.json — add a badge,
+ * remove one, reorder them. The ring spaces itself around however many there
+ * are, so a twelfth award needs no code.
+ *
+ * Its own component rather than markup on the About page for two reasons: the
+ * page is long enough without a carousel in the middle of it, and a section
+ * that can switch itself off is better placed to decide that than the page is.
+ *
+ * Drag to spin, arrow keys to rotate (behaviour lives in main.js). Reduced
+ * motion and no-JS both fall back to the static grid below it.
+ */
+import { imageUrl } from '../lib/url';
+import { aboutPage } from '../data/pages';
+import { shown } from '../data/home';
+
+const badges = (aboutPage.awards?.items ?? []).filter((b) => b?.image?.trim());
+const show = shown(aboutPage.awards) && badges.length > 0;
+const ringStep = `--ring-step:${(360 / Math.max(1, badges.length)).toFixed(3)}deg`;
+const ringLabel = `Awards recognising Dr Wakil — ${badges.length} badges. Use the arrow keys, or drag, to rotate.`;
+---
+
+{
+  show && (
+    <div class="wrap relative mt-8" data-reveal data-delay="0.3">
+      <div
+        class="award-stage"
+        data-award-ring
+        tabindex="0"
+        role="group"
+        aria-roledescription="carousel"
+        aria-label={ringLabel}
+      >
+        <div class="award-ring" style={ringStep}>
+          {badges.map((badge, i) => (
+            <div class="award-tile" style={'--i:' + i}>
+              <img src={imageUrl(badge.image)} alt={badge.alt} loading={i === 0 ? undefined : 'lazy'} draggable="false" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* reduced-motion / no-JS fallback: the same badges as a clean static grid */}
+      <div class="award-static flex-wrap items-center justify-center gap-3">
+        {badges.map((badge) => (
+          <div class="flex h-20 w-[5.6rem] items-center justify-center rounded-md bg-cream/95 p-2.5">
+            <img src={imageUrl(badge.image)} alt={badge.alt} class="max-h-full max-w-full object-contain" loading="lazy" />
+          </div>
+        ))}
+      </div>
+
+    </div>
+  )
+}

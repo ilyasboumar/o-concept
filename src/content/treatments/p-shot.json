@@ -6,6 +6,21 @@
   "desc": "Autologous platelet-rich plasma to regenerate vascular and erectile tissue — introduced to the UK by Dr Wakil.",
   "image": "images/tx-p-shot.webp",
   "imageAlt": "P-Shot® platelet-rich plasma treatment at Dr SW Clinics",
+  "keywords": [
+    "p shot",
+    "pshot",
+    "prp",
+    "platelet rich plasma",
+    "priapus shot",
+    "ED",
+    "impotence",
+    "erectile",
+    "erection problems",
+    "peyronie",
+    "curvature",
+    "after prostate surgery",
+    "viagra not working"
+  ],
   "conditions": [
     {
       "clinical": "Erectile dysfunction",
@@ -31,12 +46,6 @@
     "downtime": "None",
     "anaesthetic": "Topical numbing",
     "results": "From 3 weeks, building to 3 months"
-  },
-  "price": {
-    "from": "From £X,XXX",
-    "unit": "per session",
-    "finance": "0% finance available over 12 months",
-    "note": "PLACEHOLDER — replace in the CMS. Final cost confirmed at consultation."
   },
   "benefits": [
     "Uses your own blood products — nothing synthetic is introduced",
@@ -81,20 +90,32 @@
     {
       "image": "images/tx-p-shot.webp",
       "alt": "Platelet-rich plasma prepared in the clinic",
-      "caption": "PRP prepared from the patient's own blood.",
-      "sensitive": false
-    },
-    {
-      "image": "images/placeholder-photo.webp",
-      "alt": "PLACEHOLDER — replace with a clinic photograph",
-      "caption": "PLACEHOLDER — an ordinary photo slot, shown as it appears when empty.",
-      "sensitive": false
+      "caption": "PRP prepared from the patient's own blood."
     },
     {
       "image": "images/tx-p-shot-2.jpg",
-      "alt": "PLACEHOLDER — replace with a consented clinical photograph",
-      "caption": "PLACEHOLDER — a consent-gated clinical image. Hidden until the visitor asks.",
+      "alt": "P-Shot® platelet-rich plasma treatment at Dr SW Clinics",
       "sensitive": true
+    },
+    {
+      "image": "images/placeholder-photo.webp",
+      "alt": "(this is a placeholder — an ordinary clinic photograph)",
+      "caption": "(this is a placeholder — a caption)",
+      "sensitive": false
     }
-  ]
+  ],
+  "show": {
+    "practicalFacts": true,
+    "steps": true,
+    "whyChoose": true,
+    "photographs": true,
+    "questions": true,
+    "reassurance": true
+  },
+  "price": {
+    "from": "(this is a placeholder — the price)",
+    "unit": "(this is a placeholder — what the price covers)",
+    "finance": "(this is a placeholder — finance terms)",
+    "note": "(this is a placeholder — the note under the price)"
+  }
 }

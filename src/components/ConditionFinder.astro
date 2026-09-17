@@ -11,13 +11,27 @@
  * Free-text search (top) matches across everything regardless of the
  * active system. Matching runs client-side in main.js against
  * src/data/treatments.ts. Instant, nothing stored.
+ *
+ * What a patient types is matched against four things per treatment: its name,
+ * its description, both wordings of every condition, and its search keywords —
+ * the synonyms, abbreviations and misspellings a patient would actually use
+ * ("impotence", "ED", "leaking"). Keywords are a CMS field on the treatment, so
+ * widening what the finder understands is a content edit: add the word to the
+ * treatment and it is searchable immediately, here and on /treatments.
+ *
+ * All the copy below — heading, invitation, the search box's own placeholder —
+ * is src/content/home/finder.json. The three counters are not: they are
+ * measured from the catalogue, so they cannot drift as treatments are added.
  */
 import { withBase } from '../lib/url';
 import { conditionsBySystem, treatments } from '../data/treatments';
+import { finder } from '../data/home';
+import Copy from './Copy.astro';
 
 const groups = conditionsBySystem();
 const txCount = treatments.length;
 const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
+const pathwayCount = new Set(treatments.map((t) => t.pathway)).size;
 ---
 
 <section id="finder" class="hairline-teal-t relative overflow-hidden bg-ink2 py-24 md:py-32" aria-labelledby="finder-heading">
@@ -32,21 +46,18 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
 
   <div class="wrap relative">
     <div class="mx-auto max-w-2xl text-center" data-reveal>
-      <p class="eyebrow-teal">Start from what you feel</p>
-      <h2 id="finder-heading" class="mt-5 font-serif text-4xl leading-tight text-cream md:text-5xl">
-        Find your treatment.
+      <p class="eyebrow-teal">{finder.eyebrow}</p>
+      <h2 id="finder-heading" class="mt-5 font-serif text-4xl leading-tight text-cream text-balance md:text-5xl">
+        <Copy text={finder.heading} em="text-teal" italic sup="text-[0.45em] text-teal" />
       </h2>
-      <p class="mt-6 text-[16px] leading-relaxed text-cream/75">
-        Describe your concern in your own words — or explore by system below. We&rsquo;ll show you the treatments that
-        address it, instantly and privately. Nothing you type is stored or sent.
-      </p>
-      <!-- diagnostic readout -->
+      <p class="mt-6 text-[16px] leading-relaxed text-cream/75">{finder.intro}</p>
+      <!-- diagnostic readout — measured from the catalogue, never typed -->
       <p class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold tracking-[0.18em] text-teal/85 uppercase" aria-hidden="true">
         <span>{condCount} conditions indexed</span>
         <span class="h-[3px] w-[3px] rounded-full bg-teal/50"></span>
         <span>{txCount} signature protocols</span>
         <span class="h-[3px] w-[3px] rounded-full bg-teal/50"></span>
-        <span>3 pathways</span>
+        <span>{pathwayCount} pathways</span>
       </p>
     </div>
 
@@ -57,7 +68,7 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
           id="finder-input"
           class="field !border-teal/25 !px-6 !py-5 text-base focus:!border-teal"
           type="text"
-          placeholder="Try “difficulty keeping an erection”, “dryness”, “low energy”, “leaking”…"
+          placeholder={finder.placeholder}
           autocomplete="off"
         />
         <span class="pointer-events-none absolute top-1/2 right-6 -translate-y-1/2 text-teal/85" aria-hidden="true">
@@ -101,15 +112,17 @@ const condCount = groups.reduce((n, g) => n + g.conditions.length, 0);
     </div>
 
     <p class="mt-8 text-center text-[11px] font-semibold tracking-[0.16em] text-cream/62 uppercase" data-finder-catalogue data-reveal>
-      Part of a catalogue of 100+ protocols —
-      <a href={withBase('treatments')} class="text-teal transition-colors duration-300 hover:text-cream">browse the full treatment index →</a>
+      {finder.catalogueNote}
+      <a href={withBase('treatments')} class="text-teal transition-colors duration-300 hover:text-cream">{finder.catalogueLinkLabel}</a>
     </p>
 
-    <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-finder-results aria-live="polite">
+    <div class="auto-row mt-14" style="--item-max:26rem" data-finder-results aria-live="polite">
       <!-- matching treatment cards are rendered here by main.js -->
     </div>
     <p class="mt-10 hidden text-center text-sm text-cream/62" data-finder-empty>
-      No direct match — but that does not mean no answer. <a href="#begin" class="text-teal underline underline-offset-4">Book a confidential consultation</a> and we&rsquo;ll take it from there.
+      {finder.emptyNote}
+      <a href="#begin" class="text-teal underline underline-offset-4">{finder.emptyLinkLabel}</a>
+      {finder.emptyNoteEnd}
     </p>
   </div>
 </section>

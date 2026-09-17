@@ -1,0 +1,41 @@
+---
+/**
+ * The membership band: heading, the tiers, and the "no membership required"
+ * packages strip beneath them.
+ *
+ * Content: src/content/home/membership.json — one file, because the three parts
+ * are one decision. The strip has its own switch, so the section can be tiers
+ * only; the tiers array can be any length; and exactly one tier wears the
+ * "Most Chosen" badge (see data/home.ts for why that is enforced there).
+ */
+import MembershipTiers from './MembershipTiers.astro';
+import TreatmentPackages from './TreatmentPackages.astro';
+import { membership, shown } from '../data/home';
+import Copy from './Copy.astro';
+---
+
+<section class="hairline-t bg-ink py-24 md:py-36">
+  <div class="wrap">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="eyebrow">{membership.eyebrow}</p>
+      <h2 class="mt-5 font-serif text-4xl leading-tight text-cream text-balance md:text-5xl">
+        <Copy text={membership.heading} em="text-gold" italic sup="text-[0.45em] text-gold" />
+      </h2>
+      <p class="mt-6 text-[16px] leading-relaxed text-cream/75">{membership.intro}</p>
+    </div>
+    {
+      membership.tiers.length > 0 && (
+        <div class="mt-20 lg:mt-24">
+          <MembershipTiers />
+        </div>
+      )
+    }
+    {
+      shown(membership.packages) && (
+        <div class="mt-16">
+          <TreatmentPackages />
+        </div>
+      )
+    }
+  </div>
+</section>

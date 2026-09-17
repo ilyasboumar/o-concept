@@ -1,0 +1,171 @@
+{
+  "hero": {
+    "eyebrow": "Founder & Medical Director",
+    "heading": "Dr Sherif *Wakil*",
+    "tagline": "Pioneer of sexual rejuvenation medicine in the United Kingdom. Creator of The O Concept™.",
+    "portrait": {
+      "image": "https://drswclinics.com/wp-content/uploads/2023/07/DSC02197-scaled.jpg",
+      "alt": "Dr Sherif Wakil, Founder and Medical Director of Dr SW Clinics"
+    }
+  },
+  "awards": {
+    "show": true,
+    "items": [
+      {
+        "image": "images/award-2025-global-excellence.png",
+        "alt": "Global Excellence Awards 2025 — The O Concept™ Protocol winner badge"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2024/06/award-1.png",
+        "alt": "2024 World’s Best Sexual Rejuvenation Clinic award badge"
+      },
+      { "image": "images/award-ghp-2024.png", "alt": "GHP 2024 award badge — Dr SW Clinics" },
+      { "image": "images/award-ghp-2024-b.png", "alt": "GHP 2024 award badge — The O Concept™" },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2023/06/New-Award-1b.png",
+        "alt": "GHP Global Excellence award badge recognising Dr SW Clinics"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2023/06/New-Award-2.png",
+        "alt": "GHP award badge recognising Dr SW Clinics"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2022/08/award1.png",
+        "alt": "2020 Awards Winner medal recognising Dr SW Clinics"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2022/08/award2.png",
+        "alt": "GHP 2022 Global Excellence award badge"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2022/08/award3.png",
+        "alt": "2019 Award Winner medal recognising Dr SW Clinics"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2022/08/award4.png",
+        "alt": "Aesthetics Awards 2016 finalist badge"
+      },
+      {
+        "image": "https://drswclinics.com/wp-content/uploads/2022/08/award5.png",
+        "alt": "MyFaceMyBody Awards 2016 finalist badge"
+      }
+    ]
+  },
+  "physician": {
+    "show": true,
+    "eyebrow": "The physician",
+    "heading": "Creating beauty is an art.",
+    "paragraphs": [
+      "Dr Sherif El Wakil is the founder and medical director of Dr SW Clinics on London’s Harley Street, with more than two decades of experience across leading hospitals in the UK and Middle East, including The Royal London Hospital NHS Trust.",
+      "Holding degrees in both medicine and the arts, Dr Wakil applies a simple philosophy to his practice: that creating beauty is an art. His keen personal interest in art and sculpting allows him to deliver natural-looking results, so patients never look overdone — which is why they travel from around the world to see him. He offers only treatments that are safe, effective and minimally invasive, carefully tailored to each individual.",
+      "He is a pioneer of many techniques, often the first to introduce them to the United Kingdom — most significantly The O Concept™ for treating male and female sexual dysfunction. He was also the first UK practitioner to introduce the “soft surgery” approach, including non-surgical blepharoplasty, and PRP therapies such as the Vampire Facelift™ and Vampire Breast Lift™. With more than 25,000 cases worldwide — across clinics in London, Dubai and Egypt, headquartered at 77 Harley Street — he is an international trainer and speaker, and the President and Founder of the International Association of Aesthetic Gynaecology and Sexual Well-being (IAAGSW)."
+    ],
+    "photo": {
+      "image": "images/dr-wakil-about.jpg",
+      "alt": "Dr Sherif Wakil at Dr SW Clinics, before his wall of awards",
+      "caption": "Dr Sherif Wakil · Clinics in London, Dubai & Egypt"
+    }
+  },
+  "credentials": {
+    "show": true,
+    "eyebrow": "Credentials & memberships",
+    "items": [
+      "Registered with the General Medical Council (GMC)",
+      "Fellow of the International College of Surgeons",
+      "Member, British College of Aesthetic Medicine (BCAM)",
+      "Member, American Cosmetic Cellular Medicine Association",
+      "Member, British Association of Body Sculpting (BABS)",
+      "President & Founder, IAAGSW",
+      "Aesthetic Awards & MyFaceMyBody Awards finalist"
+    ]
+  },
+  "milestones": {
+    "show": true,
+    "eyebrow": "Milestones",
+    "heading": "A career in first times.",
+    "items": [
+      {
+        "mark": "20+ Years",
+        "text": "Two decades in medicine across leading hospitals in the UK and Middle East, including The Royal London Hospital NHS Trust."
+      },
+      { "mark": "First in the UK", "text": "The physician who brought the P-Shot® and O-Shot® to Britain." },
+      {
+        "mark": "Soft Surgery",
+        "text": "Pioneer of the “soft surgery” approach in the UK, including non-surgical blepharoplasty."
+      },
+      {
+        "mark": "IAAGSW",
+        "text": "President and Founder of the International Association of Aesthetic Gynaecology and Sexual Well-being."
+      },
+      {
+        "mark": "The O Concept™",
+        "text": "Creator of the holistic, multi-modality protocol for male and female sexual dysfunction."
+      },
+      {
+        "mark": "1st June",
+        "text": "Founder of Andropause Recognition Day — bringing the \"male menopause\" into the open."
+      },
+      {
+        "mark": "25,000+",
+        "text": "Cases worldwide — with patients travelling from every continent to see him, across clinics in London, Dubai and Egypt."
+      },
+      { "mark": "2024", "text": "Global Excellence Award — World’s Best Sexual Rejuvenation Clinic." },
+      { "mark": "2025", "text": "Global Excellence Awards — The O Concept™ Protocol." }
+    ]
+  },
+  "promise": {
+    "show": true,
+    "eyebrow": "Our promise",
+    "heading": "Natural results. *Always.*",
+    "paragraphs": [
+      "Our mission is simple to state and demanding to keep: to provide real solutions for sexual dysfunction and to enhance sexual wellness — with kindness, discretion and privacy at every step.",
+      "Every patient is treated as a unique individual, with a bespoke solution built from their own diagnostics — never a menu, never a template. And one promise holds above all: you will never leave looking “overdone” or artificial. Natural results, always."
+    ],
+    "photo": {
+      "image": "images/clinic-doctor.jpg",
+      "alt": "A physician in consultation at Dr SW Clinics, Harley Street",
+      "caption": "In consultation · 77 Harley Street"
+    },
+    "chips": [
+      "Kindness, discretion & privacy",
+      "A bespoke solution for every patient",
+      "Never \"overdone\" — natural, always"
+    ]
+  },
+  "team": {
+    "show": true,
+    "eyebrow": "The clinical team",
+    "heading": "The people you will meet.",
+    "intro": "The same clinicians see you through diagnostics, treatment and review. You will not be handed between strangers.",
+    "members": [
+      {
+        "image": "images/team-kulendran.jpg",
+        "name": "(this is a placeholder — name and surname)",
+        "title": "(this is a placeholder — role or speciality)",
+        "brief": "(this is a placeholder — one or two sentences, only if you want them. Leave it empty and the card shows just the name and role.)"
+      },
+      {
+        "image": "images/team-ghaly.jpg",
+        "name": "(this is a placeholder — name and surname)",
+        "title": "(this is a placeholder — role or speciality)",
+        "brief": ""
+      },
+      {
+        "image": "images/team-rogers.jpg",
+        "name": "(this is a placeholder — name and surname)",
+        "title": "(this is a placeholder — role or speciality)",
+        "brief": ""
+      },
+      {
+        "image": "images/team-fallahdar.jpg",
+        "name": "(this is a placeholder — name and surname)",
+        "title": "(this is a placeholder — role or speciality)",
+        "brief": ""
+      }
+    ]
+  },
+  "finalCta": {
+    "heading": "Meet him, privately.",
+    "sub": "Consultations with Dr Wakil and his clinical team are available at 77 Harley Street and by video."
+  }
+}

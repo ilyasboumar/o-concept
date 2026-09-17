@@ -1,0 +1,44 @@
+{
+  "show": true,
+  "eyebrow": "Three pathways, one philosophy",
+  "heading": "For him. For her. For the long run.",
+  "ctaLabel": "Explore the pathway",
+  "cards": [
+    {
+      "kicker": "For Him",
+      "title": "O Concept™ for Him",
+      "text": "Function, performance and vitality — restored through regenerative medicine, not resignation.",
+      "accent": "gold",
+      "href": "for-him",
+      "points": [
+        "P-Shot® — platelet-rich plasma therapy",
+        "Bocox™ & ESWT shockwave therapy",
+        "Endo Test hormonal diagnostics"
+      ]
+    },
+    {
+      "kicker": "For Her",
+      "title": "O Concept™ for Her",
+      "text": "Comfort, sensation and confidence — supported gently, at every stage of life.",
+      "accent": "rose",
+      "href": "for-her",
+      "points": [
+        "O-Shot® — platelet-rich plasma therapy",
+        "Ultra Femme 360 & CO2RE Intima",
+        "O Concept™ Chair for Her"
+      ]
+    },
+    {
+      "kicker": "Longevity",
+      "title": "O Concept™ Longevity",
+      "text": "Life optimisation and regenerative medicine — energy, hormones, metabolism and healthy years.",
+      "accent": "teal",
+      "href": "longevity",
+      "points": [
+        "Hormone optimisation & IV nutrition",
+        "Stem cells & regenerative medicine",
+        "Dietician, coaching & movement therapy"
+      ]
+    }
+  ]
+}
